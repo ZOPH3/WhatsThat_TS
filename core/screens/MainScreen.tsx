@@ -1,6 +1,6 @@
 import { StatusBar } from "expo-status-bar";
-import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, Button } from "react-native";
 
 import ChatWindowComponent, {
   ChatWindowState,
@@ -9,19 +9,24 @@ import ContactList from "../../components/users/ContactList";
 import UserComponent from "../../components/users/UserComponent";
 import UserAPI from "../../api/UserAPI";
 import MessageAPI from "../../api/MessageAPI";
-import { AppStateModel } from "../interfaces/AppStateModel";
 
 const messages = new MessageAPI().GetAll();
 const users = new UserAPI().GetAll();
 
 const TestData: ChatWindowState = { messages: messages, isLoaded: true };
-const AppState: AppStateModel = { isLogged: false, TOKEN: "" };
 
 export default function MainScreen() {
-  if (!AppState.isLogged) {
+
+  const [userAuth, setUserAuth] = useState({
+    isLogged: false,
+    TOKEN: '',
+  });
+
+  if (!userAuth.isLogged) {
     return (
       <View style={styles.container}>
-        <Text>You are not logged in</Text>
+        <Text>You are not logged in {userAuth.isLogged}</Text>
+        <Button title="Change" onPress={() => setUserAuth({isLogged: true, TOKEN: ''})}/>
       </View>
     );
   } else {
@@ -41,6 +46,7 @@ export default function MainScreen() {
         <StatusBar style="auto" />
       </View>
     );
+
   }
 }
 

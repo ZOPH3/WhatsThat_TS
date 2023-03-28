@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Text } from 'react-native';
-import { MessageModel } from '../../core/interfaces/MessageModel';
+import { MessageModel } from '../../core/models/MessageModel';
 import MessageComponent from './messageComponent';
 
 export type ChatWindowState = {

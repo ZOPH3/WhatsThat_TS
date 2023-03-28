@@ -7,6 +7,7 @@ export enum Options {
   Signup = "SIGNUP"
 }
 
+
 export default function LogScreen(status: Options) {
 
   let requiredFields = { email: '', password: '' }
@@ -27,6 +28,7 @@ export default function LogScreen(status: Options) {
     </>
   }
 }
+
 
 const styles = StyleSheet.create({
   container: {

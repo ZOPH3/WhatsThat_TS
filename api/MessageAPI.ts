@@ -1,4 +1,4 @@
-import { MessageModel } from "../core/interfaces/MessageModel";
+import { MessageModel } from "../core/models/MessageModel";
 
 const messages: Array<MessageModel> = [{
   msg: "stringsssssssssssa",

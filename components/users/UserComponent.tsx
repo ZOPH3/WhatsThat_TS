@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Text, View } from 'react-native';
-import { UserModel } from '../../core/interfaces/UserModel';
+import { UserModel } from '../../core/models/UserModel';
 
 const UserComponent = (props: UserModel) => {
     return <>

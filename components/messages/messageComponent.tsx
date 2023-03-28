@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Text, View } from 'react-native';
-import { MessageModel } from '../../core/interfaces/MessageModel';
+import { MessageModel } from '../../core/models/MessageModel';
 
 
 const MessageComponent = (props: MessageModel) => {

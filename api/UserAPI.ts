@@ -1,4 +1,4 @@
-import { UserModel } from "../core/interfaces/UserModel";
+import { UserModel } from "../core/models/UserModel";
 
 const users: Array<UserModel> = [{
     id: 444, firstname: 'mario', lastname: 'liberato', email: 'gnmpolicemango@gmail.com', password: 'IAMANOOB'

@@ -1,6 +1,6 @@
 import { MessageModel } from "../core/interfaces/MessageModel";
 
-export const messages: Array<MessageModel> = [{
+const messages: Array<MessageModel> = [{
   msg: "stringsssssssssssa",
   time: new Date(2018, 0O5, 0O5, 17, 23, 42, 11),
   id: 1,

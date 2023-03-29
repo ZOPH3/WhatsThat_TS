@@ -1,11 +1,8 @@
-import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import MainScreen from './core/screens/MainScreen';
 import HomeScreen from './core/screens/HomeScreen';
 import ProfileScreen from './core/screens/ProfileScreen';
 import SettingsScreen from './core/screens/SettingsScreen';

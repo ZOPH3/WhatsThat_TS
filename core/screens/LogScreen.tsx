@@ -1,12 +1,7 @@
 import { StatusBar } from "expo-status-bar";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-
-export enum Options {
-  Login = "LOGIN",
-  Signup = "SIGNUP"
-}
-
+import { Options } from "../utils/LoginOption";
 
 export default function LogScreen(status: Options) {
 

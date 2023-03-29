@@ -3,5 +3,6 @@ export interface UserModel {
     lastname: string
     id: number
     email: string
-    password: string
+    password?: string
+    token?: string
 }

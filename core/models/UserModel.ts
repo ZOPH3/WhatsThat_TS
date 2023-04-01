@@ -1,8 +1,8 @@
 export interface UserModel {
-    firstname: string
-    lastname: string
-    id: number
+    first_name: string
+    last_name: string
+    user_id: number
     email: string
     password?: string
-    token?: string
+    session_token?: string
 }

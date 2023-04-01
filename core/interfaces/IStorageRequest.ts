@@ -1,3 +1,4 @@
+// Interactions with AsyncStorage
 interface IStorageRequest<Type> {
     storeData(valueObject: Type): Promise<boolean>;
     getData(): Promise<Type | null>

@@ -1,3 +1,4 @@
+// Interactions with API
 interface IRequest<Type> {
 
     GetAll(): Array<Type>;

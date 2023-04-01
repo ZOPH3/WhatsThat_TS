@@ -1,73 +1,26 @@
-import React, { useState } from "react";
-import {Alert, Button, SafeAreaView, StyleSheet, TextInput} from 'react-native';
-import { UserModel } from "../models/UserModel";
-import UserAsyncStorage from "../storage/UserAsyncStorage";
+import React, { useEffect, useState } from "react";
+import { Button, Text } from 'react-native';
 
-const _UserAsyncStorage : IStorageRequest<UserModel> = new UserAsyncStorage();
-
-function setAuth(user: UserModel){
-  _UserAsyncStorage.storeData(user)
-}
-
-const exampleUser : UserModel = {
-  firstname: "Mario",
-  lastname: "Liberato",
-  id: 44,
-  email: "sdfsdfsdsdfsdf@gmail.com",
-  token: 'asfsfsdfdfs'
-}
-
-const user : UserModel = {
-  firstname: "",
-  lastname: "",
-  id: 0,
-  email: ""
-}
-
-function SignInRequest(username : string, password : string){
-  // TODO: API call, get token if successful
-  const APIRequest = null;
-  
-  if(APIRequest === null) {
-    Alert.alert("Your credentials are incorrect", 
-                "Username:"+ username + " Password:" + password)
-  } else {
-    
-  }
-}
+import SignInForm from "../../components/forms/SignInForm";
+import User from "../classes/User";
 
 export default function SignInScreen() {
-  // const [authUser, setAuthUser] = useState<UserModel>(user)
+  const [user, setUser] = useState(new User());
+  const [formState, setFormState] = useState({ isLoading: false })
 
-  // _UserAsyncStorage.storeData(exampleUser)
-
-  // const x = _UserAsyncStorage.getData();
-
-  // x.then((response: any) => response)
-  //   .then((data: React.SetStateAction<UserModel>) => {
-  //     setAuthUser(data)
-  //   })
-  //   .catch(console.error);
-
-  // return <>
-  //   <View>
-  //     <Text>helloo {authUser.firstname} </Text>
-  //   </View>
-  // </>
-
-  const [username, onChangeUsername] = useState('');
-  const [password, onChangePassword] = useState('');
+  useEffect(() => {
+    if (formState.isLoading) {
+      console.log("something")
+    }
+  }, [formState])
 
   return <>
-    <SafeAreaView>
-      <TextInput onChangeText={onChangeUsername} value={username} placeholder='Enter your username'/>
-      <TextInput onChangeText={onChangePassword} value={password} placeholder='Enter your password'/>
-      <Button
-        title="Sign In"
-        onPress={() => SignInRequest(username, password)}
-      />
-    </SafeAreaView>
+    <SignInForm user={user}
+      setUser={setUser}
+      setFormState={setFormState} />
+    <Text>hello {user.email}</Text>
+    <Button title="CLICK" onPress={() => setFormState({ isLoading: false })} />
+
+    {formState.isLoading && <Text>isLoading</Text>}
   </>
-
 }
-

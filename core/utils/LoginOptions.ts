@@ -1,4 +1,4 @@
-export enum Option {
+export enum Options {
     Login = "LOGIN",
     Signup = "SIGNUP"
   }

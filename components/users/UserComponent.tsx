@@ -4,7 +4,7 @@ import { UserModel } from '../../core/models/UserModel';
 
 const UserComponent = (props: UserModel) => {
     return <>
-        <Text>{props.firstname}</Text>
+        <Text>{props.first_name}</Text>
     </>
 }
 

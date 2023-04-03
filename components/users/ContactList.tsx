@@ -16,11 +16,11 @@ const ContactList = (props: ContactListState) => {
             {props.users.map(user =>
                 <UserComponent
                     key={i++}
-                    firstname={user.firstname}
-                    lastname={user.lastname}
+                    first_name={user.first_name}
+                    last_name={user.last_name}
                     email={user.email}
                     password={user.password}
-                    id={user.id}
+                    user_id={user.user_id}
                 />
             )}
         </>

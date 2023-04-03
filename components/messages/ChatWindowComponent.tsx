@@ -25,7 +25,7 @@ const ChatWindowComponent = (props: ChatWindowState) => {
         </>
     } else {
         return <>
-            <Text>No Messages</Text>
+            <Text>...Messages</Text>
         </>
     }
 }

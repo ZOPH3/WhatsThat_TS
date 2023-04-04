@@ -4,5 +4,7 @@ export interface UserModel {
     user_id: number
     email: string
     password?: string
-    session_token?: string
+    session_token?: boolean
 }
+
+// TODO: Remove this eventually

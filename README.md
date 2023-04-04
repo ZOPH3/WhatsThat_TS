@@ -10,3 +10,8 @@ WhatsThat Application is a clone of a popular messaging application. This is wri
 ## Tools Used
 1. Postman
 2. VSC
+
+## Improvements
+1. Adding contact should allow that contact to accept or decline.
+2. Blocked user messages in a group chat can be viewed with a click.
+3. Allow Chat history to be archived.

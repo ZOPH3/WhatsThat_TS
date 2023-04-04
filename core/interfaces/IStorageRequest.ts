@@ -4,3 +4,5 @@ interface IStorageRequest<Type> {
     getData(): Promise<Type | null>
     removeData(): void
 }
+
+//TODO: What was I even trying to do here?

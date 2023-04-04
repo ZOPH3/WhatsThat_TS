@@ -4,24 +4,40 @@ import { View, Text, ScrollView, SafeAreaView, StatusBar, StyleSheet } from 'rea
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+/*
+  Stores a key and value to async storage of the device. 
+  The value in this case is an object converted to a string.
+*/
+export const storeDataJson = async (value: Object, key: string) => {
+  let isSuccess = false
+  try {
+    const jsonValue = JSON.stringify(value)
+    await AsyncStorage.setItem(key, jsonValue)
+    isSuccess = true
+  } catch (e) {
+    console.log('Unable to save to ', key)
+    isSuccess = false
+  } finally {
+    return isSuccess
+  }
+}
+
 const AsyncStorageTemplate = () => {
 
-  const storeData = async (value) => {
+  const storeData = async (value: string, key: string) => {
+    let isSuccess = false
     try {
-      await AsyncStorage.setItem('@storage_Key', value)
+      await AsyncStorage.setItem(key, value)
+      isSuccess = true
     } catch (e) {
-      // saving error
+      console.log('Unable to save to ', key)
+      isSuccess = false
+    } finally {
+      return isSuccess
     }
   }
 
-  const storeDataJson = async (value) => {
-    try {
-      const jsonValue = JSON.stringify(value)
-      await AsyncStorage.setItem('@storage_Key', jsonValue)
-    } catch (e) {
-      // saving error
-    }
-  }
+
 
   const getData = async () => {
     try {
@@ -52,9 +68,10 @@ const AsyncStorageTemplate = () => {
         <TextInput onChangeText={newText => setText(newText)}
           defaultValue={text} />
         <Button title='UpdateToken' onPress={() => { storeData(text); console.log('Stored') }} />
-        <Button title='Current Token State' onPress={async () => { 
+        <Button title='Current Token State' onPress={async () => {
           var value = await getData()
-          console.log('Token ', value) }} />
+          console.log('Token ', value)
+        }} />
         <Text>{text}</Text>
       </ScrollView>
     </SafeAreaView>

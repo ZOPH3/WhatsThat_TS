@@ -93,15 +93,8 @@ function SignInTestScreen({ route, navigation}) {
   return <>
     <View>
       <Button title='SignIn' onPress={() => {
-        // if (signInLogic('fromsigninpage', 'l')) {
-        //   navigation.push('Home', {
-        //     user_id: 1,
-        //     user_email: 'fromsigninpage'
-        //   })
-        // }
         console.log('Login pressed')
         route.params.setIsLoggedIn(true)
-        // navigation.navigate('HomeScreen')
       }} />
     </View>
   </>

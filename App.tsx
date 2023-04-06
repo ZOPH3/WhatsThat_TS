@@ -4,10 +4,40 @@ import * as React from 'react';
 import { View, Text, Button } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { UserModel } from './core/models/UserModel';
-import User from './core/classes/User';
-import { storeDataJson } from './template/AsyncStorageTemplate';
 import { useState } from 'react';
+import ChatListHomeComponent from './components/ChatListHomeComponent';
+import ChatWindowComponent from './components/ChatWindowComponent';
+
+const chatListView = [
+  {
+    "title": "I hate JS Group Chat",
+    "preview": "I have an absolute hatered for javascript",
+    "chat_id": 1,
+    "user_name": "Zophia Javari",
+    "isUnread": true
+  },
+  {
+    "title": "I love JS",
+    "preview": "JS is the superior programming language",
+    "chat_id": 2,
+    "user_name": "Mario Liberato",
+    "isUnread": true
+  },
+  {
+    "title": "",
+    "preview": "I do not tilt after 4 rounds of shooters",
+    "chat_id": 3,
+    "user_name": "Briana Bolton",
+    "isUnread": true
+  },
+  {
+    "title": "Go repent!!!!!!!!!!",
+    "preview": "You should because John Wick said so",
+    "chat_id": 4,
+    "user_name": "God Herself",
+    "isUnread": false
+  }
+]
 
 function signInLogic(email: string, password: string) {
   const valid_details = true
@@ -15,24 +45,25 @@ function signInLogic(email: string, password: string) {
 }
 
 function HomeScreen({ route, navigation }) {
-  const { user_id, user_email } = route.params;
+  // const { user_id, user_email } = route.params;
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Home Screen</Text>
-      <Text>user_email: {JSON.stringify(user_email)}</Text>
-
-      <Button
-        title="Go to Details"
-        onPress={() => {
-          /* 1. Navigate to the Details route with params */
-          navigation.navigate('Details', {
-            itemId: 86,
-            otherParam: 'anything you want here',
-          });
-        }}
-      />
-    </View>
+    <>
+      <View>
+        <ChatListHomeComponent 
+          messages={chatListView} 
+          navigation={navigation}
+        />
+      </View>     
+    </>
   );
+}
+
+function ChatScreen(){
+  return <>
+    <View>
+      <ChatWindowComponent />
+    </View>
+  </>
 }
 
 function DetailsScreen({ route, navigation }) {
@@ -57,18 +88,20 @@ function DetailsScreen({ route, navigation }) {
   );
 }
 
-function SignInTestScreen({ route, navigation }) {
+function SignInTestScreen({ route, navigation}) {
 
   return <>
     <View>
       <Button title='SignIn' onPress={() => {
-        if (signInLogic('fromsigninpage', 'l')) {
-          navigation.push('Home', {
-            user_id: 1,
-            user_email: 'fromsigninpage'
-          })
-        }
+        // if (signInLogic('fromsigninpage', 'l')) {
+        //   navigation.push('Home', {
+        //     user_id: 1,
+        //     user_email: 'fromsigninpage'
+        //   })
+        // }
         console.log('Login pressed')
+        route.params.setIsLoggedIn(true)
+        // navigation.navigate('HomeScreen')
       }} />
     </View>
   </>
@@ -97,22 +130,58 @@ function SignInTestScreen({ route, navigation }) {
 //   );
 // }
 
+// function LoggedInScreens(){
+//   return (
+//     <Stack.Group>
+//                 <Stack.Screen name="Home" 
+//                   component={HomeScreen} options={{
+//                   gestureEnabled: false,
+//                   headerShown: true,
+//                   headerLeft: () => <></> }} 
+//               />
+//               <Stack.Screen name="Details" component={DetailsScreen} />
+//               <Stack.Screen name="Chat" component={ChatScreen} options={({ route }) => ({ 
+//                   title: route.params.title, 
+//                   chat_id: route.params.chat_id 
+//                 })}
+//               />
+//       </Stack.Group>
+//   );
+// }
 const Stack = createNativeStackNavigator();
 
 function App() {
 
   const [isUserStateSet, setIsUserStateSet] = useState(false)
 
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="SignInTestScreen">
-        <Stack.Screen name="SignInTestScreen" component={SignInTestScreen} />
-        <Stack.Screen name="Home" component={HomeScreen} options={{
-          gestureEnabled: false,
-          headerShown: true,
-          headerLeft: () => <></>,
-        }} />
-        <Stack.Screen name="Details" component={DetailsScreen} />
+      <Stack.Navigator>
+        {
+          isLoggedIn ? (
+            <Stack.Group>
+            <Stack.Screen name="Home" 
+              component={HomeScreen} options={{
+              gestureEnabled: false,
+              headerShown: true,
+              headerLeft: () => <></> }} 
+          />
+          <Stack.Screen name="Details" component={DetailsScreen} />
+          <Stack.Screen name="Chat" component={ChatScreen} options={({ route }) => ({ 
+              title: route.params.title, 
+              chat_id: route.params.chat_id 
+            })}
+          />
+  </Stack.Group>
+          ) : (
+            <Stack.Group>
+              <Stack.Screen name="SignInTestScreen" component={SignInTestScreen} 
+              initialParams={ {setIsLoggedIn: setIsLoggedIn }}/>
+            </Stack.Group>
+          )
+        }
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -7,6 +7,79 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useState } from 'react';
 import ChatListHomeComponent from './components/ChatListHomeComponent';
 import ChatWindowComponent from './components/ChatWindowComponent';
+import axios from 'axios';
+
+const baseUrl = 'http://10.0.2.2:3333/api/1.0.0';
+const auth = 'a301c1603ac0ddbdc1be97d965fe867a';
+
+const loginUser = async () => {
+  
+  let data = JSON.stringify({
+    "email": "ashley.williams@mmu.ac.uk",
+    "password": "Wr3xh4m!"
+  });
+
+  let config = {
+    method: 'post',
+    maxBodyLength: Infinity,
+    url: `${baseUrl}/login`,
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    data: data
+  };
+
+  axios.request(config)
+    .then((response) => {
+      console.log(JSON.stringify(response.data));
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+
+};
+
+const logoutUser = async () => {
+
+  let config = {
+    method: 'post',
+    // maxBodyLength: Infinity,
+    url: `${baseUrl}/logout`,
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Authorization' : '924174e0001c17ace2498bb4a9b13c55'
+    }
+  };
+
+  axios.request(config)
+    .then((response) => {
+      console.log(JSON.stringify(response.data));
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+
+};
+
+const fetchUser = async () => {
+
+  let config = {
+    method: 'get',
+    maxBodyLength: Infinity,
+    url: `${baseUrl}/user/4`,
+    headers: { 
+      'X-Authorization': auth
+    }
+  };
+  
+  axios.request(config)
+  .then((response) => {
+    console.log(JSON.stringify(response.data));
+  })
+  .catch((error) => {
+    console.log(error);
+  });
+};
 
 const chatListView = [
   {
@@ -49,16 +122,16 @@ function HomeScreen({ route, navigation }) {
   return (
     <>
       <View>
-        <ChatListHomeComponent 
-          messages={chatListView} 
+        <ChatListHomeComponent
+          messages={chatListView}
           navigation={navigation}
         />
-      </View>     
+      </View>
     </>
   );
 }
 
-function ChatScreen(){
+function ChatScreen() {
   return <>
     <View>
       <ChatWindowComponent />
@@ -88,7 +161,7 @@ function DetailsScreen({ route, navigation }) {
   );
 }
 
-function SignInTestScreen({ route, navigation}) {
+function SignInTestScreen({ route, navigation }) {
 
   return <>
     <View>
@@ -96,10 +169,15 @@ function SignInTestScreen({ route, navigation}) {
         console.log('Login pressed')
         route.params.setIsLoggedIn(true)
       }} />
+
+      <Button title='Login' onPress={() => loginUser()} />
+      <Button title='getUser' onPress={() => fetchUser()} />
+      <Button title='Logout' onPress={() => logoutUser()} />
     </View>
   </>
 
 }
+
 
 // function DetailsScreen({ navigation }) {
 //   return (
@@ -155,23 +233,24 @@ function App() {
         {
           isLoggedIn ? (
             <Stack.Group>
-            <Stack.Screen name="Home" 
-              component={HomeScreen} options={{
-              gestureEnabled: false,
-              headerShown: true,
-              headerLeft: () => <></> }} 
-          />
-          <Stack.Screen name="Details" component={DetailsScreen} />
-          <Stack.Screen name="Chat" component={ChatScreen} options={({ route }) => ({ 
-              title: route.params.title, 
-              chat_id: route.params.chat_id 
-            })}
-          />
-  </Stack.Group>
+              <Stack.Screen name="Home"
+                component={HomeScreen} options={{
+                  gestureEnabled: false,
+                  headerShown: true,
+                  headerLeft: () => <></>
+                }}
+              />
+              <Stack.Screen name="Details" component={DetailsScreen} />
+              <Stack.Screen name="Chat" component={ChatScreen} options={({ route }) => ({
+                title: route.params.title,
+                chat_id: route.params.chat_id
+              })}
+              />
+            </Stack.Group>
           ) : (
             <Stack.Group>
-              <Stack.Screen name="SignInTestScreen" component={SignInTestScreen} 
-              initialParams={ {setIsLoggedIn: setIsLoggedIn }}/>
+              <Stack.Screen name="SignInTestScreen" component={SignInTestScreen}
+                initialParams={{ setIsLoggedIn: setIsLoggedIn }} />
             </Stack.Group>
           )
         }

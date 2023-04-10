@@ -7,19 +7,10 @@ export default function SignInForm(props: any) {
   const [email, onChangeEmail] = useState("");
   const [password, onChangePassword] = useState("");
 
-  function createUser(): User {
-    const _User = new User()
-    _User.setEmail(email)
-    _User.setPassword(password)
-    return _User;
-  }
-
   function trySignIn() {
 
-    const user = createUser();
-
-    if (user.email != '' && user.password != '') {
-      props.setUser(user);
+    if (email != '' && password != '') {
+      props.setUser({email: email, password: password});
       props.setFormState({ isLoading: true });
 
       onChangeEmail('');

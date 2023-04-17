@@ -74,6 +74,7 @@ function getMessageList(chat_id: number){
 
 const ChatWindowComponent = () => {
     const route = useRoute();
+    
     const [messageList, setMessageList] = useState(getMessageList(route.params.chat_id))
 
     function getLastMessageId() {

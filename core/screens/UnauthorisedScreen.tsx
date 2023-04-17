@@ -4,9 +4,12 @@ import { Button, Text, View } from 'react-native';
 
 import ApiUserClient from "../api/ApiUserClient";
 import ApiMessageClient from "../api/ApiMessageClient";
+import AsyncStorageHelper from "../storage/asyncStorage.helper";
+import { AsyncStorageKey } from "../storage/AsyncStorageKey";
+// import AsyncStorageHelper from "../storage/AsyncStorage.helper";
 
 const UserApi = new ApiUserClient('http://10.0.2.2:3333/api/1.0.0', '');
-const MessageApi = new ApiMessageClient('http://10.0.2.2:3333/api/1.0.0', '')
+// const MessageApi = new ApiMessageClient('http://10.0.2.2:3333/api/1.0.0', '')
 
 const user = {
   "email": "ashley.williams@mmu.ac.uk",
@@ -23,15 +26,13 @@ function UnauthorisedScreen({ route, navigation }) {
           .then(
             (element) => {
               console.log('Successfully Logged in')
-              UserApi.setAuth(element.data.token)
-              MessageApi.setAuth(element.data.token)
-              // route.params.setIsLoggedIn(true)
+              route.params.setIsLoggedIn(true)
+              AsyncStorageHelper.storeData(AsyncStorageKey.Authenticated_User, element.data.token)
             },
             () => console.log("Failed to login")
           );
-
       }} />
-      <Button title='getUser' onPress={() => {
+      {/* <Button title='getUser' onPress={() => {
         UserApi.getUserById(1).then(
           (user) => console.log(user.data), 
           () => console.log("Unable to get User"))
@@ -46,7 +47,7 @@ function UnauthorisedScreen({ route, navigation }) {
           (messageList) => console.log(messageList),
           () => console.log("Failed to get message list")
         )
-      }} />
+      }} /> */}
     </View>
   </>
 

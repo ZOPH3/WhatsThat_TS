@@ -12,14 +12,33 @@ function isUnread(isUnread: boolean) {
     }
 }
 
+//TODO: isUnread is determined by the time of the last message and when the user last opened the message (which would be saved to the state).
+
 const ListItemComponent = (props: {
+    // message: {
+    //     "title": string,
+    //     "preview": string,
+    //     "chat_id": number,
+    //     "user_name": string,
+    //     "isUnread": boolean
+    // }
+
     message: {
-        "title": string,
-        "preview": string,
         "chat_id": number,
-        "user_name": string,
-        "isUnread": boolean
-    }
+        "creator": {
+            "email": string,
+            "first_name": string,
+            "last_name": string,
+            "user_id": number
+        },
+        "last_message": {
+            "author": {},
+            "message": string,
+            "message_id": number,
+            "timestamp": number
+        },
+        "name": string
+    },
 
 }) => {
     const navigation = useNavigation();
@@ -27,14 +46,14 @@ const ListItemComponent = (props: {
         <ListItem
             leadingMode="avatar"
             leading={
-                <Avatar label={props.message.title != "" ? props.message.title : props.message.user_name} autoColor />
+                <Avatar label={props.message.name != "" ? props.message.name : props.message.creator.first_name} autoColor />
             }
-            title={props.message.title != "" ? props.message.title : props.message.user_name}
-            secondaryText={props.message.preview}
-            trailing={isUnread(props.message.isUnread)}
+            title={props.message.name != "" ? props.message.name : props.message.creator.first_name}
+            secondaryText={props.message.last_message.message}
+            trailing={isUnread(true)}
             onPress={() => { 
                 navigation.push('Chat', {
-                    title: props.message.title != "" ? props.message.title : props.message.user_name,
+                    title: props.message.name != "" ? props.message.name : props.message.creator.first_name,
                     chat_id: props.message.chat_id
                   })
             }}

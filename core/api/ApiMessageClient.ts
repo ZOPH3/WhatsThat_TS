@@ -11,7 +11,7 @@ class ApiMessageClient {
 
     async getChatList() {
         let config: AxiosRequestConfig = {
-            method: 'post',
+            method: 'get',
             maxBodyLength: Infinity,
             url: `${this.baseUrl}/chat`,
             headers: {
@@ -22,7 +22,7 @@ class ApiMessageClient {
 
         try {
             const response = await axios.request(config);
-            return response;
+            return response.data;
         } catch (error) {
             console.log(error);
             throw error;

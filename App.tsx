@@ -13,9 +13,8 @@ const Stack = createNativeStackNavigator();
 
 function App() {
 
-  // const [isUserStateSet, setIsUserStateSet] = useState(false)
-
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [tempToken, setTempToken] = useState('')
 
   return (
     <NavigationContainer>
@@ -30,7 +29,6 @@ function App() {
                   headerLeft: () => <></>
                 }}
               />
-              {/* <Stack.Screen name="Details" component={DetailsScreen} /> */}
               <Stack.Screen name="Chat" component={ChatScreen} options={({ route }) => ({
                 title: route.params.title,
                 chat_id: route.params.chat_id
@@ -40,7 +38,10 @@ function App() {
           ) : (
             <Stack.Group>
               <Stack.Screen name="SignInScreen" component={UnauthorisedScreen}
-                initialParams={{ setIsLoggedIn: setIsLoggedIn }} />
+                initialParams={{ 
+                    setIsLoggedIn: setIsLoggedIn,  
+                    setTempToken: setTempToken 
+                  }} />
             </Stack.Group>
           )
         }

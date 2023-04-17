@@ -7,6 +7,27 @@
 import axios from "axios";
 
 class ChatService {
+    
+    static getMessages(id: number) {
+
+        let config = {
+            method: 'get',
+            maxBodyLength: Infinity,
+            url: `http://10.0.2.2:3333/api/1.0.0/chat/${id}`,
+            headers: {
+                'X-Authorization': '1b6c1bfaa74ed4b180ddd85659d7bba8'
+            }
+        };
+
+        return axios.request(config)
+            .then((response) => {
+                return response.data;
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+
+    }
 
     static async delete(data: any) {
 
@@ -69,7 +90,10 @@ class ChatService {
         return user;
     }
 
-    static async all(token: string) {
+    static async all() {
+
+        const token = '1b6c1bfaa74ed4b180ddd85659d7bba8';
+
         let config = {
             method: 'get',
             maxBodyLength: Infinity,
@@ -79,18 +103,13 @@ class ChatService {
             }
         };
 
-        const result = axios.request(config)
+        return axios.request(config)
             .then((response) => {
-                // console.log(JSON.stringify(response.data));
-
                 return response.data;
             })
             .catch((error) => {
-                // console.log(error);
-                return [];
+                console.log(error);
             });
-
-            return result
     }
 }
 

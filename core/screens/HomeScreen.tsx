@@ -1,12 +1,7 @@
-import { View } from "react-native";
+import { View, Text } from "react-native";
 import ChatListHomeComponent from "../../components/ChatListHomeComponent";
 import React, { useEffect, useState } from "react";
-import axios from 'axios';
-import AsyncStorageHelper from "../storage/asyncStorage.helper";
-import { AsyncStorageKey } from "../storage/AsyncStorageKey";
-import ApiMessageClient from "../api/ApiMessageClient";
-import { Button } from "@react-native-material/core";
-import ChatController from "../controllers/chat.controller";
+import ChatService from '../services/chat.services';
 
 const chatListView = [
     {
@@ -39,73 +34,36 @@ const chatListView = [
     }
 ]
 
-const MessageApi = new ApiMessageClient('http://10.0.2.2:3333/api/1.0.0', '');
-
-// async function setAuth(): Promise<string> {
-//     const token = await AsyncStorageHelper.getData(AsyncStorageKey.Authenticated_User);
-//     return token;
-// }
-
 function HomeScreen({ route, navigation }) {
 
     const [messageList, setMessageList] = useState<any>([]);
     const [fetchReady, setFetchReady] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
-    const setMessageApi = async () => {
+    useEffect(() => {
+        setMessageList(null);
+        setIsLoading(true);
 
-        const token = '1b6c1bfaa74ed4b180ddd85659d7bba8';
+        const fetchChat = async () => {
 
-        let config = {
-            method: 'get',
-            maxBodyLength: Infinity,
-            url: 'http://10.0.2.2:3333/api/1.0.0/chat',
-            headers: {
-                'X-Authorization': token
-            }
-        };
+            console.log("Fetching all chats...");
 
+            const messages = await ChatService.all();
 
-
-        axios.request(config)
-            .then((response) => {
-                setMessageList(response.data)
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-
-
-        console.log(messageList);
-    }
-
-    const fetchChat = async () => {
-        if (fetchReady) {
-            try {
-                // const newMessages = await MessageApi.getChatList();
-
-                const newMessages = await ChatController.all();
-
-                console.log("NEW MESSAGES...", newMessages)
-
-                setMessageList(newMessages);
-                setIsLoading(false);
-            } catch (err) {
-                console.log("Could not run");
-                setMessageList([]);
-            }
-        } else {
-            console.log("Authentication has not been setup");
+            setMessageList(messages);
+            setIsLoading(false);
         }
-    }
 
-    //FIXME: At the moment im using buttons, this needs to be done dynamically.
+        fetchChat().catch(console.error);
 
-    return (
-        <>
-            <Button title='AUTH USER' onPress={() => setMessageApi()} />
-            <Button title='GET MESSAGES' onPress={() => fetchChat()} />
-
+      }, []);
+    
+    if (isLoading) {
+        return <>
+            <Text>is Loading...</Text>
+        </>
+    } else {
+        return <>
             <View>
                 <ChatListHomeComponent
                     messages={messageList}
@@ -113,7 +71,7 @@ function HomeScreen({ route, navigation }) {
                 />
             </View>
         </>
-    );
+    }
 }
 
 export default HomeScreen;

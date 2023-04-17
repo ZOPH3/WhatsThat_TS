@@ -3,79 +3,95 @@ import { ListItem, Avatar, Stack, Button, Badge, TextInput, Box, IconButton } fr
 import { Alert, Pressable, View, Text, TouchableOpacity, StyleSheet, ScrollView, SafeAreaView, StatusBar } from "react-native";
 import { AntDesign } from '@expo/vector-icons';
 import { useRoute } from '@react-navigation/native';
+import ChatService from "../core/services/chat.services";
+import MessageBubbleComponent from "./MessageBubbleComponent";
 
-const current_user = 16
+//FIXME: Needs to get the current user
+const current_user = 1
 
-const mList = [
-    { message: 'Hello my nam jeff', date: 'x', isSelf: false, message_id: 1, from_id: 44 }
-]
-const messagesListTest = [
-    {
-        chat_id: 1,
-        message_list: [
-            { message: 'Hello my nam chat 1', date: 'x', isSelf: false, message_id: 1, from_id: 44 },
-            { message: 'I like patapon', date: 'x', isSelf: true, message_id: 2, from_id: 16 },
-            { message: 'Raid shadow legends', date: 'x', isSelf: false, message_id: 3, from_id: 44 },
-            { message: 'Jhintonic', date: 'x', isSelf: false, message_id: 4, from_id: 44 },
-            { message: 'weeewoooweeoo', date: 'x', isSelf: false, message_id: 5, from_id: 44 },
-            { message: 'Yall are rebarded', date: 'x', isSelf: false, message_id: 7, from_id: 44 },
-            { message: 'Sims 2 is amazing', date: 'x', isSelf: true, message_id: 8, from_id: 16 },
-            { message: 'ipod Mini', date: 'x', isSelf: true, message_id: 10, from_id: 16 },
-            { message: 'Shure215', date: 'x', isSelf: false, message_id: 9, from_id: 44 },
-        ]
-    },
-    {
-        chat_id: 2,
-        message_list: [
-            { message: 'Hello my nam chat 2', date: 'x', isSelf: false, message_id: 1, from_id: 44 },
-            { message: 'I like patapon', date: 'x', isSelf: true, message_id: 2, from_id: 16 },
-            { message: 'Raid shadow legends', date: 'x', isSelf: false, message_id: 3, from_id: 44 },
-            { message: 'Jhintonic', date: 'x', isSelf: false, message_id: 4, from_id: 44 },
-            { message: 'weeewoooweeoo', date: 'x', isSelf: false, message_id: 5, from_id: 44 },
-            { message: 'Yall are rebarded', date: 'x', isSelf: false, message_id: 7, from_id: 44 },
-            { message: 'Sims 2 is amazing', date: 'x', isSelf: true, message_id: 8, from_id: 16 },
-            { message: 'ipod Mini', date: 'x', isSelf: true, message_id: 10, from_id: 16 },
-            { message: 'Shure215', date: 'x', isSelf: false, message_id: 9, from_id: 44 },
-        ]
-    },
-    {
-        chat_id: 3,
-        message_list: [
-            { message: 'Hello my nam chat 3', date: 'x', isSelf: false, message_id: 1, from_id: 44 },
-            { message: 'I like patapon', date: 'x', isSelf: true, message_id: 2, from_id: 16 },
-            { message: 'Raid shadow legends', date: 'x', isSelf: false, message_id: 3, from_id: 44 },
-            { message: 'Jhintonic', date: 'x', isSelf: false, message_id: 4, from_id: 44 },
-            { message: 'weeewoooweeoo', date: 'x', isSelf: false, message_id: 5, from_id: 44 },
-            { message: 'Yall are rebarded', date: 'x', isSelf: false, message_id: 7, from_id: 44 },
-            { message: 'Sims 2 is amazing', date: 'x', isSelf: true, message_id: 8, from_id: 16 },
-            { message: 'ipod Mini', date: 'x', isSelf: true, message_id: 10, from_id: 16 },
-            { message: 'Shure215', date: 'x', isSelf: false, message_id: 9, from_id: 44 },
-        ]
-    },
-    {
-        chat_id: 4,
-        message_list: [
-            { message: 'Hello my nam chat 4', date: 'x', isSelf: false, message_id: 1, from_id: 44 },
-            { message: 'I like patapon', date: 'x', isSelf: true, message_id: 2, from_id: 16 },
-            { message: 'Raid shadow legends', date: 'x', isSelf: false, message_id: 3, from_id: 44 },
-            { message: 'Jhintonic', date: 'x', isSelf: false, message_id: 4, from_id: 44 },
-            { message: 'weeewoooweeoo', date: 'x', isSelf: false, message_id: 5, from_id: 44 },
-            { message: 'Yall are rebarded', date: 'x', isSelf: false, message_id: 7, from_id: 44 },
-            { message: 'Sims 2 is amazing', date: 'x', isSelf: true, message_id: 8, from_id: 16 },
-            { message: 'ipod Mini', date: 'x', isSelf: true, message_id: 10, from_id: 16 },
-            { message: 'Shure215', date: 'x', isSelf: false, message_id: 9, from_id: 44 },
-        ]
+// type ChatInfoType = {
+
+//     "name": string,
+//     "creator": {
+//         "user_id": number,
+//         "first_name": string,
+//         "last_name": string,
+//         "email": string
+//     },
+//     "members": [
+//         {
+//             "user_id": number,
+//             "first_name": string,
+//             "last_name": string,
+//             "email": string
+//         }
+//     ],
+//     "messages": [
+//         {
+//             "message_id": number,
+//             "timestamp": number,
+//             "message": string,
+//             "author": {
+//                 "user_id": number,
+//                 "first_name": string,
+//                 "last_name": string,
+//                 "email": string
+//             }
+//         }
+//     ]
+// }
+
+type ChatInfoType = {
+    "name": string,
+    "creator": {},
+    "members": [],
+    "messages"?: []
+}
+
+type MessageType = {
+    "message_id": number,
+    "timestamp": number,
+    "message": string,
+    "author": {
+        "user_id": number,
+        "first_name": string,
+        "last_name": string,
+        "email": string
     }
-]
-
-function getMessageList(chat_id: number){
-    return messagesListTest.filter((messageListTest) => messageListTest.chat_id === chat_id)[0].message_list
 }
 
 const ChatWindowComponent = () => {
+
     const route = useRoute();
-    
-    const [messageList, setMessageList] = useState(getMessageList(route.params.chat_id))
+    const chat_id = route.params.chat_id;
+
+    const [isLoading, setIsLoading] = useState(true);
+    const [chatInfo, setChatInfo] = useState<ChatInfoType>();
+    const [messageList, setMessageList] = useState<MessageType[]>();
+
+
+    useEffect(() => {
+        setMessageList(undefined);
+        setIsLoading(true);
+
+
+        const fetchData = async () => {
+
+            console.log("Fetching Messages...")
+
+            const data: ChatInfoType = await ChatService.getMessages(route.params.chat_id); 
+
+            setChatInfo(data);
+            setMessageList(data.messages);
+
+            setIsLoading(false)
+        }
+
+        // call the function
+        fetchData().catch(console.error);
+
+    }, [])
+
 
     function getLastMessageId() {
         const m = (messageList.sort((a, b) => a.message_id - b.message_id))
@@ -109,70 +125,40 @@ const ChatWindowComponent = () => {
         }
     }
 
-    function removeMessage(id: number, from_id: number) {
-        let msg = 'Unable to delete'
-        if (current_user === from_id) {
-            let remaining = messageList.filter((message) => {
-                return message.message_id != id
-            })
-            msg = 'Deleted'
-            setMessageList(remaining)
-        }
-        //Alert.alert(msg)
-
-        //TODO: Have a alert bar show up instead
-    }
-
-    const Message = (props: { message: string, from_id: number, isSelf: boolean, date: string, message_id: number, position: number }) => {
-        const styles = StyleSheet.create({
-            self: {
-                textAlign: 'right',
-                backgroundColor: "#0078fe",
-                padding: 10,
-                marginLeft: '40%',
-                marginTop: 5,
-                marginRight: "5%",
-                maxWidth: '55%',
-                alignSelf: 'flex-end',
-                borderRadius: 20,
-
-            },
-            others: {
-                textAlign: 'left',
-                backgroundColor: "#0078fe",
-                padding: 10,
-                marginLeft: '5%',
-                marginTop: 5,
-                marginRight: "40%",
-                maxWidth: '55%',
-                alignSelf: 'flex-start',
-                borderRadius: 20,
-            },
-        })
-        return <>
-            <View key={props.message_id}>
-                <TouchableOpacity style={[props.isSelf ? styles.self : styles.others]} onLongPress={() => removeMessage(props.message_id, props.from_id)}>
-                    <Text>{props.from_id}</Text>
-                    <View onTouchStart={() => console.log(props.date)}>
-                        <Text style={{ fontSize: 16, color: "#fff", }}> {props.message}</Text>
-                    </View>
-                </TouchableOpacity>
-            </View>
-        </>
-    }
-
     const GenerateMessage = () => {
-        return <>
-            <View>
-                {messageList.map((props, key) => {
-                    return <>{<Message message_id={props.message_id} message={props.message} date={props.date} isSelf={props.isSelf} from_id={current_user} position={key}/>
-                    }</>
-                })}
-            </View>
-        </>
+
+        if (messageList !== undefined) {
+            return <>
+                <View>
+                    {messageList.map((messages, key) => {
+                        return <>
+                            {<MessageBubbleComponent
+                                message_id={messages.message_id}
+                                message={messages.message}
+                                date={(messages.timestamp).toString()}
+                                isSelf={messages.author.user_id === current_user}
+                                from_id={messages.author.user_id}
+                                position={key} />
+                            }
+                        </>
+                    })}
+                </View>
+            </>
+        }
+        else {
+            return <>
+            <View></View>
+            </>
+        }
+        // let messageList = props.messages;
     }
 
-    return <>
+    if(isLoading){
+        return <>
+            <Text>Loading.....</Text>
+        </>
+    } else {
+        return <>
         <View style={styles.containerMain}>
             <SafeAreaView style={styles.container}>
                 <ScrollView style={styles.scrollView}>
@@ -194,6 +180,8 @@ const ChatWindowComponent = () => {
             </View>
         </View>
     </>
+    }
+    
 };
 
 const styles = StyleSheet.create({

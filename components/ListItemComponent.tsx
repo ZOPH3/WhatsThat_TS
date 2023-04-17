@@ -15,13 +15,6 @@ function isUnread(isUnread: boolean) {
 //TODO: isUnread is determined by the time of the last message and when the user last opened the message (which would be saved to the state).
 
 const ListItemComponent = (props: {
-    // message: {
-    //     "title": string,
-    //     "preview": string,
-    //     "chat_id": number,
-    //     "user_name": string,
-    //     "isUnread": boolean
-    // }
 
     message: {
         "chat_id": number,

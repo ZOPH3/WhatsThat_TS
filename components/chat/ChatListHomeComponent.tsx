@@ -7,7 +7,7 @@ function generateList(messages : []){
 
     return messages.map((message, key) => {
         return <>
-            <Pressable key={key}>
+            <Pressable>
                 <ListItemComponent key={key++} message={message} />
             </Pressable>
         </>

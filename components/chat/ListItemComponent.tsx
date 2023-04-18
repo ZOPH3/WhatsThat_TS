@@ -21,7 +21,7 @@ const ListItemComponent = (props : {key : number, message : ChatInfoType}) => {
         <ListItem
             leadingMode="avatar"
             leading={
-                <Avatar label={props.message.name != "" ? props.message.name : props.message.creator.first_name} autoColor />
+                <Avatar label={props.message.name != "" ? props.message.name.concat(props.message.creator.first_name) : props.message.creator.first_name} autoColor />
             }
             title={props.message.name != "" ? props.message.name : props.message.creator.first_name}
             secondaryText={props.message.last_message?.message}

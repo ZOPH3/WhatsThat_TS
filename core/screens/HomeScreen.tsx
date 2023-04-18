@@ -3,6 +3,9 @@ import ChatListHomeComponent from "../../components/chat/ChatListHomeComponent";
 import React, { useEffect, useState } from "react";
 import ChatService from '../services/chat.services';
 import ChatInfoType from "../types/chatinfo.type";
+import ModalComponent from "../../components/modal/ModalComponent";
+import { Button } from "@react-native-material/core";
+
 
 const chatListView = [
     {

@@ -1,7 +1,8 @@
 import { View, Text } from "react-native";
-import ChatListHomeComponent from "../../components/ChatListHomeComponent";
+import ChatListHomeComponent from "../../components/chat/ChatListHomeComponent";
 import React, { useEffect, useState } from "react";
 import ChatService from '../services/chat.services';
+import ChatInfoType from "../types/chatinfo.type";
 
 const chatListView = [
     {
@@ -36,12 +37,11 @@ const chatListView = [
 
 function HomeScreen({ route, navigation }) {
 
-    const [messageList, setMessageList] = useState<any>([]);
+    const [messageList, setMessageList] = useState<ChatInfoType[]>();
     const [fetchReady, setFetchReady] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        setMessageList(null);
         setIsLoading(true);
 
         const fetchChat = async () => {
@@ -49,9 +49,11 @@ function HomeScreen({ route, navigation }) {
             console.log("Fetching all chats...");
 
             const messages = await ChatService.all();
-
+            
             setMessageList(messages);
             setIsLoading(false);
+
+            console.log(messageList);
         }
 
         fetchChat().catch(console.error);

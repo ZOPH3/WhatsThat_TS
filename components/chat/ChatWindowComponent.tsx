@@ -3,11 +3,19 @@ import { ListItem, Avatar, Stack, Button, Badge, TextInput, Box, IconButton } fr
 import { Alert, Pressable, View, Text, TouchableOpacity, StyleSheet, ScrollView, SafeAreaView, StatusBar } from "react-native";
 import { AntDesign } from '@expo/vector-icons';
 import { useRoute } from '@react-navigation/native';
-import ChatService from "../core/services/chat.services";
+import ChatService from "../../core/services/chat.services";
 import MessageBubbleComponent from "./MessageBubbleComponent";
+import ChatInfoType from "../../core/types/chatinfo.type";
+import MessageType from "../../core/types/message.type";
 
 //FIXME: Needs to get the current user
-const current_user = 1
+
+const current_user = {
+    user_id: 1,
+    first_name: 'Ashlek',
+    last_name: 'Williams',
+    email: 'ashley.williams@mmu.ac.uk'
+}
 
 // type ChatInfoType = {
 
@@ -41,24 +49,24 @@ const current_user = 1
 //     ]
 // }
 
-type ChatInfoType = {
-    "name": string,
-    "creator": {},
-    "members": [],
-    "messages"?: []
-}
+// type ChatInfoType = {
+//     "name": string,
+//     "creator": {},
+//     "members": [],
+//     "messages"?: []
+// }
 
-type MessageType = {
-    "message_id": number,
-    "timestamp": number,
-    "message": string,
-    "author": {
-        "user_id": number,
-        "first_name": string,
-        "last_name": string,
-        "email": string
-    }
-}
+// export type MessageType = {
+//     "message_id": number,
+//     "timestamp": number,
+//     "message": string,
+//     "author": {
+//         "user_id": number,
+//         "first_name": string,
+//         "last_name": string,
+//         "email": string
+//     }
+// }
 
 const ChatWindowComponent = () => {
 
@@ -68,6 +76,7 @@ const ChatWindowComponent = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [chatInfo, setChatInfo] = useState<ChatInfoType>();
     const [messageList, setMessageList] = useState<MessageType[]>();
+    const [userInput, setUserInput] = useState("xyz");
 
 
     useEffect(() => {
@@ -79,7 +88,7 @@ const ChatWindowComponent = () => {
 
             console.log("Fetching Messages...")
 
-            const data: ChatInfoType = await ChatService.getMessages(route.params.chat_id); 
+            const data: ChatInfoType = await ChatService.getMessages(route.params.chat_id);
 
             setChatInfo(data);
             setMessageList(data.messages);
@@ -110,19 +119,25 @@ const ChatWindowComponent = () => {
 
         let id = getLastMessageId()
 
-        if (id != 0) {
+        //TODO: Need to change the author
 
-            let new_message = { message: 'Shure21544444444444', date: 'x', isSelf: true, message_id: id, from_id: 44 }
+        if(id === 0) id = id + 1;
 
-            console.log(new Date(1640013942 * 1000))
-
-            setMessageList(messageList.concat(new_message))
-
-        } else {
-
-            let msg = 'Failed'
-            Alert.alert(msg)
+        let new_message = {
+            message_id: id,
+            timestamp: Date.now(),
+            message: userInput,
+            author: current_user
         }
+
+        setMessageList(messageList?.concat(new_message))
+    }
+
+    function triggerDelete(id: number) {
+        Alert.alert("Deleting", id.toString())
+
+        const newList = messageList?.filter((message) => message.message_id !== id);
+        setMessageList(newList);
     }
 
     const GenerateMessage = () => {
@@ -130,15 +145,13 @@ const ChatWindowComponent = () => {
         if (messageList !== undefined) {
             return <>
                 <View>
-                    {messageList.map((messages, key) => {
+                    {messageList.map((message, key) => {
                         return <>
                             {<MessageBubbleComponent
-                                message_id={messages.message_id}
-                                message={messages.message}
-                                date={(messages.timestamp).toString()}
-                                isSelf={messages.author.user_id === current_user}
-                                from_id={messages.author.user_id}
-                                position={key} />
+                                message={message}
+                                isSelf={message.author.user_id === current_user.user_id}
+                                position={key}
+                                triggerDelete={triggerDelete} />
                             }
                         </>
                     })}
@@ -147,41 +160,41 @@ const ChatWindowComponent = () => {
         }
         else {
             return <>
-            <View></View>
+                <View></View>
             </>
         }
         // let messageList = props.messages;
     }
 
-    if(isLoading){
+    if (isLoading) {
         return <>
             <Text>Loading.....</Text>
         </>
     } else {
         return <>
-        <View style={styles.containerMain}>
-            <SafeAreaView style={styles.container}>
-                <ScrollView style={styles.scrollView}>
-                    <GenerateMessage />
-                </ScrollView>
-            </SafeAreaView>
+            <View style={styles.containerMain}>
+                <SafeAreaView style={styles.container}>
+                    <ScrollView style={styles.scrollView}>
+                        <GenerateMessage />
+                    </ScrollView>
+                </SafeAreaView>
 
-            <View style={styles.bottomView}>
-                <View style={{ flexDirection: "row" }}>
-                    <TextInput variant="outlined" style={{ flex: 3, padding: 2 }} trailing={props => (
-                        <IconButton icon={props => <AntDesign name="addfile" {...props} />} {...props} />
-                    )} />
+                <View style={styles.bottomView}>
+                    <View style={{ flexDirection: "row" }}>
+                        <TextInput value={userInput} onChangeText={(e) => setUserInput(e)} variant="outlined" style={{ flex: 3, padding: 2 }} trailing={props => (
+                            <IconButton icon={props => <AntDesign name="addfile" {...props} />} {...props} />
+                        )} />
 
-                    <Button style={{
-                        flex: 1, alignItems: 'center', justifyContent: 'center',
-                        marginBottom: 6, marginLeft: 6
-                    }} title=">>>" onPress={() => { addMessage() }} />
+                        <Button style={{
+                            flex: 1, alignItems: 'center', justifyContent: 'center',
+                            marginBottom: 6, marginLeft: 6
+                        }} title=">>>" onPress={() => { addMessage() }} />
+                    </View>
                 </View>
             </View>
-        </View>
-    </>
+        </>
     }
-    
+
 };
 
 const styles = StyleSheet.create({

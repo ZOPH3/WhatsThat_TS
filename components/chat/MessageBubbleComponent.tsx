@@ -1,28 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { ListItem, Avatar, Stack, Button, Badge, TextInput, Box, IconButton } from "@react-native-material/core";
 import { Alert, Pressable, View, Text, TouchableOpacity, StyleSheet, ScrollView, SafeAreaView, StatusBar } from "react-native";
+import MessageType from "../../core/types/message.type";
 
-function removeMessage(id: number, from_id: number) {
-    // let msg = 'Unable to delete'
-    // if (current_user === from_id) {
-    //     let remaining = messageList.filter((message) => {
-    //         return message.message_id != id
-    //     })
-    //     msg = 'Deleted'
-    //     setMessageList(remaining)
-    // }
-
-
-    //TODO: Have a alert bar show up instead
-}
-
-const MessageBubbleComponent = (props: { 
-    message: string, 
-    from_id: number, 
-    isSelf: boolean, 
-    date: string, 
-    message_id: number, 
-    position: number 
+const MessageBubbleComponent = (props: {
+    message: MessageType,
+    isSelf: boolean,
+    position: number,
+    triggerDelete: any
 }) => {
     const styles = StyleSheet.create({
         self: {
@@ -49,13 +34,17 @@ const MessageBubbleComponent = (props: {
             borderRadius: 20,
         },
     })
-    
+
+    function removeMessage(message_id: number) {
+        props.triggerDelete(message_id);
+    }
+
     return <>
-        <View key={props.message_id}>
-            <TouchableOpacity style={[props.isSelf ? styles.self : styles.others]} onLongPress={() => removeMessage(props.message_id, props.from_id)}>
-                <Text>{props.from_id}</Text>
-                <View onTouchStart={() => console.log(props.date)}>
-                    <Text style={{ fontSize: 16, color: "#fff", }}> {props.message}</Text>
+        <View key={props.message.message_id}>
+            <TouchableOpacity style={[props.isSelf ? styles.self : styles.others]} onLongPress={() => removeMessage(props.message.message_id)}>
+                <Text>{`${props.message.author.first_name} ${props.message.author.last_name}`}</Text>
+                <View onTouchStart={() => console.log(props.message.timestamp)}>
+                    <Text style={{ fontSize: 16, color: "#fff", }}> {props.message.message}</Text>
                 </View>
             </TouchableOpacity>
         </View>

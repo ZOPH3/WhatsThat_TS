@@ -10,7 +10,7 @@ class ApiMessageClient {
     }
 
     async getChatList() {
-        let config: AxiosRequestConfig = {
+        const config: AxiosRequestConfig = {
             method: 'get',
             maxBodyLength: Infinity,
             url: `${this.baseUrl}/chat`,
@@ -33,7 +33,7 @@ class ApiMessageClient {
 
     async getChatInformation(chat_id: number, limit: number, offset: number) {
 
-        let config: AxiosRequestConfig = {
+        const config: AxiosRequestConfig = {
             method: 'post',
             maxBodyLength: Infinity,
             url: `${this.baseUrl}/chat/${chat_id}`,
@@ -58,11 +58,11 @@ class ApiMessageClient {
     removeUserFromChat() { }
 
     async sendMessage(chat_id: number, message: string) {
-        let data = JSON.stringify({
+        const data = JSON.stringify({
             "message": message
         });
 
-        let config: AxiosRequestConfig = {
+        const config: AxiosRequestConfig = {
             method: 'post',
             maxBodyLength: Infinity,
             url: `${this.baseUrl}/chat/${chat_id}/message`,

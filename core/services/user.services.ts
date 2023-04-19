@@ -49,7 +49,7 @@ class UserService {
 
     static async getById(id: number) {
         try {
-            let user = await prisma.user.findFirstOrThrow({
+            const user = await prisma.user.findFirstOrThrow({
                 where: {
                     project_id: id
                 }
@@ -76,7 +76,7 @@ class UserService {
     }
 
     static async all(token: string) {
-        var output = await fetch(`url/api/`, {
+        const output = await fetch(`url/api/`, {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',

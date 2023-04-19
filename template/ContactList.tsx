@@ -18,14 +18,14 @@ const ContactList = () => {
   }
 
   function removeUser(id: number) {
-    let contact_found = contactList.find((user) => { return user.user_id == id })
+    const contact_found = contactList.find((user) => { return user.user_id == id })
 
     return contact_found ? true : false
   }
 
   function addContact(id: number) {
     let msg = ''
-    let contact_found = findUser(id)
+    const contact_found = findUser(id)
 
     if (contact_found != null) {
       msg = 'User already added ', id
@@ -47,7 +47,7 @@ const ContactList = () => {
 
     if (removeUser(id)) {
       msg = 'Contact removed'
-      let remaining = contactList.filter((user) => {
+      const remaining = contactList.filter((user) => {
         return user.user_id != id
       })
       setContactList(remaining)
@@ -73,9 +73,9 @@ const ContactList = () => {
   }
 
   const UserCard = (props: { id: number }) => {
-    let user = findUser(props.id)
+    const user = findUser(props.id)
     if (user != null) {
-      let name = user.first_name + ' ' + user.last_name;
+      const name = user.first_name + ' ' + user.last_name;
       return <>
         <ListItem
           leadingMode="avatar"

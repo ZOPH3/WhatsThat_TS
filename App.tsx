@@ -7,15 +7,19 @@ import { useState } from 'react';
 import ChatScreen from './core/screens/ChatScreen';
 import HomeScreen from './core/screens/HomeScreen';
 import UnauthorisedScreen from './core/screens/UnauthorisedScreen';
-import { Button, IconButton } from '@react-native-material/core';
+import { Button, TextInput } from '@react-native-material/core';
+import ChatService from './core/services/chat.services';
 
 
 const Stack = createNativeStackNavigator();
 
 function ModalScreen({ navigation }) {
+  const [text, setText] = useState('')
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text style={{ fontSize: 30 }}>This is a modal!</Text>
+      <Text style={{ fontSize: 30 }}>Create New Chat</Text>
+      <TextInput style={{ width: "90%" }} value={text} onChangeText={(e) => setText(e)} />
+      <Button title='Create' onPress={() => { ChatService.newChat({ "name": text }) }} />
       <Button onPress={() => navigation.goBack()} title="Dismiss" />
     </View>
   );
@@ -37,20 +41,13 @@ function App() {
                   gestureEnabled: false,
                   headerShown: true,
                   headerLeft: () => <></>,
-                  headerRight: () => (
-                    <>
-                      {/* <IconButton
-                        icon={props => 
-                        <Icon name="plus" {...props} />}
-                        color="primary" 
-                        onPress={() => {
-                          navigation.push('AddNew', {})
-                      }}/> */}
-                    </>
-                  ),
                 }}
               />
-              <Stack.Screen name="MyModal" component={ModalScreen} />
+              <Stack.Screen name="MyModal" component={ModalScreen} options={{
+                gestureEnabled: false,
+                headerShown: false,
+                headerLeft: () => <></>
+              }} />
               <Stack.Screen name="Chat" component={ChatScreen} options={({ route }) => ({
                 title: route.params.title,
                 chat_id: route.params.chat_id

@@ -26,7 +26,7 @@ const Chat = () => {
     const last = m.findLast((message) => message.message_id != null)
 
     if (last != null) {
-      let x = last.message_id + 1
+      const x = last.message_id + 1
       console.log(x)
       return x
     } else {
@@ -37,11 +37,11 @@ const Chat = () => {
   /// id: number, message: string
   function addMessage() {
 
-    let id = getLastMessageId()
+    const id = getLastMessageId()
 
     if (id != 0) {
 
-      let new_message = { message: 'Shure21544444444444', date: 'x', isSelf: true, message_id: id, from_id: 44 }
+      const new_message = { message: 'Shure21544444444444', date: 'x', isSelf: true, message_id: id, from_id: 44 }
 
       console.log(new Date(1640013942 * 1000))
 
@@ -49,7 +49,7 @@ const Chat = () => {
 
     } else {
 
-      let msg = 'Failed'
+      const msg = 'Failed'
       Alert.alert(msg)
     }
   }
@@ -57,7 +57,7 @@ const Chat = () => {
   function removeMessage(id: number, from_id: number) {
     let msg = 'Unable to delete'
     if(current_user === from_id) {
-      let remaining = messageList.filter((message) => {
+      const remaining = messageList.filter((message) => {
         return message.message_id != id
       })
       msg = 'Deleted'

@@ -1,22 +1,18 @@
-import React, { useEffect, useState } from "react";
-import { Button, Text, View } from 'react-native';
-// import axios from 'axios';
+import React from "react";
+import { Button, View } from 'react-native';
 
 import ApiUserClient from "../api/ApiUserClient";
-import ApiMessageClient from "../api/ApiMessageClient";
 import AsyncStorageHelper from "../storage/asyncStorage.helper";
 import { AsyncStorageKey } from "../storage/AsyncStorageKey";
-// import AsyncStorageHelper from "../storage/AsyncStorage.helper";
 
 const UserApi = new ApiUserClient('http://10.0.2.2:3333/api/1.0.0', '');
-// const MessageApi = new ApiMessageClient('http://10.0.2.2:3333/api/1.0.0', '')
 
 const user = {
   "email": "ashley.williams@mmu.ac.uk",
   "password": "Wr3xh4m!"
 }
 
-function UnauthorisedScreen({ route, navigation }) {
+function UnauthorisedScreen({ route }) {
 
   return <>
     <View>
@@ -32,46 +28,9 @@ function UnauthorisedScreen({ route, navigation }) {
             () => console.log("Failed to login")
           );
       }} />
-      {/* <Button title='getUser' onPress={() => {
-        UserApi.getUserById(1).then(
-          (user) => console.log(user.data), 
-          () => console.log("Unable to get User"))
-      }} />
-      <Button title='Logout' onPress={() => {
-        UserApi.logout().then(
-          () => console.log("Logged Out"),
-          () => console.log("Unable to log out"))
-      }} />
-      <Button title='GetMessage' onPress={() => {
-        MessageApi.getChatList().then(
-          (messageList) => console.log(messageList),
-          () => console.log("Failed to get message list")
-        )
-      }} /> */}
     </View>
   </>
 
 }
 
 export default UnauthorisedScreen;
-
-// export default function SignInScreen() {
-//   const [user, setUser] = useState(new User());
-//   const [formState, setFormState] = useState({ isLoading: false })
-
-//   useEffect(() => {
-//     if (formState.isLoading) {
-//       console.log("something")
-//     }
-//   }, [formState])
-
-//   return <>
-//     <SignInForm user={user}
-//       setUser={setUser}
-//       setFormState={setFormState} />
-//     <Text>hello {user.email}</Text>
-//     <Button title="CLICK" onPress={() => setFormState({ isLoading: false })} />
-
-//     {formState.isLoading && <Text>isLoading</Text>}
-//   </>
-// }

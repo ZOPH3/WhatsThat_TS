@@ -69,7 +69,7 @@ const AsyncStorageTemplate = () => {
           defaultValue={text} />
         <Button title='UpdateToken' onPress={() => { storeData(text); console.log('Stored') }} />
         <Button title='Current Token State' onPress={async () => {
-          var value = await getData()
+          const value = await getData()
           console.log('Token ', value)
         }} />
         <Text>{text}</Text>

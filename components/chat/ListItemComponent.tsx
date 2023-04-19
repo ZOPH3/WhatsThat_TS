@@ -1,6 +1,5 @@
 import React from "react";
 import { ListItem, Avatar, Chip } from "@react-native-material/core";
-// import { Alert } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import ChatInfoType from "../../core/types/chatinfo.type";
 
@@ -15,17 +14,30 @@ function isUnread(isUnread: boolean) {
 
 //TODO: isUnread is determined by the time of the last message and when the user last opened the message (which would be saved to the state).
 
-const ListItemComponent = (props : {key : number, message : ChatInfoType}) => {
+/**
+ * Home screen chat list
+ */
+
+const ListItemComponent = (props: { key: number, message: ChatInfoType }) => {
+
     const navigation = useNavigation();
+
     return <>
         <ListItem
             leadingMode="avatar"
             leading={
-                <Avatar label={props.message.name != "" ? props.message.name.concat(props.message.creator.first_name) : props.message.creator.first_name} autoColor />
+                <Avatar label={
+                    props.message.name != "" 
+                    ? props.message.name.concat(props.message.creator.first_name) : props.message.creator.first_name}
+                    autoColor
+                />
             }
-            title={props.message.name != "" ? props.message.name : props.message.creator.first_name}
+            title={props.message.name != "" 
+            ? props.message.name : props.message.creator.first_name}
+
             secondaryText={props.message.last_message?.message}
             trailing={isUnread(true)}
+            
             onPress={() => {
                 navigation.push('Chat', {
                     title: props.message.name != "" ? props.message.name : props.message.creator.first_name,

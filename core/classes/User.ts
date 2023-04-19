@@ -1,15 +1,14 @@
 export default class User {
-    user_id: number = -1;
-    first_name: string = "";
-    last_name: string = "";
-    email: string = "";
+    user_id = -1;
+    first_name = "";
+    last_name = "";
+    email = "";
 
     // Optional
-    session_token?: boolean = false;
     blocked_list?: User[] = [];
     contact_list?: User[] = [];
 
-    constructor() { }
+    constructor() {}
 
     setEmail(email: string) {
         this.email = email;
@@ -22,9 +21,6 @@ export default class User {
     }
     setLastName(last_name: string) {
         this.last_name = last_name;
-    }
-    setTokenState(token: boolean) {
-        this.session_token = token;
     }
 
     getUserInformation() {

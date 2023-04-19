@@ -1,9 +1,9 @@
 import React from "react";
 import { Stack } from "@react-native-material/core";
-import { Pressable } from "react-native";
+import { Pressable, ScrollView } from "react-native";
 import ListItemComponent from "./ListItemComponent";
 
-function generateList(messages : []){
+function generateList(messages: []) {
 
     return messages.map((message, key) => {
         return <>
@@ -13,12 +13,15 @@ function generateList(messages : []){
         </>
     })
 }
-const ChatListHomeComponent = (props : {messages : []}) => (
-  <>
-    <Stack>
-        {generateList(props.messages)}
-    </Stack>
-  </>
+
+const ChatListHomeComponent = (props: { messages: [] }) => (
+    <>
+        <Stack>
+            <ScrollView>
+                {generateList(props.messages)}
+            </ScrollView>
+        </Stack>
+    </>
 );
 
 

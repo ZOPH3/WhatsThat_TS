@@ -1,49 +1,13 @@
-import { View, Text } from "react-native";
+import { View, Text, StyleSheet, SafeAreaView, ScrollView } from "react-native";
 import ChatListHomeComponent from "../../components/chat/ChatListHomeComponent";
 import React, { useEffect, useState } from "react";
 import ChatService from '../services/chat.services';
 import ChatInfoType from "../types/chatinfo.type";
-import ModalComponent from "../../components/modal/ModalComponent";
-import { Button, FAB } from "@react-native-material/core";
-import Icon from "@expo/vector-icons/MaterialCommunityIcons";
+import { Button } from "@react-native-material/core";
 
-
-
-// const chatListView = [
-//     {
-//         "title": "I hate JS Group Chat",
-//         "preview": "I have an absolute hatered for javascript",
-//         "chat_id": 1,
-//         "user_name": "Zophia Javari",
-//         "isUnread": true
-//     },
-//     {
-//         "title": "I love JS",
-//         "preview": "JS is the superior programming language",
-//         "chat_id": 2,
-//         "user_name": "Mario Liberato",
-//         "isUnread": true
-//     },
-//     {
-//         "title": "",
-//         "preview": "I do not tilt after 4 rounds of shooters",
-//         "chat_id": 3,
-//         "user_name": "Briana Bolton",
-//         "isUnread": true
-//     },
-//     {
-//         "title": "Go repent!!!!!!!!!!",
-//         "preview": "You should because John Wick said so",
-//         "chat_id": 4,
-//         "user_name": "God Herself",
-//         "isUnread": false
-//     }
-// ]
-
-function HomeScreen({ route, navigation }) {
+function HomeScreen({ navigation }) {
 
     const [messageList, setMessageList] = useState<ChatInfoType[]>();
-    const [fetchReady, setFetchReady] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -71,19 +35,59 @@ function HomeScreen({ route, navigation }) {
         </>
     } else {
         return <>
-            <View>
-                <Button
-                    onPress={() => navigation.navigate('MyModal')}
-                    title="Open Modal"
-                />
+            <View style={styles.containerMain}>
+                <SafeAreaView style={styles.container}>
+                    <ScrollView style={styles.scrollView}>
+                        <View>
+                            <Button
+                                onPress={() => navigation.navigate('MyModal')}
+                                title="Open Modal"
+                            />
 
-                <ChatListHomeComponent
-                    messages={messageList}
-                    navigation={navigation}
-                />
+                            <ChatListHomeComponent
+                                messages={messageList}
+                                navigation={navigation}
+                            />
+                        </View>
+                    </ScrollView>
+                </SafeAreaView>
             </View>
         </>
     }
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        width: "100%"
+        // paddingTop: StatusBar.currentHeight,
+    },
+    scrollView: {
+
+    },
+    text: {
+        fontSize: 42,
+    },
+    containerMain: {
+        // flex: 1,
+        height: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    bottomView: {
+        width: '95%',
+        // height: 50,
+        // backgroundColor: '#EE5407',
+        justifyContent: 'center',
+        alignItems: 'center',
+        // position: 'absolute',
+        marginTop: 6,
+        bottom: 1,
+    },
+    textStyle: {
+        color: '#fff',
+        fontSize: 18,
+    },
+});
 
 export default HomeScreen;

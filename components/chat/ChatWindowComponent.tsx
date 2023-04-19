@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { ListItem, Avatar, Stack, Button, Badge, TextInput, Box, IconButton } from "@react-native-material/core";
-import { Alert, Pressable, View, Text, TouchableOpacity, StyleSheet, ScrollView, SafeAreaView, StatusBar } from "react-native";
+import { Button, TextInput, IconButton } from "@react-native-material/core";
+import { Alert,View, Text,  StyleSheet, ScrollView, SafeAreaView } from "react-native";
+
 import { AntDesign } from '@expo/vector-icons';
 import { useRoute } from '@react-navigation/native';
-import ChatService from "../../core/services/chat.services";
+
 import MessageBubbleComponent from "./MessageBubbleComponent";
-import ChatInfoType from "../../core/types/chatinfo.type";
 import MessageType from "../../core/types/message.type";
+import SingleChatType from "../../core/types/chat.type";
+import MessageServices from "../../core/services/message.services";
 
 //FIXME: Needs to get the current user
 
@@ -17,64 +19,13 @@ const current_user = {
     email: 'ashley.williams@mmu.ac.uk'
 }
 
-// type ChatInfoType = {
-
-//     "name": string,
-//     "creator": {
-//         "user_id": number,
-//         "first_name": string,
-//         "last_name": string,
-//         "email": string
-//     },
-//     "members": [
-//         {
-//             "user_id": number,
-//             "first_name": string,
-//             "last_name": string,
-//             "email": string
-//         }
-//     ],
-//     "messages": [
-//         {
-//             "message_id": number,
-//             "timestamp": number,
-//             "message": string,
-//             "author": {
-//                 "user_id": number,
-//                 "first_name": string,
-//                 "last_name": string,
-//                 "email": string
-//             }
-//         }
-//     ]
-// }
-
-// type ChatInfoType = {
-//     "name": string,
-//     "creator": {},
-//     "members": [],
-//     "messages"?: []
-// }
-
-// export type MessageType = {
-//     "message_id": number,
-//     "timestamp": number,
-//     "message": string,
-//     "author": {
-//         "user_id": number,
-//         "first_name": string,
-//         "last_name": string,
-//         "email": string
-//     }
-// }
-
 const ChatWindowComponent = () => {
 
     const route = useRoute();
     const chat_id = route.params.chat_id;
 
     const [isLoading, setIsLoading] = useState(true);
-    const [chatInfo, setChatInfo] = useState<ChatInfoType>();
+    // const [chatInfo, setChatInfo] = useState<ChatInfoType>();
     const [messageList, setMessageList] = useState<MessageType[]>();
     const [userInput, setUserInput] = useState("xyz");
 
@@ -88,9 +39,9 @@ const ChatWindowComponent = () => {
 
             console.log("Fetching Messages...")
 
-            const data: ChatInfoType = await ChatService.getMessages(route.params.chat_id);
+            const data: SingleChatType = await MessageServices.getMessages(chat_id);
 
-            setChatInfo(data);
+            // setChatInfo(data);
             setMessageList(data.messages);
 
             setIsLoading(false)
@@ -103,11 +54,11 @@ const ChatWindowComponent = () => {
 
 
     function getLastMessageId() {
-        const m = (messageList.sort((a, b) => a.message_id - b.message_id))
-        const last = m.findLast((message) => message.message_id != null)
+        const m = (messageList?.sort((a, b) => a.message_id - b.message_id))
+        const last = m?.findLast((message) => message.message_id != null)
 
         if (last != null) {
-            let x = last.message_id + 1
+            const x = last.message_id + 1
             console.log(x)
             return x
         } else {
@@ -123,7 +74,7 @@ const ChatWindowComponent = () => {
 
         if(id === 0) id = id + 1;
 
-        let new_message = {
+        const new_message = {
             message_id: id,
             timestamp: Date.now(),
             message: userInput,
@@ -140,7 +91,7 @@ const ChatWindowComponent = () => {
         setMessageList(newList);
     }
 
-    const GenerateMessage = () => {
+    const GenerateMessages = () => {
 
         if (messageList !== undefined) {
             return <>
@@ -175,7 +126,7 @@ const ChatWindowComponent = () => {
             <View style={styles.containerMain}>
                 <SafeAreaView style={styles.container}>
                     <ScrollView style={styles.scrollView}>
-                        <GenerateMessage />
+                        <GenerateMessages />
                     </ScrollView>
                 </SafeAreaView>
 

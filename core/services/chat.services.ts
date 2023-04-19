@@ -7,27 +7,27 @@
 import axios from "axios";
 
 class ChatService {
-    
-    static getMessages(id: number) {
 
-        let config = {
-            method: 'get',
-            maxBodyLength: Infinity,
-            url: `http://10.0.2.2:3333/api/1.0.0/chat/${id}`,
-            headers: {
-                'X-Authorization': '1b6c1bfaa74ed4b180ddd85659d7bba8'
-            }
-        };
+    // static getMessages(id: number) {
 
-        return axios.request(config)
-            .then((response) => {
-                return response.data;
-            })
-            .catch((error) => {
-                console.log(error);
-            });
+    //     const config = {
+    //         method: 'get',
+    //         maxBodyLength: Infinity,
+    //         url: `http://10.0.2.2:3333/api/1.0.0/chat/${id}`,
+    //         headers: {
+    //             'X-Authorization': '1b6c1bfaa74ed4b180ddd85659d7bba8'
+    //         }
+    //     };
 
-    }
+    //     return axios.request(config)
+    //         .then((response) => {
+    //             return response.data;
+    //         })
+    //         .catch((error) => {
+    //             console.log(error);
+    //         });
+
+    // }
 
     static async delete(data: any) {
 
@@ -64,7 +64,7 @@ class ChatService {
 
     static async getById(id: number) {
         try {
-            let user = await prisma.user.findFirstOrThrow({
+            const user = await prisma.user.findFirstOrThrow({
                 where: {
                     project_id: id
                 }
@@ -77,24 +77,34 @@ class ChatService {
         }
     }
 
-    static async add(data: any) {
-        let user = undefined;
-        try {
-            user = await prisma.user.create({
-                data
-            })
+    static async newChat(input: { name: string }) {
+        let data = JSON.stringify(input);
 
-        } catch (e) {
-            // data = { project_id: -1 }
-        }
-        return user;
+        let config = {
+            method: 'post',
+            maxBodyLength: Infinity,
+            url: 'http://10.0.2.2:3333/api/1.0.0/chat',
+            headers: {
+                'X-Authorization': '1b6c1bfaa74ed4b180ddd85659d7bba8',
+                'Content-Type': 'application/json'
+            },
+            data: data
+        };
+
+        axios.request(config)
+            .then((response) => {
+                console.log(JSON.stringify(response.data));
+            })
+            .catch((error) => {
+                console.log(error);
+            });
     }
 
     static async all() {
 
         const token = '1b6c1bfaa74ed4b180ddd85659d7bba8';
 
-        let config = {
+        const config = {
             method: 'get',
             maxBodyLength: Infinity,
             url: 'http://10.0.2.2:3333/api/1.0.0/chat',

@@ -9,8 +9,7 @@ import HomeScreen from './src/screens/chatList/ChatListScreen';
 import ChatScreen from './src/screens/conversation/ConversationScreen';
 import UnauthorisedScreen from './src/screens/login/LoginScreen';
 import ChatService from './src/services/chat.services';
-
-
+import { AuthInterceptor } from './src/helpers/auth.interceptor';
 
 const Stack = createNativeStackNavigator();
 
@@ -28,13 +27,10 @@ function ModalScreen({ navigation }) {
 
 function App() {
 
+  AuthInterceptor();
+
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [tempToken, setTempToken] = useState('')
-
-  React.useEffect(() => {
-    
-  })
-  
   return (
     <NavigationContainer>
       <Stack.Navigator>

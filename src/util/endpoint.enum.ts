@@ -17,7 +17,7 @@ export enum endpoint {
 
     viewChats = "/chat",
     startNewConversation = "/chat",
-    getChatDetails = "/chat/{chat_id}",
+    getChatDetails = "/chat/{chat_id}", /** This is rused to get the chat messages also */
     updateChatDetails = "/chat/{chat_id}",
 
     addUserToConversation = "/chat/{chat_id}/user/{user_id}",

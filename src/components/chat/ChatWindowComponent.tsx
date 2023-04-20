@@ -9,10 +9,6 @@ import MessageBubbleComponent from "./MessageBubbleComponent";
 import MessageServices from "../../services/message.services";
 import SingleChatType from "../../types/chat.type";
 import MessageType from "../../types/message.type";
-import { AuthInterceptor } from "../../helpers/auth.interceptor";
-import AuthService from "../../services/auth.services";
-import { loadKey } from "../../wrappers/storage.methods";
-
 
 //FIXME: Needs to get the current user
 
@@ -23,9 +19,6 @@ const current_user = {
     email: 'ashley.williams@mmu.ac.uk'
 }
 
-AuthInterceptor();
-
-
 const ChatWindowComponent = () => { 
     const route = useRoute();
     const chat_id = route.params.chat_id;
@@ -35,21 +28,6 @@ const ChatWindowComponent = () => {
     const [messageList, setMessageList] = useState<MessageType[]>();
     const [userInput, setUserInput] = useState("xyz");
 
-    async function testGetMessages(chat_id: number, token: string) {
-        return MessageServices.getMessages(chat_id, token);
-    }
-    
-    async function getToken(){
-        const token = await loadKey("user");
-        console.log("TOKEN", token)
-        return token;
-    }
-    
-    
-    async function testthis(chat_id: number) {
-      const token = await getToken().catch((e) => console.log(e));
-      return testGetMessages(chat_id, token.token);
-    }
 
     useEffect(() => {
         setMessageList(undefined);
@@ -59,14 +37,9 @@ const ChatWindowComponent = () => {
         const fetchData = async () => {
 
             console.log("Fetching Messages...");
-            // const data : SingleChatType = await MessageServices.getMessages(chat_id);
-
-            const data : SingleChatType = await testthis(chat_id);
-
-
-            // setChatInfo(data);
+            const data : SingleChatType = await MessageServices.getMessages(chat_id);
+            
             setMessageList(data.messages);
-
             setIsLoading(false)
         }
 

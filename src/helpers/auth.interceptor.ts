@@ -1,7 +1,3 @@
-import { useState } from 'react';
-import { AsyncStorageKey } from '../util/as.keys';
-import log from '../util/logger.util';
-import { customAxios } from './axiosInstance';
 import { loadKey } from '../wrappers/storage.methods';
 
 async function getToken(){

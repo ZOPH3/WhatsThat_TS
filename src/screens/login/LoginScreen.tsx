@@ -1,9 +1,10 @@
 import React from "react";
 import { Button, View } from 'react-native';
 
-import ApiUserClient from "../api/ApiUserClient";
-import AsyncStorageHelper from "../storage/asyncStorage.helper";
-import { AsyncStorageKey } from "../storage/AsyncStorageKey";
+import ApiUserClient from "../../api/ApiUserClient";
+import AsyncStorageHelper from "../../util/as.helper";
+import { AsyncStorageKey } from "../../util/as.keys";
+import log from "../../util/logger.util";
 
 const UserApi = new ApiUserClient('http://10.0.2.2:3333/api/1.0.0', '');
 
@@ -17,12 +18,11 @@ function UnauthorisedScreen({ route }) {
   return <>
     <View>
       <Button title='Login' onPress={() => {
-
         UserApi.login(user.email, user.password)
           .then(
             (element) => {
-              console.log('Successfully Logged in')
-              route.params.setIsLoggedIn(true)
+              log.info('Successfully Logged in')
+              route.params.setIsLoggedIn(true);
               AsyncStorageHelper.storeData(AsyncStorageKey.Authenticated_User, element.data.token)
             },
             () => console.log("Failed to login")

@@ -1,5 +1,5 @@
-import { AsyncStorageKey } from "../storage/AsyncStorageKey";
-import AsyncStorageHelper from "../storage/asyncStorage.helper";
+import { AsyncStorageKey } from "../util/as.keys";
+import AsyncStorageHelper from "../util/as.helper";
 
 // private token
 export const getToken = async () => {

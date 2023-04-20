@@ -1,9 +1,11 @@
-import { View, Text, StyleSheet, SafeAreaView, ScrollView } from "react-native";
-import ChatListHomeComponent from "../../components/chat/ChatListHomeComponent";
+import { View, Text, SafeAreaView, ScrollView } from "react-native";
 import React, { useEffect, useState } from "react";
-import ChatService from '../services/chat.services';
-import ChatInfoType from "../types/chatinfo.type";
+import ChatService from '../../services/chat.services';
+import ChatInfoType from "../../types/chatinfo.type";
 import { Button } from "@react-native-material/core";
+import ChatListHomeComponent from "../../components/chat/ChatListHomeComponent";
+
+import { styles } from "./ChatListScreen.styles";
 
 function HomeScreen({ navigation }) {
 
@@ -22,7 +24,7 @@ function HomeScreen({ navigation }) {
             setMessageList(messages);
             setIsLoading(false);
 
-            console.log(messageList);
+            console.log("Message List", messageList);
         }
 
         fetchChat().catch(console.error);
@@ -55,39 +57,5 @@ function HomeScreen({ navigation }) {
         </>
     }
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        width: "100%"
-        // paddingTop: StatusBar.currentHeight,
-    },
-    scrollView: {
-
-    },
-    text: {
-        fontSize: 42,
-    },
-    containerMain: {
-        // flex: 1,
-        height: '100%',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    bottomView: {
-        width: '95%',
-        // height: 50,
-        // backgroundColor: '#EE5407',
-        justifyContent: 'center',
-        alignItems: 'center',
-        // position: 'absolute',
-        marginTop: 6,
-        bottom: 1,
-    },
-    textStyle: {
-        color: '#fff',
-        fontSize: 18,
-    },
-});
 
 export default HomeScreen;

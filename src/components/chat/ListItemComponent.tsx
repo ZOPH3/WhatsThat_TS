@@ -1,7 +1,7 @@
 import React from "react";
 import { ListItem, Avatar, Chip } from "@react-native-material/core";
 import { useNavigation } from '@react-navigation/native';
-import ChatInfoType from "../../core/types/chatinfo.type";
+import ChatInfoType from "../../types/chatinfo.type";
 
 
 function isUnread(isUnread: boolean) {

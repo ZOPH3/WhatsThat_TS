@@ -2,15 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Alert, Text, SafeAreaView, ScrollView, StatusBar, FlatList, VirtualizedList } from 'react-native';
 import { UserModel } from '../core/models/UserModel';
 import { Avatar, Badge, Button, ListItem, TextInput } from '@react-native-material/core';
-import { contacts } from '../test/TestContacts';
+import { contacts } from '../../../test/TestContacts';
 
 const ContactList = () => {
   const users: Array<UserModel> = contacts;
   const [contactList, setContactList] = useState<UserModel[]>([]);
   const [text, setText] = useState('');
 
-  function renderChatList() {
-  }
 
   function findUser(id: number) {
     // console.info('User List ', users)

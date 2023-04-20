@@ -6,9 +6,10 @@ import { AntDesign } from '@expo/vector-icons';
 import { useRoute } from '@react-navigation/native';
 
 import MessageBubbleComponent from "./MessageBubbleComponent";
-import MessageType from "../../core/types/message.type";
-import SingleChatType from "../../core/types/chat.type";
-import MessageServices from "../../core/services/message.services";
+import MessageServices from "../../services/message.services";
+import SingleChatType from "../../types/chat.type";
+import MessageType from "../../types/message.type";
+
 
 //FIXME: Needs to get the current user
 

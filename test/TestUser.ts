@@ -1,6 +1,7 @@
-import { UserModel } from "../core/models/UserModel"
+import UserType from "../src/types/user.type"
 
-export const unauthorisedUserData : UserModel = {
+
+export const unauthorisedUserData : UserType = {
     first_name: "",
     last_name: "",
     user_id: 0,
@@ -8,12 +9,11 @@ export const unauthorisedUserData : UserModel = {
     password: ""
 }
 
-export const authorisedUserData : UserModel = {
+export const authorisedUserData : UserType = {
     first_name: "Mario",
     last_name: "Liberator",
     user_id: 44,
     email: "AALover2023@gmail.com",
-    session_token: "24324ADASDASD"
 }
 
 export const loginData = {

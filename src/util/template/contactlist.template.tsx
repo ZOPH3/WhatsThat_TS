@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Alert, Text, SafeAreaView, ScrollView, StatusBar, FlatList, VirtualizedList } from 'react-native';
-import { UserModel } from '../core/models/UserModel';
 import { Avatar, Badge, Button, ListItem, TextInput } from '@react-native-material/core';
 import { contacts } from '../../../test/TestContacts';
-
+import UserType from '../../types/user.type';
 const ContactList = () => {
-  const users: Array<UserModel> = contacts;
-  const [contactList, setContactList] = useState<UserModel[]>([]);
+  const users: Array<UserType> = contacts;
+  const [contactList, setContactList] = useState<UserType[]>([]);
   const [text, setText] = useState('');
 
 

@@ -1,6 +1,6 @@
-import { UserModel } from "../core/models/UserModel";
+import UserType from "../src/types/user.type"
 
-export const contacts: UserModel[] = [
+export const contacts: UserType[] = [
     {
       "user_id": 14,
       "first_name": "Ashley",

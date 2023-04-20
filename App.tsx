@@ -3,12 +3,13 @@ import { View, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useState } from 'react';
-
-import ChatScreen from './core/screens/conversation/ConversationScreen';
-import HomeScreen from './core/screens/chatList/ChatListScreen';
-import UnauthorisedScreen from './core/screens/login/LoginScreen';
 import { Button, TextInput } from '@react-native-material/core';
-import ChatService from './core/services/chat.services';
+
+import HomeScreen from './src/screens/chatList/ChatListScreen';
+import ChatScreen from './src/screens/conversation/ConversationScreen';
+import UnauthorisedScreen from './src/screens/login/LoginScreen';
+import ChatService from './src/services/chat.services';
+
 
 
 const Stack = createNativeStackNavigator();
@@ -29,6 +30,10 @@ function App() {
 
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [tempToken, setTempToken] = useState('')
+
+  React.useEffect(() => {
+    
+  })
   
   return (
     <NavigationContainer>

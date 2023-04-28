@@ -57,9 +57,9 @@ class ChatService {
     }
 
     static async newChat(input: { name: string }) {
-        let data = JSON.stringify(input);
+        const data = JSON.stringify(input);
 
-        let config = {
+        const config = {
             method: 'post',
             maxBodyLength: Infinity,
             url: 'http://10.0.2.2:3333/api/1.0.0/chat',
@@ -72,7 +72,7 @@ class ChatService {
 
         axios.request(config)
             .then((response) => {
-                console.log(JSON.stringify(response.data));
+                console.log("Created new Chat....", JSON.stringify(response.data));
             })
             .catch((error) => {
                 console.log(error);

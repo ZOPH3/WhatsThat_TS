@@ -36,7 +36,7 @@ export const loadKey = (key: string) => {
         })
         .then(ret => {
             // found data go to then()
-            console.log(ret.userid);
+            console.log("Found User ID", ret.userid);
             return ret;
         })
         .catch(err => {

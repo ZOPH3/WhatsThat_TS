@@ -15,11 +15,10 @@ export default class AsyncStorageHelper {
     }
 
     static async getData(keyName: AsyncStorageKey) {
-        console.log("Get key...");
         try {
             const value = await AsyncStorage.getItem(keyName);
             if (value !== null) {
-                console.log(value);
+                console.log("Got from AsyncStorage...", value);
                 return value;
             }
         } catch (error) {

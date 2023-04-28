@@ -27,7 +27,7 @@ const Chat = () => {
 
     if (last != null) {
       const x = last.message_id + 1
-      console.log(x)
+      console.log("New Message ID...", x)
       return x
     } else {
       return 0
@@ -43,7 +43,7 @@ const Chat = () => {
 
       const new_message = { message: 'Shure21544444444444', date: 'x', isSelf: true, message_id: id, from_id: 44 }
 
-      console.log(new Date(1640013942 * 1000))
+      console.log("Date...", new Date(1640013942 * 1000))
 
       setMessageList(messageList.concat(new_message))
 
@@ -111,8 +111,8 @@ const Chat = () => {
   const GenerateMessage = () => {
     return <>
       <View>
-        {messageList.map((props) => {
-          return <>{<Message message_id={props.message_id} message={props.message} date={props.date} isSelf={props.isSelf} from_id={current_user} />
+        {messageList.map((props, key) => {
+          return <>{<Message message_id={props.message_id} message={props.message} date={props.date} isSelf={props.isSelf} from_id={current_user} key={key}/>
           }</>
         })}
       </View>

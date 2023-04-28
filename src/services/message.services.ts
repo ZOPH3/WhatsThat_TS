@@ -42,7 +42,7 @@ class MessageServices extends AuthService {
                 'Content-Type': 'application/json'
             }
         }).then(response => {
-            console.log(response.data);
+            console.log("Message Sent...", response.data);
             return response.data;
         })
     }
@@ -58,7 +58,7 @@ class MessageServices extends AuthService {
                 'Content-Type': 'application/json'
             }
         }).then(response => {
-            console.log(response.data);
+            console.log("Deleted Message...", response.data);
             return response.data;
         })
     }
@@ -74,7 +74,7 @@ class MessageServices extends AuthService {
                 'Content-Type': 'application/json'
             }
         }).then(response => {
-            console.log(response.data);
+            console.log("Updated Message", response.data);
             return response.data;
         })
     }

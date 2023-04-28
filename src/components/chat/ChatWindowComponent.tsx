@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Button, TextInput, IconButton } from "@react-native-material/core";
-import { Alert,View, Text,  StyleSheet, ScrollView, SafeAreaView } from "react-native";
+import { Alert, View, Text, StyleSheet, ScrollView, SafeAreaView } from "react-native";
 
 import { AntDesign } from '@expo/vector-icons';
 import { useRoute } from '@react-navigation/native';
@@ -19,7 +19,7 @@ const current_user = {
     email: 'ashley.williams@mmu.ac.uk'
 }
 
-const ChatWindowComponent = () => { 
+const ChatWindowComponent = () => {
     const route = useRoute();
     const chat_id = route.params.chat_id;
 
@@ -37,8 +37,8 @@ const ChatWindowComponent = () => {
         const fetchData = async () => {
 
             console.log("Fetching Messages...");
-            const data : SingleChatType = await MessageServices.getMessages(chat_id);
-            
+            const data: SingleChatType = await MessageServices.getMessages(chat_id);
+
             setMessageList(data.messages);
             setIsLoading(false)
         }
@@ -55,7 +55,7 @@ const ChatWindowComponent = () => {
 
         if (last != null) {
             const x = last.message_id + 1
-            console.log(x)
+            console.log("New Message ID...", x)
             return x
         } else {
             return 0
@@ -68,7 +68,7 @@ const ChatWindowComponent = () => {
 
         //TODO: Need to change the author
 
-        if(id === 0) id = id + 1;
+        if (id === 0) id = id + 1;
 
         const new_message = {
             message_id: id,
@@ -97,8 +97,8 @@ const ChatWindowComponent = () => {
                             {<MessageBubbleComponent
                                 message={message}
                                 isSelf={message.author.user_id === current_user.user_id}
-                                position={key}
-                                triggerDelete={triggerDelete} />
+                                position={key++}
+                                triggerDelete={triggerDelete} key={key} />
                             }
                         </>
                     })}

@@ -9,22 +9,29 @@ import { styles } from "./ChatListScreen.styles";
 
 function HomeScreen({ navigation }) {
 
-    const [messageList, setMessageList] = useState<ChatInfoType[]>();
+    const [messageList, setMessageList] = useState<ChatInfoType[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [isSuccess, setIsSuccess] = useState(false);
 
     useEffect(() => {
         setIsLoading(true);
 
-        const fetchChat = async () => {
-            const messages = await ChatService.fetchChatList();
-
-            setMessageList(messages.result);
-            setIsLoading(false);
-
-            console.log("Message List", messageList);
+        function fetchChat() {
+            const result = ChatService.fetchChatList().then(
+                (response) => response,
+                (err) => err
+            )
+            return result;
         }
 
-        fetchChat().catch(() => {console.log("It errored in chatlist screen fetch chat")});
+        fetchChat().then((chatSummaries) => {
+            // console.log("Chat Summaries List", chatSummaries.result);
+            setMessageList(chatSummaries.result);
+            setIsSuccess(true);
+        },
+            (err) => {
+                setIsSuccess(false);
+            }).finally(() => setIsLoading(false))
 
     }, []);
 
@@ -33,25 +40,27 @@ function HomeScreen({ navigation }) {
             <Text>is Loading...</Text>
         </>
     } else {
-        return <>
-            <View style={styles.containerMain}>
-                <SafeAreaView style={styles.container}>
-                    <ScrollView style={styles.scrollView}>
-                        <View>
-                            <Button
-                                onPress={() => navigation.navigate('MyModal')}
-                                title="Open Modal"
-                            />
-
-                            <ChatListHomeComponent
-                                messages={messageList}
-                                navigation={navigation}
-                            />
-                        </View>
-                    </ScrollView>
-                </SafeAreaView>
-            </View>
-        </>
+        if (isSuccess && messageList) {
+            return <>
+                <View style={styles.containerMain}>
+                    <SafeAreaView style={styles.container}>
+                        <ScrollView style={styles.scrollView}>
+                            <View>
+                                <Button
+                                    onPress={() => navigation.navigate('MyModal')}
+                                    title="Open Modal"
+                                />
+                                {ChatListHomeComponent(messageList)}
+                            </View>
+                        </ScrollView>
+                    </SafeAreaView>
+                </View>
+            </>
+        } else {
+            return <>
+                <Button title="Y" onPress={() => { console.log(messageList) }} />
+            </>
+        }
     }
 }
 

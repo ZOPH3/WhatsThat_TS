@@ -1,5 +1,4 @@
 import AuthController from "../controllers/auth.controller";
-import { TokenStoreWrapper } from "../redux/store/token.store";
 import { logOutput, logType } from "../util/logger.util";
 
 class AuthService {

@@ -18,7 +18,7 @@ function isUnread(isUnread: boolean) {
  * Home screen chat list
  */
 
-const ListItemComponent = (props: { key: number, message: ChatInfoType }) => {
+const ListItemComponent = (props: { key: number, chatSummary: ChatInfoType }) => {
 
     const navigation = useNavigation();
 
@@ -27,21 +27,21 @@ const ListItemComponent = (props: { key: number, message: ChatInfoType }) => {
             leadingMode="avatar"
             leading={
                 <Avatar label={
-                    props.message.name != "" 
-                    ? props.message.name.concat(props.message.creator.first_name) : props.message.creator.first_name}
+                    props.chatSummary.name != "" 
+                    ? props.chatSummary.name.concat(props.chatSummary.creator.first_name) : props.chatSummary.creator.first_name}
                     autoColor
                 />
             }
-            title={props.message.name != "" 
-            ? props.message.name : props.message.creator.first_name}
+            title={props.chatSummary.name != "" 
+            ? props.chatSummary.name : props.chatSummary.creator.first_name}
 
-            secondaryText={props.message.last_message?.message}
+            secondaryText={props.chatSummary.last_message?.message}
             trailing={isUnread(true)}
             
             onPress={() => {
                 navigation.push('Chat', {
-                    title: props.message.name != "" ? props.message.name : props.message.creator.first_name,
-                    chat_id: props.message.chat_id
+                    title: props.chatSummary.name != "" ? props.chatSummary.name : props.chatSummary.creator.first_name,
+                    chat_id: props.chatSummary.chat_id
                 })
             }}
         />

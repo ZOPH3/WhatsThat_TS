@@ -21,7 +21,7 @@ function ModalScreen({ navigation }) {
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Text style={{ fontSize: 30 }}>Create New Chat</Text>
       <TextInput style={{ width: "90%" }} value={text} onChangeText={(e) => setText(e)} />
-      <Button title='Create' onPress={() => { ChatService.newChat({ "name": text }) }} />
+      <Button title='Create' onPress={() => { ChatService.startNewConversation(text) }} />
       <Button onPress={() => navigation.goBack()} title="Dismiss" />
     </View>
   );

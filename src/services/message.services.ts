@@ -8,22 +8,23 @@ import { customAxios } from "../helpers/axiosInstance";
 import StringBuilder from "../util/string.builder";
 import { endpoint } from "../util/endpoint.enum";
 import log from "../util/logger.util";
-import AuthService from "./auth.services";
+import { TokenStoreWrapper } from "../store/token.store";
+// import AuthService from "./auth.services";
 
 
-class MessageServices extends AuthService {
+class MessageServices {
 
     static async getMessages(chat_id: number) {
         log.debug(`Fetching conversation id ${chat_id}...`);
 
         const url = StringBuilder(endpoint.getChatDetails, { chat_id: chat_id });
 
-        const token = await AuthService.getToken().catch((e) => console.log(e));
+        const token = await TokenStoreWrapper.getInstance().getToken();
 
         return await customAxios(url, {
             method: 'get',
             headers: {
-                'X-Authorization': token.token,
+                'X-Authorization': token.result,
                 'Content-Type': 'application/json'
             }
         }).then(response => {

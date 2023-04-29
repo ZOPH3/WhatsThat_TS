@@ -1,30 +1,36 @@
 import React from "react";
 import { Button, View } from 'react-native';
 
-import ApiUserClient from "../../api/ApiUserClient";
-import log from "../../util/logger.util";
-import AuthService from "../../services/auth.services";
-
-const UserApi = new ApiUserClient('http://10.0.2.2:3333/api/1.0.0', '');
+import { TokenStoreWrapper } from "../../store/token.store";
+import UserService from "../../services/user.services";
 
 const user = {
   "email": "ashley.williams@mmu.ac.uk",
   "password": "Wr3xh4m!"
 }
 
+// function async handleLogin(email: string, password: string){
+//   const result = await UserService.login(email, password);
+//   dispatch({
+
+//   })
+// }
+
 function UnauthorisedScreen({ route }) {
 
   return <>
     <View>
       <Button title='Login' onPress={() => {
-        UserApi.login(user.email, user.password)
+        UserService.login(user.email, user.password)
           .then(
-            (element) => {
-              log.info('Successfully Logged in')
-              route.params.setIsLoggedIn(true);
-              AuthService.saveToken(element.data.token);
+            async (element) => {
+              if(element.status) {
+                route.params.setIsLoggedIn(true); //FIXME: This is wrong...
+                await TokenStoreWrapper.getInstance().setToken(element.result.token);
+              }else {
+                alert(element.message);
+              }
             },
-            () => console.log("Failed to login")
           );
       }} />
     </View>

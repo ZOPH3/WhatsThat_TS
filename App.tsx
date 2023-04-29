@@ -10,6 +10,9 @@ import ChatScreen from './src/screens/conversation/ConversationScreen';
 import UnauthorisedScreen from './src/screens/login/LoginScreen';
 import ChatService from './src/services/chat.services';
 
+import { TokenStoreWrapper } from './src/store/token.store';
+
+
 const Stack = createNativeStackNavigator();
 
 function ModalScreen({ navigation }) {

@@ -1,10 +1,10 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { AsyncStorageKey } from './as.keys';
+import { StorageKeys } from './as.keys';
 
 export default class AsyncStorageHelper {
 
-    static async storeData(keyName: AsyncStorageKey, valueObject: any) {
+    static async storeData(keyName: StorageKeys, valueObject: any) {
         try {
             const jsonValue = JSON.stringify(valueObject);
             await AsyncStorage.setItem(keyName, jsonValue);
@@ -14,7 +14,7 @@ export default class AsyncStorageHelper {
         }
     }
 
-    static async getData(keyName: AsyncStorageKey) {
+    static async getData(keyName: StorageKeys) {
         try {
             const value = await AsyncStorage.getItem(keyName);
             if (value !== null) {
@@ -27,7 +27,7 @@ export default class AsyncStorageHelper {
         }
     }
 
-    static async removeData(keyName: AsyncStorageKey) {
+    static async removeData(keyName: StorageKeys) {
         try {
             await AsyncStorage.removeItem(keyName)
             return true

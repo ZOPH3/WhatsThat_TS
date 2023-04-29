@@ -4,9 +4,10 @@ import ChatWindowComponent from "../../components/chat/ChatWindowComponent";
 
 function ChatScreen() {
     return <>
-      <View>
-        <ChatWindowComponent />
-      </View>
+
+        {/* <ChatWindowComponent /> */}
+        {ChatWindowComponent()}
+
     </>
   }
 

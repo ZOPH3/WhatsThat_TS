@@ -32,41 +32,45 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [tempToken, setTempToken] = useState('')
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        {
-          isLoggedIn ? (
-            <Stack.Group>
-              <Stack.Screen name="Home"
-                component={HomeScreen} options={{
+    // FIXME: Dev mode runs 2 fetch twice, so strict mode removes it but also isnt the correct thing to do i think
+    // <React.StrictMode> 
+      <NavigationContainer>
+        <Stack.Navigator>
+          {
+            isLoggedIn ? (
+              <Stack.Group>
+                <Stack.Screen name="Home"
+                  component={HomeScreen} options={{
+                    gestureEnabled: false,
+                    headerShown: true,
+                    headerLeft: () => <></>,
+                  }}
+                />
+                <Stack.Screen name="MyModal" component={ModalScreen} options={{
                   gestureEnabled: false,
-                  headerShown: true,
-                  headerLeft: () => <></>,
-                }}
-              />
-              <Stack.Screen name="MyModal" component={ModalScreen} options={{
-                gestureEnabled: false,
-                headerShown: false,
-                headerLeft: () => <></>
-              }} />
-              <Stack.Screen name="Chat" component={ChatScreen} options={({ route }) => ({
-                title: route.params.title,
-                chat_id: route.params.chat_id
-              })}
-              />
-            </Stack.Group>
-          ) : (
-            <Stack.Group>
-              <Stack.Screen name="SignInScreen" component={UnauthorisedScreen}
-                initialParams={{
-                  setIsLoggedIn: setIsLoggedIn,
-                  setTempToken: setTempToken
+                  headerShown: false,
+                  headerLeft: () => <></>
                 }} />
-            </Stack.Group>
-          )
-        }
-      </Stack.Navigator>
-    </NavigationContainer>
+                <Stack.Screen name="Chat" component={ChatScreen} options={({ route }) => ({
+                  title: route.params.title,
+                  chat_id: route.params.chat_id
+                })}
+                />
+              </Stack.Group>
+            ) : (
+              <Stack.Group>
+                <Stack.Screen name="SignInScreen" component={UnauthorisedScreen}
+                  initialParams={{
+                    setIsLoggedIn: setIsLoggedIn,
+                    setTempToken: setTempToken
+                  }} />
+              </Stack.Group>
+            )
+          }
+        </Stack.Navigator>
+      </NavigationContainer>
+    // </React.StrictMode>
+
   );
 }
 

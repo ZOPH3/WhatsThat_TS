@@ -6,7 +6,7 @@ class MessageServices {
   static async getMessage(chat_id: number) {
     const data = await ChatService.fetchChatDetails(chat_id);
     const type = data.status ? logType.success : logType.error;
-    logOutput(type, data.message);
+    logOutput(type, data.result.messages);    
     return data.result.messages;
   }
 

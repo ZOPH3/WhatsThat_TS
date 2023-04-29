@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { Button, TextInput, IconButton } from "@react-native-material/core";
 import { Alert, View, Text, StyleSheet, ScrollView, SafeAreaView } from "react-native";
 
@@ -24,28 +24,30 @@ const ChatWindowComponent = () => {
     const chat_id = route.params.chat_id;
 
     const [isLoading, setIsLoading] = useState(true);
-    // const [chatInfo, setChatInfo] = useState<ChatInfoType>();
     const [messageList, setMessageList] = useState<MessageType[]>();
     const [userInput, setUserInput] = useState("xyz");
+    const [isSuccess, setIsSuccess] = useState(false);
 
 
     useEffect(() => {
-        setMessageList(undefined);
         setIsLoading(true);
 
-
-        const fetchData = async () => {
-
-            console.log("Fetching Messages...");
-            const data: SingleChatType = await MessageServices.getMessage(chat_id);
-
-            setMessageList(data.messages);
-            setIsLoading(false)
+        function fetchMessages() {
+            const result = MessageServices.getMessage(chat_id).then(
+                (response) => response,
+                (err) => err
+            )
+            return result;
         }
 
-        // call the function
-        fetchData().catch(() => {console.log("It errored in fetch data...")});
+        fetchMessages().then((messages) => {
 
+            setMessageList(messages);
+            setIsSuccess(true);
+        },
+            (err) => {
+                setIsSuccess(false);
+            }).finally(() => setIsLoading(false))
     }, [])
 
 
@@ -90,20 +92,22 @@ const ChatWindowComponent = () => {
     const GenerateMessages = () => {
 
         if (messageList !== undefined) {
-            return <>
-                <View>
-                    {messageList.map((message, key) => {
-                        return <>
-                            {<MessageBubbleComponent
-                                message={message}
-                                isSelf={message.author.user_id === current_user.user_id}
-                                position={key++}
-                                triggerDelete={triggerDelete} key={key} />
-                            }
-                        </>
-                    })}
-                </View>
-            </>
+            return <Fragment key={chat_id}>
+
+                {messageList.map((message) => {
+                    return <>
+                        {<MessageBubbleComponent
+                            key={message.message_id}
+                            message={message}
+                            isSelf={message.author.user_id === current_user.user_id}
+                            position={message.message_id}
+                            triggerDelete={triggerDelete}
+                        />
+                        }
+                    </>
+                })}
+
+            </Fragment>
         }
         else {
             return <>
@@ -118,28 +122,30 @@ const ChatWindowComponent = () => {
             <Text>Loading.....</Text>
         </>
     } else {
-        return <>
-            <View style={styles.containerMain}>
-                <SafeAreaView style={styles.container}>
-                    <ScrollView style={styles.scrollView}>
-                        <GenerateMessages />
-                    </ScrollView>
-                </SafeAreaView>
+        if (isSuccess && messageList) {
+            return <>
+                <View style={styles.containerMain}>
+                    <SafeAreaView style={styles.container}>
+                        <ScrollView style={styles.scrollView}>
+                            <GenerateMessages />
+                        </ScrollView>
+                    </SafeAreaView>
 
-                <View style={styles.bottomView}>
-                    <View style={{ flexDirection: "row" }}>
-                        <TextInput value={userInput} onChangeText={(e) => setUserInput(e)} variant="outlined" style={{ flex: 3, padding: 2 }} trailing={props => (
-                            <IconButton icon={props => <AntDesign name="addfile" {...props} />} {...props} />
-                        )} />
+                    <View style={styles.bottomView}>
+                        <View style={{ flexDirection: "row" }}>
+                            <TextInput value={userInput} onChangeText={(e) => setUserInput(e)} variant="outlined" style={{ flex: 3, padding: 2 }} trailing={props => (
+                                <IconButton icon={props => <AntDesign name="addfile" {...props} />} {...props} />
+                            )} />
 
-                        <Button style={{
-                            flex: 1, alignItems: 'center', justifyContent: 'center',
-                            marginBottom: 6, marginLeft: 6
-                        }} title=">>>" onPress={() => { addMessage() }} />
+                            <Button style={{
+                                flex: 1, alignItems: 'center', justifyContent: 'center',
+                                marginBottom: 6, marginLeft: 6
+                            }} title=">>>" onPress={() => { addMessage() }} />
+                        </View>
                     </View>
                 </View>
-            </View>
-        </>
+            </>
+        }
     }
 
 };
@@ -147,27 +153,25 @@ const ChatWindowComponent = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        paddingBottom: 10
         // paddingTop: StatusBar.currentHeight,
     },
     scrollView: {
-
+        
     },
     text: {
         fontSize: 42,
     },
     containerMain: {
-        // flex: 1,
+        flex: 1,
         height: '100%',
         alignItems: 'center',
         justifyContent: 'center',
     },
     bottomView: {
         width: '95%',
-        // height: 50,
-        // backgroundColor: '#EE5407',
         justifyContent: 'center',
         alignItems: 'center',
-        // position: 'absolute',
         marginTop: 6,
         bottom: 1,
     },
@@ -175,6 +179,7 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 18,
     },
+
 });
 
 export default ChatWindowComponent;

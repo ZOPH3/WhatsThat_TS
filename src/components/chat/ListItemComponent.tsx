@@ -2,6 +2,7 @@ import React from "react";
 import { ListItem, Avatar, Chip } from "@react-native-material/core";
 import { useNavigation } from '@react-navigation/native';
 import ChatInfoType from "../../util/types/chatinfo.type";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 
 function isUnread(isUnread: boolean) {
@@ -20,7 +21,8 @@ function isUnread(isUnread: boolean) {
 
 const ListItemComponent = (props: { key: number, chatSummary: ChatInfoType }) => {
 
-    const navigation = useNavigation();
+    // const navigation = useNavigation();
+    const navigation = useNavigation<NativeStackNavigationProp<any>>();
 
     return <>
         <ListItem

@@ -41,7 +41,7 @@ const ListItemComponent = (props: { key: number, chatSummary: ChatInfoType }) =>
             trailing={isUnread(true)}
             
             onPress={() => {
-                navigation.push('Chat', {
+                navigation.navigate('Chat', {
                     title: props.chatSummary.name != "" ? props.chatSummary.name : props.chatSummary.creator.first_name,
                     chat_id: props.chatSummary.chat_id
                 })

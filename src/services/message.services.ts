@@ -1,16 +1,8 @@
-/**
- * 
- * Deals with fetching from DB (In this case from API)
- * 
- */
-
 import { customAxios } from "../helpers/axiosInstance";
 import StringBuilder from "../util/string.builder";
 import { endpoint } from "../util/endpoint.enum";
 import log from "../util/logger.util";
-import { TokenStoreWrapper } from "../store/token.store";
-// import AuthService from "./auth.services";
-
+import { TokenStoreWrapper } from "../redux/store/token.store";
 
 class MessageServices {
 

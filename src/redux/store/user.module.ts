@@ -1,5 +1,5 @@
-import UserType from "../types/user.type";
-import log from "../util/logger.util";
+import UserType from "../../types/user.type";
+import log from "../../util/logger.util";
 
 class UserStore {
   private user: UserType;

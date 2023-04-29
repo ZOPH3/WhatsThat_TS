@@ -22,9 +22,9 @@ export default class UrlBuilder {
   static fetchChatDetails = (chat_id: number) => config.BASE_URL + `/chat/${chat_id}`;
   static updateChatDetails = (chat_id: number) => config.BASE_URL + `/chat/${chat_id}`;
 
-  static addUserToConversation = (user_id: number, chat_id: number) =>
+  static addUserToConversation = (chat_id: number, user_id: number) =>
     config.BASE_URL + `/chat/${chat_id}/user/${user_id}`;
-  static removeUserFromConversation = (user_id: number, chat_id: number) =>
+  static removeUserFromConversation = (chat_id: number, user_id: number) =>
     config.BASE_URL + `/chat/${chat_id}/user/${user_id}`;
 
   static sendMessage = (chat_id: number) => config.BASE_URL + `/chat/${chat_id}/message`;

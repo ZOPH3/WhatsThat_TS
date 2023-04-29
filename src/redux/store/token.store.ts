@@ -1,6 +1,6 @@
-import { logOutput, logType } from "../util/logger.util";
-import { StorageKeys } from "../util/as.keys";
-import AuthController from "../controllers/auth.controller";
+import { logOutput, logType } from "../../util/logger.util";
+import { StorageKeys } from "../../util/as.keys";
+import AuthController from "../../controllers/auth.controller";
 
 export abstract class TokenStoreWrapper  {
   private static tokenStore : TokenStore;

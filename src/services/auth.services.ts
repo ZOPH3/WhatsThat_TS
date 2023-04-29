@@ -1,21 +1,21 @@
-// import { StorageKeys } from "../util/as.keys";
-// import { loadKey, saveKey } from "../wrappers/storage.methods";
+import { TokenStoreWrapper } from "../redux/store/token.store";
+import { logOutput, logType } from "../util/logger.util";
 
-// // private token
-// class AuthService {
-//     //FIXME: This wil work too if i chain promises
-//     // static getToken = async () => {
-//     //     const token = await AsyncStorageHelper.getData(AsyncStorageKey.Authenticated_User)
-//     //     return token;
-//     // }
+class AuthService {
+    //FIXME: Seems like spegetti
+    public static async getToken() {
+        const data = await TokenStoreWrapper.getInstance().getToken();
+        const type = data.status ? logType.success : logType.error;
+        logOutput(type, data.message);
+        return data;
+    }
 
-//     static async saveToken(token: string){
-//         return saveKey(StorageKeys.Authenticated_User, {token : token});
-//     }
+    public static async setToken(token: string){
+        const data = await TokenStoreWrapper.getInstance().setToken(token);
+        const type = data.status ? logType.success : logType.error;
+        logOutput(type, data.message);
+        return data;
+    }
+}
 
-//     static async getToken(){
-//         return await loadKey(StorageKeys.Authenticated_User);
-//     }
-// }
-
-// export default AuthService;
+export default AuthService;

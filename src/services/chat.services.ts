@@ -1,105 +1,80 @@
-/**
- * 
- * Deals with fetching from DB (In this case from API)
- * 
- */
-
-import axios from "axios";
+import ChatController from "../controllers/chat.controller";
+import { logType, logOutput } from "../util/logger.util";
 
 class ChatService {
+  static async fetchChatList() {
+    const data = await ChatController.fetchChatList();
+    const type = data.status ? logType.success : logType.error;
+    logOutput(type, data.message);
+    return data;
+  }
 
-    static async delete(data: any) {
+  static async startNewConversation(name: string) {
+    const data = await ChatController.startNewConversation(name);
+    const type = data.status ? logType.success : logType.error;
+    logOutput(type, data.message);
+    return data;
+  }
 
-        let user = undefined;
+  static async fetchChatDetails(chat_id: number) {
+    const data = await ChatController.fetchChatDetails(chat_id);
+    const type = data.status ? logType.success : logType.error;
+    logOutput(type, data.message);
+    return data;
+  }
 
-        try {
-            user = await prisma.user.delete({
-                where: {
-                    project_id: data.project_id
-                }
-            })
+  static async updateChatDetails(chat_id: number, name: string) {
+    const data = await ChatController.updateChatDetails(chat_id, name);
+    const type = data.status ? logType.success : logType.error;
+    logOutput(type, data.message);
+    return data;
+  }
 
-        } catch (e) {
-            // data = { project_id: -1 }
-        }
-        return user;
-    }
+  static async addUserToConversation(chat_id: number, user_id: number) {
+    const data = await ChatController.addUserToConversation(chat_id, user_id);
+    const type = data.status ? logType.success : logType.error;
+    logOutput(type, data.message);
+    return data;
+  }
 
-    static async update(data: any) {
-        let user = undefined;
-        try {
-            user = await prisma.user.update({
-                where: {
-                    project_id: data.project_id
-                },
-                data
-            })
+  static async removeUserFromConversation(chat_id: number, user_id: number) {
+    const data = await ChatController.removeUserFromConversation(
+      chat_id,
+      user_id
+    );
+    const type = data.status ? logType.success : logType.error;
+    logOutput(type, data.message);
+    return data;
+  }
 
-        } catch (e) {
-            // data = { project_id: -1 }
-        }
-        return user;
-    }
+  static async sendMessage(chat_id: number, message: string) {
+    const data = await ChatController.sendMessage(chat_id, message);
+    const type = data.status ? logType.success : logType.error;
+    logOutput(type, data.message);
+    return data;
+  }
 
-    static async getById(id: number) {
-        try {
-            const user = await prisma.user.findFirstOrThrow({
-                where: {
-                    project_id: id
-                }
-            })
-            return user;
+  static async updateMessage(
+    chat_id: number,
+    message_id: number,
+    message: string
+  ) {
+    const data = await ChatController.updateMessage(
+      chat_id,
+      message_id,
+      message
+    );
+    const type = data.status ? logType.success : logType.error;
+    logOutput(type, data.message);
+    return data;
+  }
 
-        } catch (err) {
-
-            return { project_id: -1 };
-        }
-    }
-
-    static async newChat(input: { name: string }) {
-        const data = JSON.stringify(input);
-
-        const config = {
-            method: 'post',
-            maxBodyLength: Infinity,
-            url: 'http://10.0.2.2:3333/api/1.0.0/chat',
-            headers: {
-                'X-Authorization': '1b6c1bfaa74ed4b180ddd85659d7bba8',
-                'Content-Type': 'application/json'
-            },
-            data: data
-        };
-
-        axios.request(config)
-            .then((response) => {
-                console.log("Created new Chat....", JSON.stringify(response.data));
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-    }
-
-    static async all() {
-
-        const token = '1b6c1bfaa74ed4b180ddd85659d7bba8';
-
-        const config = {
-            method: 'get',
-            maxBodyLength: Infinity,
-            url: 'http://10.0.2.2:3333/api/1.0.0/chat',
-            headers: {
-                'X-Authorization': token
-            }
-        };
-
-        return axios.request(config)
-            .then((response) => {
-                return response.data;
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-    }
+  static async removeMessage(chat_id: number, message_id: number) {
+    const data = await ChatController.removeMessage(chat_id, message_id);
+    const type = data.status ? logType.success : logType.error;
+    logOutput(type, data.message);
+    return data;
+  }
 }
 
 export default ChatService;

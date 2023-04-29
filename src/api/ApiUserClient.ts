@@ -20,102 +20,102 @@ class ApiUserClient {
         this.auth = auth;
     }
 
-    public async addUser(email: string, password: string, first_name: string, last_name: string) {
+    // public async addUser(email: string, password: string, first_name: string, last_name: string) {
 
-        const config: AxiosRequestConfig = {
-            method: 'post',
-            url: `${this.baseUrl}/user`,
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            data: JSON.stringify({ email, password, first_name, last_name })
-        };
+    //     const config: AxiosRequestConfig = {
+    //         method: 'post',
+    //         url: `${this.baseUrl}/user`,
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //         },
+    //         data: JSON.stringify({ email, password, first_name, last_name })
+    //     };
 
-        try {
-            const response = await axios.request(config);
-            return response;
-        } catch (error) {
-            console.log(error);
-            throw error;
-        }
-    }
+    //     try {
+    //         const response = await axios.request(config);
+    //         return response;
+    //     } catch (error) {
+    //         console.log(error);
+    //         throw error;
+    //     }
+    // }
 
-    public async getUserById(user_id: number) {
-        const config: AxiosRequestConfig = {
-            method: 'get',
-            url: `${this.baseUrl}/user/${user_id}`,
-            headers: {
-                'X-Authorization': this.auth,
-            },
-        };
+    // public async getUserById(user_id: number) {
+    //     const config: AxiosRequestConfig = {
+    //         method: 'get',
+    //         url: `${this.baseUrl}/user/${user_id}`,
+    //         headers: {
+    //             'X-Authorization': this.auth,
+    //         },
+    //     };
 
-        try {
-            const response = await axios.request(config);
-            return response;
-        } catch (error) {
-            console.log(error);
-            throw error;
-        }
-    }
+    //     try {
+    //         const response = await axios.request(config);
+    //         return response;
+    //     } catch (error) {
+    //         console.log(error);
+    //         throw error;
+    //     }
+    // }
 
-    public async updateUser(user: User) {
+    // public async updateUser(user: User) {
 
-        const config: AxiosRequestConfig = {
-            method: 'post',
-            url: `${this.baseUrl}/user/${user.user_id}`,
-            headers: {
-                'X-Authorization': this.auth,
-                'Content-Type': 'application/json',
-            },
-            data: JSON.stringify(user),
-        };
+    //     const config: AxiosRequestConfig = {
+    //         method: 'post',
+    //         url: `${this.baseUrl}/user/${user.user_id}`,
+    //         headers: {
+    //             'X-Authorization': this.auth,
+    //             'Content-Type': 'application/json',
+    //         },
+    //         data: JSON.stringify(user),
+    //     };
 
-        try {
-            await axios.request(config);
-        } catch (error) {
-            console.log(error);
-            throw error;
-        }
-    }
+    //     try {
+    //         await axios.request(config);
+    //     } catch (error) {
+    //         console.log(error);
+    //         throw error;
+    //     }
+    // }
 
-    public async login(email: string, password: string) {
+    // public async login(email: string, password: string) {
 
-        const config: AxiosRequestConfig = {
-            method: 'post',
-            url: `${this.baseUrl}/login`,
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            data: JSON.stringify({ email, password }),
-        };
+    //     const config: AxiosRequestConfig = {
+    //         method: 'post',
+    //         url: `${this.baseUrl}/login`,
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //         },
+    //         data: JSON.stringify({ email, password }),
+    //     };
 
-        try {
-            const response = await axios.request(config)
-            return response
-        } catch (error) {
-            console.log(error);
-            throw error;
-        }
-    }
+    //     try {
+    //         const response = await axios.request(config)
+    //         return response
+    //     } catch (error) {
+    //         console.log(error);
+    //         throw error;
+    //     }
+    // }
 
-    public async logout() {
-        const config: AxiosRequestConfig = {
-            method: 'post',
-            url: `${this.baseUrl}/logout`,
-            headers: {
-                'X-Authorization': this.auth,
-            },
-        };
+    // public async logout() {
+    //     const config: AxiosRequestConfig = {
+    //         method: 'post',
+    //         url: `${this.baseUrl}/logout`,
+    //         headers: {
+    //             'X-Authorization': this.auth,
+    //         },
+    //     };
 
-        try {
-            const response = await axios.request(config)
-            this.setAuth('')
-            return response
-        } catch (error) {
-            console.log(error);
-            throw error;
-        }
-    }
+    //     try {
+    //         const response = await axios.request(config)
+    //         this.setAuth('')
+    //         return response
+    //     } catch (error) {
+    //         console.log(error);
+    //         throw error;
+    //     }
+    // }
 
     public async getUserProfilePhoto(userId: number): Promise<Buffer> {
         const config: AxiosRequestConfig = {
@@ -178,7 +178,7 @@ class ApiUserClient {
     }
 
     //TODO: Change to variable from device
-    public setAuth(auth : string) {this.auth = auth}
+    // public setAuth(auth : string) {this.auth = auth}
 }
 
 export default ApiUserClient;

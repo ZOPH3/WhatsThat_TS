@@ -7,8 +7,8 @@
  * When user sends a message, save to local and then push to db?
  */
 
-import MessageType from "../types/message.type";
-import UserType from "../types/user.type";
+import MessageType from "../../types/message.type";
+import UserType from "../../types/user.type";
 import { IStore } from "./store.interface";
 
 type ChatList = {

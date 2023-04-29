@@ -1,5 +1,5 @@
 import UserController from "../controllers/user.controller";
-import UserType from "../types/user.type";
+import UserType from "../util/types/user.type";
 import { logOutput, logType } from "../util/logger.util";
 
 class UserService {

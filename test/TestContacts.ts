@@ -1,4 +1,4 @@
-import UserType from "../src/types/user.type"
+import UserType from "../src/util/types/user.type"
 
 export const contacts: UserType[] = [
     {

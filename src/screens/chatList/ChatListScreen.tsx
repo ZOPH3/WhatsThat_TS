@@ -1,7 +1,7 @@
 import { View, Text, SafeAreaView, ScrollView } from "react-native";
 import React, { useEffect, useState } from "react";
 import ChatService from '../../services/chat.services';
-import ChatInfoType from "../../types/chatinfo.type";
+import ChatInfoType from "../../util/types/chatinfo.type";
 import { Button } from "@react-native-material/core";
 import ChatListHomeComponent from "../../components/chat/ChatListHomeComponent";
 
@@ -16,18 +16,15 @@ function HomeScreen({ navigation }) {
         setIsLoading(true);
 
         const fetchChat = async () => {
+            const messages = await ChatService.fetchChatList();
 
-            console.log("Fetching all chats...");
-
-            const messages = await ChatService.all();
-
-            setMessageList(messages);
+            setMessageList(messages.result);
             setIsLoading(false);
 
             console.log("Message List", messageList);
         }
 
-        fetchChat().catch(console.error);
+        fetchChat().catch(() => {console.log("It errored in chatlist screen fetch chat")});
 
     }, []);
 

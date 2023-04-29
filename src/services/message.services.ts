@@ -1,7 +1,15 @@
 import MessageController from "../controllers/message.controller";
 import { logType, logOutput } from "../util/logger.util";
+import ChatService from "./chat.services";
 
 class MessageServices {
+  static async getMessage(chat_id: number) {
+    const data = await ChatService.fetchChatDetails(chat_id);
+    const type = data.status ? logType.success : logType.error;
+    logOutput(type, data.message);
+    return data.result.messages;
+  }
+
   static async sendMessage(chat_id: number, message: string) {
     const data = await MessageController.sendMessage(chat_id, message);
     const type = data.status ? logType.success : logType.error;

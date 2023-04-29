@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ListItem, Avatar, Stack, Button, Badge, TextInput, Box, IconButton } from "@react-native-material/core";
 import { Alert, Pressable, View, Text, TouchableOpacity, StyleSheet, ScrollView, SafeAreaView, StatusBar } from "react-native";
-import MessageType from "../../types/message.type";
+import MessageType from "../../util/types/message.type";
 
 const MessageBubbleComponent = (props: {
     message: MessageType,

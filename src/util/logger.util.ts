@@ -37,19 +37,19 @@ const log = logger.createLogger(defaultConfig);
 export function logOutput(type: logType, message: string) {
   switch (type) {
     case logType.warn:
-      log.warn("[WARN] ", message);
+      log.warn(message);
       break;
     case logType.error:
-      log.error("[ERROR] ", message);
+      log.error(message);
       break;
     case logType.debug:
-      log.debug("[DEBUG] ", message);
+      log.debug(message);
       break;
       case logType.success:
-        log.success("[Success] ", message);
+        log.success( message);
         break;
     case logType.info:
-      log.info("[INFO] ", message);
+      log.info(message);
       break;
     default:
       log.debug(message);

@@ -1,5 +1,5 @@
 import AuthService from "../services/auth.services";
-import UserType from "../types/user.type";
+import UserType from "../util/types/user.type";
 import UrlBuilder from "../util/url.builder";
 
 class UserController {

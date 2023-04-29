@@ -7,7 +7,7 @@ class ChatController {
     const value = await AuthService.getToken();
 
     if (value.status) {
-      myHeaders.append("Authorization", value.result);
+      myHeaders.append("X-Authorization", value.result);
     }
 
     myHeaders.append("Content-Type", "application/json");
@@ -42,7 +42,7 @@ class ChatController {
     const value = await AuthService.getToken();
 
     if (value.status) {
-      myHeaders.append("Authorization", value.result);
+      myHeaders.append("X-Authorization", value.result);
     }
 
     myHeaders.append("Content-Type", "application/json");
@@ -78,7 +78,7 @@ class ChatController {
     const value = await AuthService.getToken();
 
     if (value.status) {
-      myHeaders.append("Authorization", value.result);
+      myHeaders.append("X-Authorization", value.result);
     }
 
     myHeaders.append("Content-Type", "application/json");
@@ -113,7 +113,7 @@ class ChatController {
     const value = await AuthService.getToken();
 
     if (value.status) {
-      myHeaders.append("Authorization", value.result);
+      myHeaders.append("X-Authorization", value.result);
     }
 
     myHeaders.append("Content-Type", "application/json");
@@ -149,7 +149,7 @@ class ChatController {
     const value = await AuthService.getToken();
 
     if (value.status) {
-      myHeaders.append("Authorization", value.result);
+      myHeaders.append("X-Authorization", value.result);
     }
 
     myHeaders.append("Content-Type", "application/json");
@@ -187,7 +187,7 @@ class ChatController {
     const value = await AuthService.getToken();
 
     if (value.status) {
-      myHeaders.append("Authorization", value.result);
+      myHeaders.append("X-Authorization", value.result);
     }
 
     myHeaders.append("Content-Type", "application/json");
@@ -225,7 +225,7 @@ class ChatController {
     const value = await AuthService.getToken();
 
     if (value.status) {
-      myHeaders.append("Authorization", value.result);
+      myHeaders.append("X-Authorization", value.result);
     }
 
     myHeaders.append("Content-Type", "application/json");
@@ -265,7 +265,7 @@ class ChatController {
     const value = await AuthService.getToken();
 
     if (value.status) {
-      myHeaders.append("Authorization", value.result);
+      myHeaders.append("X-Authorization", value.result);
     }
 
     myHeaders.append("Content-Type", "application/json");
@@ -301,7 +301,7 @@ class ChatController {
     const value = await AuthService.getToken();
 
     if (value.status) {
-      myHeaders.append("Authorization", value.result);
+      myHeaders.append("X-Authorization", value.result);
     }
 
     myHeaders.append("Content-Type", "application/json");

@@ -1,13 +1,13 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { StorageKeys } from './as.keys';
+import log from './logger.util';
 
 export default class AsyncStorageHelper {
 
-    static async storeData(keyName: StorageKeys, valueObject: any) {
+    static async storeData(keyName: StorageKeys, value: object) {
         try {
-            const jsonValue = JSON.stringify(valueObject);
-            await AsyncStorage.setItem(keyName, jsonValue);
+            await AsyncStorage.setItem(keyName, JSON.stringify(value));
             return true;
         } catch (e) {
             return false;
@@ -18,7 +18,7 @@ export default class AsyncStorageHelper {
         try {
             const value = await AsyncStorage.getItem(keyName);
             if (value !== null) {
-                console.log("Got from AsyncStorage...", value);
+                log.debug("Got from AsyncStorage...", value);
                 return value;
             }
         } catch (error) {

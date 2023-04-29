@@ -9,7 +9,7 @@ export default class AuthController {
       ? {
           status: true,
           message: `${StorageKeys.AuthToken} has been found. `,
-          result: result,
+          result: JSON.parse(result).token,
         }
       : {
           status: false,
@@ -41,7 +41,7 @@ export default class AuthController {
 
   public static async setToken(value : string){
     let message = "";
-    const result = await AsyncStorageHelper.storeData(StorageKeys.AuthToken, value);
+    const result = await AsyncStorageHelper.storeData(StorageKeys.AuthToken, {token : value});
 
     if (result) {
       message += `${StorageKeys.AuthToken} has been set. `;
@@ -52,7 +52,7 @@ export default class AuthController {
     return {
       status: result,
       message: message,
-      result: result,
+      result: value,
     };
   }
 

@@ -7,8 +7,8 @@ import { useRoute } from '@react-navigation/native';
 
 import MessageBubbleComponent from "./MessageBubbleComponent";
 import MessageServices from "../../services/message.services";
-import SingleChatType from "../../types/chat.type";
-import MessageType from "../../types/message.type";
+import SingleChatType from "../../util/types/chat.type";
+import MessageType from "../../util/types/message.type";
 
 //FIXME: Needs to get the current user
 
@@ -37,14 +37,14 @@ const ChatWindowComponent = () => {
         const fetchData = async () => {
 
             console.log("Fetching Messages...");
-            const data: SingleChatType = await MessageServices.getMessages(chat_id);
+            const data: SingleChatType = await MessageServices.getMessage(chat_id);
 
             setMessageList(data.messages);
             setIsLoading(false)
         }
 
         // call the function
-        fetchData().catch(console.error);
+        fetchData().catch(() => {console.log("It errored in fetch data...")});
 
     }, [])
 

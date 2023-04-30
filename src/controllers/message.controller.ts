@@ -20,7 +20,6 @@ class MessageController {
     };
 
     return fetch(UrlBuilder.sendMessage(chat_id), requestOptions)
-      .then((response) => response.json())
       .then((response) => {
         return {
           status: true,

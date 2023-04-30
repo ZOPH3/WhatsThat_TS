@@ -25,7 +25,7 @@ const ChatWindowComponent = () => {
 
     const [isLoading, setIsLoading] = useState(true);
     const [messageList, setMessageList] = useState<MessageType[]>();
-    const [userInput, setUserInput] = useState("xyz");
+    const [userInput, setUserInput] = useState("");
     const [isSuccess, setIsSuccess] = useState(false);
 
 
@@ -66,7 +66,7 @@ const ChatWindowComponent = () => {
     /// id: number, message: string
     function addMessage() {
 
-        let id = getLastMessageId()
+        let id = getLastMessageId();
 
         //TODO: Need to change the author
 
@@ -78,8 +78,12 @@ const ChatWindowComponent = () => {
             message: userInput,
             author: current_user
         }
-
-        setMessageList(messageList?.concat(new_message))
+        
+        // TODO: This works to send a message but its basic
+        MessageServices.sendMessage(chat_id, userInput).then((result) => {
+            result.status?  setMessageList(messageList?.concat(new_message)) : alert(result.message);
+        })
+        
     }
 
     function triggerDelete(id: number) {
@@ -87,34 +91,6 @@ const ChatWindowComponent = () => {
 
         const newList = messageList?.filter((message) => message.message_id !== id);
         setMessageList(newList);
-    }
-
-    const GenerateMessages = () => {
-
-        if (messageList !== undefined) {
-            return <Fragment key={chat_id}>
-
-                {messageList.map((message) => {
-                    return <>
-                        {<MessageBubbleComponent
-                            key={message.message_id}
-                            message={message}
-                            isSelf={message.author.user_id === current_user.user_id}
-                            position={message.message_id}
-                            triggerDelete={triggerDelete}
-                        />
-                        }
-                    </>
-                })}
-
-            </Fragment>
-        }
-        else {
-            return <>
-                <View></View>
-            </>
-        }
-        // let messageList = props.messages;
     }
 
     if (isLoading) {
@@ -127,7 +103,17 @@ const ChatWindowComponent = () => {
                 <View style={styles.containerMain}>
                     <SafeAreaView style={styles.container}>
                         <ScrollView style={styles.scrollView}>
-                            <GenerateMessages />
+                            {messageList.map((message, key) => {
+                                return <Fragment key={key}>
+                                    {<MessageBubbleComponent
+                                        message={message}
+                                        isSelf={message.author.user_id === current_user.user_id}
+                                        position={message.message_id}
+                                        triggerDelete={triggerDelete}
+                                    />
+                                    }
+                                </Fragment>
+                            })}
                         </ScrollView>
                     </SafeAreaView>
 
@@ -157,7 +143,7 @@ const styles = StyleSheet.create({
         // paddingTop: StatusBar.currentHeight,
     },
     scrollView: {
-        
+
     },
     text: {
         fontSize: 42,

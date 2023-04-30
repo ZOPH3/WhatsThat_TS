@@ -38,9 +38,9 @@ const MessageBubbleComponent = (props: {
     function removeMessage(message_id: number) {
         props.triggerDelete(message_id);
     }
-
+    // key={props.message.message_id}
     return <>
-        <View key={props.message.message_id}>
+        <View>
             <TouchableOpacity style={[props.isSelf ? styles.self : styles.others]} onLongPress={() => removeMessage(props.message.message_id)}>
                 <Text>{`${props.message.author.first_name} ${props.message.author.last_name}`}</Text>
                 <View onTouchStart={() => console.log(props.message.timestamp)}>

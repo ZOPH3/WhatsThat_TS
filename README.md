@@ -17,10 +17,12 @@ WhatsThat Application is a clone of a popular messaging application. This is wri
 3. Allow Chat history to be archived.
 
 
+## TODO
+- Use fetching chat list that contains the Last sent message to check if an update is available which should proc the fetch messages.
+- 
 
 
-
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <!-- <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
         <Button
           title="Go to Details"
           onPress={() => {
@@ -31,4 +33,4 @@ WhatsThat Application is a clone of a popular messaging application. This is wri
             });
           }} 
           />
-      </View>
+      </View> -->

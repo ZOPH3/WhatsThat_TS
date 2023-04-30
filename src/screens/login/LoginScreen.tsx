@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Button, View } from 'react-native';
 import UserService from "../../services/user.services";
 import AuthService from "../../services/auth.services";
+import { AuthContext } from "../../context/auth.context";
 
 const user = {
   "email": "ashley.williams@mmu.ac.uk",
@@ -9,12 +10,13 @@ const user = {
 }
 
 function UnauthorisedScreen({ route }) {
+  const { setIsLoggedIn } = useContext(AuthContext);
 
   function handleLogin(email: string, password: string) {
     UserService.login(user.email, user.password)
       .then(async (element) => {
         if (element.status) {
-          route.params.setIsLoggedIn(true); //FIXME: This is wrong..
+          setIsLoggedIn(true);
           await AuthService.setToken(element.result.token);
         } else {
           alert(element.message);

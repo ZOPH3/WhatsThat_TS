@@ -110,12 +110,10 @@ const Chat = () => {
 
   const GenerateMessage = () => {
     return <>
-      <View>
         {messageList.map((props, key) => {
           return <>{<Message message_id={props.message_id} message={props.message} date={props.date} isSelf={props.isSelf} from_id={current_user} key={key}/>
           }</>
         })}
-      </View>
     </>
   }
 

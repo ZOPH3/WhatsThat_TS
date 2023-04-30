@@ -4,12 +4,11 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useContext, useState } from 'react';
 import { Button, TextInput } from '@react-native-material/core';
-import HomeScreen from '../screens/chatList/ChatListScreen';
 import ChatScreen from '../screens/conversation/ConversationScreen';
 import UnauthorisedScreen from '../screens/login/LoginScreen';
 import ChatService from '../services/chat.services';
-import { AuthContext } from '../context/auth.context';
-import {TabNavigator} from '../navigation/TabNavigator';
+import { TabNavigator } from '../navigation/TabNavigator';
+import { useAppSelector } from '../redux/hooks';
 
 const Stack = createNativeStackNavigator();
 
@@ -27,7 +26,9 @@ function ModalScreen({ navigation }) {
 
 
 function StackNavigator() {
-  const { isLoggedIn } = useContext(AuthContext);
+  // const { isLoggedIn } = useContext(AuthContext);
+  const isLoggedIn = useAppSelector(state => state.auth.isLoggedIn);
+
   return (
     // FIXME: Dev mode runs 2 fetch twice, so strict mode removes it but also isnt the correct thing to do i think
     // <React.StrictMode> 
@@ -44,10 +45,10 @@ function StackNavigator() {
                 }}
               /> */}
               <Stack.Screen
-          name="Home"
-          component={TabNavigator}
-          options={{ headerShown: false }}
-        />
+                name="Home"
+                component={TabNavigator}
+                options={{ headerShown: false }}
+              />
               <Stack.Screen name="MyModal" component={ModalScreen} options={{
                 gestureEnabled: false,
                 headerShown: false,
@@ -61,7 +62,7 @@ function StackNavigator() {
             </Stack.Group>
           ) : (
             <Stack.Group>
-              <Stack.Screen name="SignInScreen" component={UnauthorisedScreen}/>
+              <Stack.Screen name="SignInScreen" component={UnauthorisedScreen} />
             </Stack.Group>
           )
         }

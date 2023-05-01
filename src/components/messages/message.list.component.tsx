@@ -1,6 +1,7 @@
 import React, { Fragment, useEffect, useContext, useState } from "react";
 import { Button, TextInput, IconButton } from "@react-native-material/core";
 import { Alert, View, Text, StyleSheet, ScrollView, SafeAreaView } from "react-native";
+import IsLoadingIndicator from "../utils/isLoadingIndicator.component";
 
 import { AntDesign } from '@expo/vector-icons';
 import { useRoute } from '@react-navigation/native';
@@ -11,12 +12,12 @@ import MessageType from "../../util/types/message.type";
 import { UserContext } from "../../context/user.context";
 
 const ChatWindowComponent = () => {
-    const current_user = useContext(UserContext);
+    const current_user = useContext(UserContext).user;
     const route = useRoute();
     const chat_id = route.params.chat_id;
 
     const [isLoading, setIsLoading] = useState(true);
-    const [messageList, setMessageList] = useState<MessageType[]>();
+    const [messageList, setMessageList] = useState<MessageType[]>([]);
     const [userInput, setUserInput] = useState("");
     const [isSuccess, setIsSuccess] = useState(false);
 
@@ -65,31 +66,31 @@ const ChatWindowComponent = () => {
 
         if (id === 0) id = id + 1;
 
-        const new_message = {
-            message_id: id,
-            timestamp: Date.now(),
-            message: userInput,
-            author: current_user
+        const new_message: MessageType = {
+            "message_id": id,
+            "timestamp": Date.now(),
+            "message": userInput,
+            "author": current_user
         }
         
         // TODO: This works to send a message but its basic
         MessageServices.sendMessage(chat_id, userInput).then((result) => {
-            result.status?  setMessageList(messageList?.concat(new_message)) : alert(result.message);
+            result.status?  setMessageList([...messageList, new_message]) : alert(result.message);
         })
         
     }
 
     function triggerDelete(id: number) {
         Alert.alert("Deleting", id.toString())
-
         const newList = messageList?.filter((message) => message.message_id !== id);
-        setMessageList(newList);
+        MessageServices.deleteMessage(chat_id, id).then((result) => {
+            result.status?  setMessageList(newList) : alert(result.message);
+        })
     }
 
     if (isLoading) {
-        return <>
-            <Text>Loading.....</Text>
-        </>
+        return <IsLoadingIndicator />
+        
     } else {
         if (isSuccess && messageList) {
             return <>

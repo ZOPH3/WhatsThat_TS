@@ -25,6 +25,7 @@ class UserController {
         };
       })
       .catch((error) => {
+        console.log("ERROR FROM USER CONTROLLER FETCH", error);
         return {
           status: false,
           message: "Credentials are incorrect...",

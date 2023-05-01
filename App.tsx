@@ -1,7 +1,5 @@
 import * as React from 'react';
 import StackNavigator from './src/navigation/main.stack.navigator';
-import { Provider as PaperProvider } from 'react-native-paper';
-
 
 import { AuthContext } from './src/context/auth.context';
 import { UserContext } from './src/context/user.context';
@@ -26,25 +24,11 @@ function App() {
   );
 
   return (
-    <PaperProvider>
       <AuthContext.Provider value={value}>
         <UserContext.Provider value={userValue}>
           <StackNavigator />
         </UserContext.Provider>
       </AuthContext.Provider>
-    </PaperProvider>
-
   );
 }
-
-// export default App;
-
-// function App() {
-//   return (
-//     <StoreProvider store={store}>
-//       <StackNavigator />
-//     </StoreProvider>
-//   );
-// }
-
 export default App;

@@ -5,6 +5,7 @@ import ChatInfoType from "../../util/types/chatinfo.type";
 import { Button } from "@react-native-material/core";
 import ChatListHomeComponent from "../../components/chat/chatSummary.list.component";
 import { styles } from "./ChatListScreen.styles";
+import IsLoadingIndicator from "../../components/utils/isLoadingIndicator.component";
 
 function HomeScreen() {
     const [messageList, setMessageList] = useState<ChatInfoType[]>([]);
@@ -35,9 +36,7 @@ function HomeScreen() {
     }, []);
 
     if (isLoading) {
-        return <>
-            <Text>is Loading...</Text>
-        </>
+        return <IsLoadingIndicator />
     } else {
         if (isSuccess && messageList) {
             return <>

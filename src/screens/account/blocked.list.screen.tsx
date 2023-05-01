@@ -5,6 +5,7 @@ import { Text } from "react-native";
 import ContactServices from "../../services/contact.services";
 import UserType from "../../util/types/user.type";
 import ContactListComponent from "../../components/contact.list.component";
+import IsLoadingIndicator from "../../components/utils/isLoadingIndicator.component";
 
 function BlockedScreen() {
     const current_user = useContext(UserContext);
@@ -52,9 +53,7 @@ function BlockedScreen() {
     }
 
     if (isLoading) {
-        return <>
-            <Text>Loading.....</Text>
-        </>
+        return <IsLoadingIndicator />
     } else {
         if (isSuccess && contactList) {
             return ContactListComponent(contactList)

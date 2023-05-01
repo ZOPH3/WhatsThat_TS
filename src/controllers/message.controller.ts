@@ -54,7 +54,6 @@ class MessageController {
     };
 
     return fetch(UrlBuilder.deleteMessage(chat_id, message_id), requestOptions)
-      .then((response) => response.json())
       .then((response) => {
         return {
           status: true,

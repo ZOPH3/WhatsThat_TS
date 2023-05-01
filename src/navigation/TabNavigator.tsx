@@ -7,10 +7,13 @@ import ProfileScreen from '../screens/account/AccountScreen';
 import { HStack, IconButton } from '@react-native-material/core';
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import ContactsScreen from '../screens/account/ContactsScreen';
+import { useNavigation } from '@react-navigation/native';
 
 const Tab = createBottomTabNavigator();
 
 export function TabNavigator() {
+    const navigation = useNavigation();
+
     return (
         <Tab.Navigator initialRouteName='Chats'>
             <Tab.Screen name="Contacts" component={ContactsScreen} options={() => ({
@@ -23,7 +26,7 @@ export function TabNavigator() {
                         />
                         <IconButton
                             icon={props => <Icon name="account-remove" {...props} />}
-                            color="primary"
+                            color="primary" onPress={() => navigation.navigate('Blocked List')}
                         />
                     </HStack>
                 ),
@@ -33,7 +36,7 @@ export function TabNavigator() {
                 headerRight: () => (
                     <IconButton
                         icon={props => <Icon name="plus" {...props} />}
-                        color="primary"
+                        color="primary" onPress={() => navigation.navigate('MyModal')}
                     />
                 ),
             })} />

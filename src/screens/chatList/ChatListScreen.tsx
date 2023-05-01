@@ -4,7 +4,6 @@ import ChatService from '../../services/chat.services';
 import ChatInfoType from "../../util/types/chatinfo.type";
 import { Button } from "@react-native-material/core";
 import ChatListHomeComponent from "../../components/chat/ChatListHomeComponent";
-
 import { styles } from "./ChatListScreen.styles";
 
 function HomeScreen({ navigation }) {
@@ -45,13 +44,9 @@ function HomeScreen({ navigation }) {
                 <View style={styles.containerMain}>
                     <SafeAreaView style={styles.container}>
                         <ScrollView style={styles.scrollView}>
-                            <View>
-                                <Button
-                                    onPress={() => navigation.navigate('MyModal')}
-                                    title="Open Modal"
-                                />
-                                {ChatListHomeComponent(messageList)}
-                            </View>
+                                <View>
+                                    {ChatListHomeComponent(messageList)}
+                                </View>
                         </ScrollView>
                     </SafeAreaView>
                 </View>

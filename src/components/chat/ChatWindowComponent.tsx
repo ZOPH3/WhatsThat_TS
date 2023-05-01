@@ -123,6 +123,8 @@ const ChatWindowComponent = () => {
                     </View>
                 </View>
             </>
+        } else {
+            return <></>
         }
     }
 

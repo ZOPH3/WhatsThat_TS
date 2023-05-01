@@ -1,6 +1,8 @@
 import React, { Fragment, useEffect, useContext, useState } from "react";
 import { Button, TextInput, IconButton } from "@react-native-material/core";
-import { Alert, View, Text, StyleSheet, ScrollView, SafeAreaView } from "react-native";
+import { Alert, View, Text, StyleSheet, ScrollView, SafeAreaView, VirtualizedList, FlatList } from "react-native";
+import {useRef} from 'react';
+
 import IsLoadingIndicator from "../utils/isLoadingIndicator.component";
 
 import { AntDesign } from '@expo/vector-icons';
@@ -20,6 +22,8 @@ const ChatWindowComponent = () => {
     const current_user = useContext(UserContext).user;
     const route = useRoute();
     const chat_id = route.params.chat_id;
+
+    const flatListRef = useRef<FlatList<MessageType>>(null);
 
     const [isLoading, setIsLoading] = useState(true);
     const [messageList, setMessageList] = useState<MessageType[]>([]);
@@ -42,6 +46,7 @@ const ChatWindowComponent = () => {
             
             setMessageList(sortByDateTime(messages).reverse());
             setIsSuccess(true);
+            triggerScrollToEnd();
         },
             (err) => {
                 setIsSuccess(false);
@@ -88,6 +93,7 @@ const ChatWindowComponent = () => {
             if(result.status) {
                 setMessageList([...messageList, new_message]);
                 setUserInput("");
+                triggerScrollToEnd()
             } else {
                 alert(result.message);
             }
@@ -102,6 +108,10 @@ const ChatWindowComponent = () => {
         })
     }
 
+    function triggerScrollToEnd(): void{
+        flatListRef.current?.scrollToEnd();
+    }
+
     if (isLoading) {
         return <IsLoadingIndicator />
         
@@ -110,7 +120,7 @@ const ChatWindowComponent = () => {
             return <>
                 <View style={styles.containerMain}>
                     <SafeAreaView style={styles.container}>
-                        <ScrollView style={styles.scrollView}>
+                        {/* <ScrollView style={styles.scrollView}>
                             {messageList.map((message, key) => {
                                 return <Fragment key={key}>
                                     {<MessageBubbleComponent
@@ -122,7 +132,18 @@ const ChatWindowComponent = () => {
                                     }
                                 </Fragment>
                             })}
-                        </ScrollView>
+                        </ScrollView> */}
+                        <FlatList
+                        ref={flatListRef}
+                            data={messageList}
+                            keyExtractor={item => item.message_id.toString()}
+                            renderItem={(message) => (<MessageBubbleComponent
+                                message={message.item}
+                                isSelf={message.item.author.user_id === current_user.user_id}
+                                position={message.item.message_id}
+                                triggerDelete={triggerDelete}
+                            />)}
+                        />
                     </SafeAreaView>
 
                     <View style={styles.bottomView}>

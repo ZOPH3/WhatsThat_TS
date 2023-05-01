@@ -12,6 +12,10 @@ import MessageType from "../../util/types/message.type";
 import { UserContext } from "../../context/user.context";
 
 //FIXME: Virtualized list provided a method to scroll to the bottom on the list, can use this to trigger when message is sent?
+//FIXME: When messages are sent successfully, need to clear the TextInput, current method does not work.
+//TODO: Use Refresh controlls and limit the fetch API to use the pagination and max messages returned, refresh controll can be used to return the next set of previous messages.
+//TODO: Add a icon to the bar which will open a model component to add or remove a user from the messages? What happens when a user is removed though?
+
 const ChatWindowComponent = () => {
     const current_user = useContext(UserContext).user;
     const route = useRoute();

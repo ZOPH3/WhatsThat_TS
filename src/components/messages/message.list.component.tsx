@@ -1,13 +1,13 @@
-import React, { Fragment, useEffect, useContext, useState } from "react";
+import React, { useEffect, useContext, useState } from "react";
 import { Button, TextInput, IconButton } from "@react-native-material/core";
-import { Alert, View, Text, StyleSheet, ScrollView, SafeAreaView, VirtualizedList, FlatList } from "react-native";
+import { Alert, View,  StyleSheet, SafeAreaView, FlatList } from "react-native";
 import {useRef} from 'react';
 
-import IsLoadingIndicator from "../utils/isLoadingIndicator.component";
-
 import { AntDesign } from '@expo/vector-icons';
+import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import { useRoute } from '@react-navigation/native';
 
+import IsLoadingIndicator from "../utils/isLoadingIndicator.component";
 import MessageBubbleComponent from "./message.item.component";
 import MessageServices from "../../services/message.services";
 import MessageType from "../../util/types/message.type";
@@ -15,8 +15,9 @@ import { UserContext } from "../../context/user.context";
 
 //DONE: Flat list provided a method to scroll to the bottom on the list, can use this to trigger when message is sent?
 //FIXME: When messages are sent successfully, need to clear the TextInput, current method does not work. -> UseRef might help here.
-//TODO: Use Refresh controlls and limit the fetch API to use the pagination and max messages returned, refresh controll can be used to return the next set of previous messages.
+//TODO: Use Refresh controls and limit the fetch API to use the pagination and max messages returned, refresh controll can be used to return the next set of previous messages.
 //TODO: Add a icon to the bar which will open a model component to add or remove a user from the messages? What happens when a user is removed though?
+//TODO: instead of delete on hold, it should open a context modal with edit and delete
 
 const ChatWindowComponent = () => {
     const current_user = useContext(UserContext).user;
@@ -47,6 +48,7 @@ const ChatWindowComponent = () => {
             setMessageList(sortByDateTime(messages).reverse());
             setIsSuccess(true);
             triggerScrollToEnd();
+            // flatListRef.current?.scrollToOffset({offset:0})
         },
             (err) => {
                 setIsSuccess(false);
@@ -75,29 +77,31 @@ const ChatWindowComponent = () => {
     /// id: number, message: string
     function addMessage() {
 
-        let id = getLastMessageId();
+        if(userInput.trim() !== "") {
+            let id = getLastMessageId();
 
-        //TODO: Need to change the author
-
-        if (id === 0) id = id + 1;
-
-        const new_message: MessageType = {
-            "message_id": id,
-            "timestamp": Date.now(),
-            "message": userInput,
-            "author": current_user
-        }
-        
-        // TODO: This works to send a message but its basic
-        MessageServices.sendMessage(chat_id, userInput).then((result) => {
-            if(result.status) {
-                setMessageList([...messageList, new_message]);
-                setUserInput("");
-                triggerScrollToEnd()
-            } else {
-                alert(result.message);
+            //TODO: Need to change the author
+    
+            if (id === 0) id = id + 1;
+    
+            const new_message: MessageType = {
+                "message_id": id,
+                "timestamp": Date.now(),
+                "message": userInput,
+                "author": current_user
             }
-        })
+            
+            // TODO: This works to send a message but its basic
+            MessageServices.sendMessage(chat_id, userInput).then((result) => {
+                if(result.status) {
+                    setMessageList([...messageList, new_message]);
+                    setUserInput("");
+                    triggerScrollToEnd()
+                } else {
+                    alert(result.message);
+                }
+            })
+        }
     }
 
     function triggerDelete(id: number) {
@@ -109,7 +113,7 @@ const ChatWindowComponent = () => {
     }
 
     function triggerScrollToEnd(): void{
-        flatListRef.current?.scrollToEnd();
+        setTimeout(() => flatListRef.current?.scrollToEnd(), 300);
     }
 
     if (isLoading) {
@@ -120,23 +124,13 @@ const ChatWindowComponent = () => {
             return <>
                 <View style={styles.containerMain}>
                     <SafeAreaView style={styles.container}>
-                        {/* <ScrollView style={styles.scrollView}>
-                            {messageList.map((message, key) => {
-                                return <Fragment key={key}>
-                                    {<MessageBubbleComponent
-                                        message={message}
-                                        isSelf={message.author.user_id === current_user.user_id}
-                                        position={message.message_id}
-                                        triggerDelete={triggerDelete}
-                                    />
-                                    }
-                                </Fragment>
-                            })}
-                        </ScrollView> */}
                         <FlatList
                         ref={flatListRef}
                             data={messageList}
                             keyExtractor={item => item.message_id.toString()}
+                            // onContentSizeChange={() => {
+                            //     flatListRef.current?.scrollToEnd();
+                            // }}
                             renderItem={(message) => (<MessageBubbleComponent
                                 message={message.item}
                                 isSelf={message.item.author.user_id === current_user.user_id}
@@ -148,14 +142,26 @@ const ChatWindowComponent = () => {
 
                     <View style={styles.bottomView}>
                         <View style={{ flexDirection: "row" }}>
-                            <TextInput value={userInput} onChangeText={(e) => setUserInput(e)} variant="outlined" style={{ flex: 3, padding: 2 }} trailing={props => (
+                            <TextInput 
+                            value={userInput} 
+                            onKeyPress={(e) => {
+                                if (e.nativeEvent.key === "Enter") {
+                                    addMessage();
+                                }
+                            }}
+                            onChangeText={(e) => setUserInput(e)} variant="outlined" 
+                            style={{ flex: 3, padding: 2 }} 
+                            trailing={props => (
                                 <IconButton icon={props => <AntDesign name="addfile" {...props} />} {...props} />
                             )} />
 
-                            <Button style={{
+                            <Button 
+                            style={{
                                 flex: 1, alignItems: 'center', justifyContent: 'center',
                                 marginBottom: 6, marginLeft: 6
-                            }} title=">>>" onPress={() => { addMessage() }} />
+                            }} 
+                            title="Send" trailing={props => <Icon name="send" {...props} />} 
+                            onPress={() => { addMessage() }} />
                         </View>
                     </View>
                 </View>

@@ -17,8 +17,9 @@ WhatsThat Application is a clone of a popular messaging application. This is wri
 3. Allow Chat history to be archived.
 
 
-## TODO
+## Things to do
 - Use fetching chat list that contains the Last sent message to check if an update is available which should proc the fetch messages.
+- Check for empty messages and mark those and not send
 - 
 
 

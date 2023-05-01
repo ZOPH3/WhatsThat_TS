@@ -1,5 +1,5 @@
 import React from "react";
-import {View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import MessageType from "../../util/types/message.type";
 
 const MessageBubbleComponent = (props: {
@@ -19,7 +19,6 @@ const MessageBubbleComponent = (props: {
             maxWidth: '55%',
             alignSelf: 'flex-end',
             borderRadius: 20,
-
         },
         others: {
             textAlign: 'left',
@@ -34,33 +33,33 @@ const MessageBubbleComponent = (props: {
         },
     })
 
-    function isToday (date: Date) {  
-        const now = new Date()
-      
-          return date.getDate() === now.getDate() &&
-               date.getMonth() === now.getMonth() &&
-               date.getFullYear() === now.getFullYear()
-      }
+function isToday(date: Date) {
+    const now = new Date()
 
-    function dateTimeString(date : Date){
-        return isToday(date)? date.toLocaleTimeString() : date.toLocaleString(); 
-    }
+    return date.getDate() === now.getDate() &&
+        date.getMonth() === now.getMonth() &&
+        date.getFullYear() === now.getFullYear()
+}
 
-    function removeMessage(message_id: number) {
-        props.triggerDelete(message_id);
-    }
-    // key={props.message.message_id}
-    return <>
-        <View>
-            <TouchableOpacity style={[props.isSelf ? styles.self : styles.others]} onLongPress={() => removeMessage(props.message.message_id)}>
-                <Text>{`${props.message.author.first_name} ${props.message.author.last_name}`}</Text>
-                <View onTouchStart={() => console.log(props.message.timestamp, props.message.message_id.toString())}>
+function dateTimeString(date: Date) {
+    return isToday(date) ? date.toLocaleTimeString() : date.toLocaleString();
+}
+
+function removeMessage(message_id: number) {
+    props.triggerDelete(message_id);
+}
+// key={props.message.message_id}
+return <>
+    <View>
+        <TouchableOpacity style={[props.isSelf ? styles.self : styles.others]} onLongPress={() => removeMessage(props.message.message_id)}>
+            <Text>{props.isSelf? 'Me' :`${props.message.author.first_name} ${props.message.author.last_name}`}</Text>
+            <View onTouchStart={() => console.log(props.message.timestamp, props.message.message_id.toString())}>
                 <Text style={{ fontSize: 12, color: "#C3C3C3", }}> {dateTimeString(new Date(props.message.timestamp))}</Text>
-                    <Text style={{ fontSize: 16, color: "#fff", }}> {props.message.message}</Text>
-                </View>
-            </TouchableOpacity>
-        </View>
-    </>
+                <Text style={{ fontSize: 16, color: "#fff", }}> {props.message.message}</Text>
+            </View>
+        </TouchableOpacity>
+    </View>
+</>
 }
 
 export default MessageBubbleComponent;

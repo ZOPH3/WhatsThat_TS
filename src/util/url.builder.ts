@@ -7,7 +7,7 @@ export default class UrlBuilder {
   static login = () => config.BASE_URL + "/login";
   static logout = () => config.BASE_URL + "/logout";
   static fetchUserPhoto = (user_id: number) => config.BASE_URL + `/user/${user_id}/photo`;
-  static updateUserPhoto = (user_id: number) => config.BASE_URL + `/user/${user_id}/photo`;
+  static uploadUserPhoto = (user_id: number) => config.BASE_URL + `/user/${user_id}/photo`;
   static search = () => config.BASE_URL + "/search";
 
   static fetchContacts = () => config.BASE_URL + "/contacts";

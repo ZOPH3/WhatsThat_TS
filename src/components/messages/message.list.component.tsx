@@ -5,7 +5,7 @@ import { Alert, View, Text, StyleSheet, ScrollView, SafeAreaView } from "react-n
 import { AntDesign } from '@expo/vector-icons';
 import { useRoute } from '@react-navigation/native';
 
-import MessageBubbleComponent from "./MessageBubbleComponent";
+import MessageBubbleComponent from "./message.item.component";
 import MessageServices from "../../services/message.services";
 import MessageType from "../../util/types/message.type";
 import { UserContext } from "../../context/user.context";
@@ -39,6 +39,7 @@ const ChatWindowComponent = () => {
         },
             (err) => {
                 setIsSuccess(false);
+                console.log(err.status);
             }).finally(() => setIsLoading(false))
     }, [])
 

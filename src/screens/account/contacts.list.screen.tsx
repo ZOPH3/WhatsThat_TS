@@ -4,9 +4,9 @@ import { UserContext } from "../../context/user.context";
 import { Text } from "react-native";
 import ContactServices from "../../services/contact.services";
 import UserType from "../../util/types/user.type";
-import ContactListComponent from "../../components/ContactListComponent";
+import ContactListComponent from "../../components/contact.list.component";
 
-function BlockedScreen() {
+function ContactsScreen() {
     const current_user = useContext(UserContext);
     const route = useRoute();
 
@@ -18,7 +18,7 @@ function BlockedScreen() {
         setIsLoading(true);
 
         function fetchContactList() {
-            const result = ContactServices.fetchblocked().then(
+            const result = ContactServices.fetchContacts().then(
                 (response) => response,
                 (err) => err
             )
@@ -26,7 +26,7 @@ function BlockedScreen() {
         }
 
         fetchContactList().then((contacts) => {
-            console.log("BLOCKED", contacts.result)
+            console.log("CONTACTS", contacts.result)
             setContactList(contacts.result);
             setIsSuccess(true);
         },
@@ -58,11 +58,9 @@ function BlockedScreen() {
     } else {
         if (isSuccess && contactList) {
             return ContactListComponent(contactList)
-        } else {
-            return <></>
         }
     }
 }
 
 
-export default BlockedScreen;
+export default ContactsScreen;

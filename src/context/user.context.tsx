@@ -1,4 +1,4 @@
-import React, { createContext } from "react";
+import { createContext } from "react";
 import UserType from "../util/types/user.type";
 
 const initialState = {
@@ -9,7 +9,7 @@ const initialState = {
     email: "",
   },
   picture: null,
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
   setUser: (value: UserType) => {},
 }
 

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Button, View } from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import EmptyScreen from "../screens/EmptyScreen";
+import EmptyScreen from "../screens/empty.screen";
 
 function NotificationsScreen({ navigation }) {
     return (
@@ -17,7 +17,7 @@ export default function DrawerNavigator() {
     return (
         <Drawer.Navigator initialRouteName="Home">
             <Drawer.Screen name="ep" component={EmptyScreen} />
-            <Drawer.Screen name="Notifications" component={EmptyScreen} />
+            <Drawer.Screen name="Notifications" component={NotificationsScreen} />
         </Drawer.Navigator>
     );
 }

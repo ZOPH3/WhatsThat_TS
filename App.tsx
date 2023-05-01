@@ -1,5 +1,5 @@
 import * as React from 'react';
-import StackNavigator from './src/navigation/StackNavigator';
+import StackNavigator from './src/navigation/main.stack.navigator';
 import { Provider as PaperProvider } from 'react-native-paper';
 
 

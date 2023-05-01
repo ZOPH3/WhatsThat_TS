@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { ListItem, Avatar, Stack, Button, Badge, TextInput, Box, IconButton } from "@react-native-material/core";
-import { Alert, Pressable, View, Text, TouchableOpacity, StyleSheet, ScrollView, SafeAreaView, StatusBar } from "react-native";
+import React from "react";
+import {View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import MessageType from "../../util/types/message.type";
 
 const MessageBubbleComponent = (props: {
     message: MessageType,
     isSelf: boolean,
     position: number,
-    triggerDelete: any
+    triggerDelete: (message_id: number) => void,
 }) => {
     const styles = StyleSheet.create({
         self: {

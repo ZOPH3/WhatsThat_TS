@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { View, Text } from 'react-native';
 import { Button, TextInput } from '@react-native-material/core';
-import ChatService from '../../services/chat.services';
+import ChatService from '../services/chat.services';
 import { useNavigation } from '@react-navigation/native';
 
 function ModalScreen() {

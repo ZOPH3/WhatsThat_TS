@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import ChatScreen from '../screens/conversation/ConversationScreen';
-import { TabNavigator } from '../navigation/TabNavigator';
-import ModalScreen from '../components/chat/ModalComponent';
+import ChatScreen from '../screens/conversation/message.list.screen';
+import { TabNavigator } from './contacts.tab.navigator';
+import ModalScreen from '../components/modal.component';
 
 
 const Stack = createNativeStackNavigator();

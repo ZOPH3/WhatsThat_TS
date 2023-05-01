@@ -3,11 +3,10 @@ import React, { useEffect, useState } from "react";
 import ChatService from '../../services/chat.services';
 import ChatInfoType from "../../util/types/chatinfo.type";
 import { Button } from "@react-native-material/core";
-import ChatListHomeComponent from "../../components/chat/ChatListHomeComponent";
+import ChatListHomeComponent from "../../components/chat/chatSummary.list.component";
 import { styles } from "./ChatListScreen.styles";
 
-function HomeScreen({ navigation }) {
-
+function HomeScreen() {
     const [messageList, setMessageList] = useState<ChatInfoType[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isSuccess, setIsSuccess] = useState(false);
@@ -30,6 +29,7 @@ function HomeScreen({ navigation }) {
         },
             (err) => {
                 setIsSuccess(false);
+                err;
             }).finally(() => setIsLoading(false))
 
     }, []);

@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import { ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Avatar, Button, ListItem } from "@react-native-material/core";
+import { Avatar, ListItem } from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 
 import UserType from "../util/types/user.type";

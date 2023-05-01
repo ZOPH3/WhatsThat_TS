@@ -1,10 +1,6 @@
-import { AppBar, Button, FAB, IconButton, Text } from '@react-native-material/core';
-import Icon from "@expo/vector-icons/MaterialCommunityIcons";
-
-import React, { useContext } from 'react';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-
-const Tab = createBottomTabNavigator();
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { AppBar, Button } from '@react-native-material/core';
+import React from 'react';
 
 function EmptyScreen() {
 

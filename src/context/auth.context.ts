@@ -1,4 +1,4 @@
-import React, { createContext, useState } from "react";
+import { createContext } from "react";
 
 const initialState = {
     isLoggedIn: false,

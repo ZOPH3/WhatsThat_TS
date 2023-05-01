@@ -65,7 +65,6 @@ const Chat = () => {
     }
     //Alert.alert(msg)
 
-    //TODO: Have a alert bar show up instead
   }
 
   const Message = (props: { message: string, from_id: number, isSelf: boolean, date: string, message_id: number }) => {

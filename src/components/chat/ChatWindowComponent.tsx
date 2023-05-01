@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useContext, useState } from "react";
 import { Button, TextInput, IconButton } from "@react-native-material/core";
 import { Alert, View, Text, StyleSheet, ScrollView, SafeAreaView } from "react-native";
 
@@ -7,19 +7,11 @@ import { useRoute } from '@react-navigation/native';
 
 import MessageBubbleComponent from "./MessageBubbleComponent";
 import MessageServices from "../../services/message.services";
-import SingleChatType from "../../util/types/chat.type";
 import MessageType from "../../util/types/message.type";
-
-//FIXME: Needs to get the current user
-
-const current_user = {
-    user_id: 1,
-    first_name: 'Ashlek',
-    last_name: 'Williams',
-    email: 'ashley.williams@mmu.ac.uk'
-}
+import { UserContext } from "../../context/user.context";
 
 const ChatWindowComponent = () => {
+    const current_user = useContext(UserContext);
     const route = useRoute();
     const chat_id = route.params.chat_id;
 

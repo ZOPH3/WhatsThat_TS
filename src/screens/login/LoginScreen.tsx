@@ -3,8 +3,7 @@ import { Button, View } from 'react-native';
 import UserService from "../../services/user.services";
 import AuthService from "../../services/auth.services";
 import { AuthContext } from "../../context/auth.context";
-// import { useAppDispatch } from '../../redux/hooks';
-// import { login } from "../../redux/store/auth.slice";
+import { UserContext } from "../../context/user.context";
 
 //FIXME: THIS BE HARDCODED
 const user = {
@@ -14,13 +13,20 @@ const user = {
 
 function UnauthorisedScreen({ route }) {
   const { setIsLoggedIn } = useContext(AuthContext);
+  const {setUser} = useContext(UserContext);
 
   function handleLogin(email: string, password: string) {
     UserService.login(user.email, user.password)
-      .then(async (element) => {
+      .then((element) => {
         if (element.status) {
-          setIsLoggedIn(true);
-          await AuthService.setToken(element.result.token);
+          UserService.getUserInfo(element.result.id).then(async (result) => {
+            if(result.status) {
+              console.log("USER FOUND", result.result)
+              setUser(result.result);
+              setIsLoggedIn(true);
+              await AuthService.setToken(element.result.token);
+            }
+          })
         } else {
           alert(element.message);
         }

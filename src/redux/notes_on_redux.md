@@ -15,5 +15,3 @@ I need to be able to access/do:
 
 If i use the useContext etc, how do i make it persistent?
 
-It was the same but look what i had to do to make it work with ts
-

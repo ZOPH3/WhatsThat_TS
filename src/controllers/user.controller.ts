@@ -3,7 +3,7 @@ import UserType from "../util/types/user.type";
 import UrlBuilder from "../util/url.builder";
 
 class UserController {
-  // FIXME: This style I like the most
+  // FIXME: Some of the JSON things dont work and need ot be removed
   public static async login(email: string, password: string) {
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");

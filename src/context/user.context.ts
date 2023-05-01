@@ -10,8 +10,7 @@ const initialState = {
   },
   contacts: [],
   blocked: [],
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  setUser: (user: UserType) => {},
+
 };
 
 export const UserContext = createContext(initialState);

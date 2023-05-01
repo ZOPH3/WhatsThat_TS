@@ -34,6 +34,18 @@ const MessageBubbleComponent = (props: {
         },
     })
 
+    function isToday (date: Date) {  
+        const now = new Date()
+      
+          return date.getDate() === now.getDate() &&
+               date.getMonth() === now.getMonth() &&
+               date.getFullYear() === now.getFullYear()
+      }
+
+    function dateTimeString(date : Date){
+        return isToday(date)? date.toLocaleTimeString() : date.toLocaleString(); 
+    }
+
     function removeMessage(message_id: number) {
         props.triggerDelete(message_id);
     }
@@ -42,7 +54,8 @@ const MessageBubbleComponent = (props: {
         <View>
             <TouchableOpacity style={[props.isSelf ? styles.self : styles.others]} onLongPress={() => removeMessage(props.message.message_id)}>
                 <Text>{`${props.message.author.first_name} ${props.message.author.last_name}`}</Text>
-                <View onTouchStart={() => console.log(props.message.timestamp)}>
+                <View onTouchStart={() => console.log(props.message.timestamp, props.message.message_id.toString())}>
+                <Text style={{ fontSize: 12, color: "#C3C3C3", }}> {dateTimeString(new Date(props.message.timestamp))}</Text>
                     <Text style={{ fontSize: 16, color: "#fff", }}> {props.message.message}</Text>
                 </View>
             </TouchableOpacity>

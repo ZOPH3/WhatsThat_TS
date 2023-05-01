@@ -7,6 +7,7 @@ import ChatListHomeComponent from "../../components/chat/chatSummary.list.compon
 import { styles } from "./ChatListScreen.styles";
 import IsLoadingIndicator from "../../components/utils/isLoadingIndicator.component";
 
+//FIXME: This needs to be moved to context which is used to watch if a chat is updated too from user message?
 function HomeScreen() {
     const [messageList, setMessageList] = useState<ChatInfoType[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -25,7 +26,7 @@ function HomeScreen() {
 
         fetchChat().then((chatSummaries) => {
             // console.log("Chat Summaries List", chatSummaries.result);
-            setMessageList(chatSummaries.result);
+            setMessageList(sortByDateTime(chatSummaries.result));
             setIsSuccess(true);
         },
             (err) => {
@@ -34,6 +35,12 @@ function HomeScreen() {
             }).finally(() => setIsLoading(false))
 
     }, []);
+
+    function sortByDateTime(chatSummaries: ChatInfoType[]){
+        return chatSummaries.sort(function(a,b){
+            return new Date(b.last_message.timestamp).valueOf() - new Date(a.last_message.timestamp).valueOf();
+          });
+    }
 
     if (isLoading) {
         return <IsLoadingIndicator />

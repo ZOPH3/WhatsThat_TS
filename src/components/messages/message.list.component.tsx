@@ -11,6 +11,7 @@ import MessageServices from "../../services/message.services";
 import MessageType from "../../util/types/message.type";
 import { UserContext } from "../../context/user.context";
 
+//FIXME: Virtualized list provided a method to scroll to the bottom on the list, can use this to trigger when message is sent?
 const ChatWindowComponent = () => {
     const current_user = useContext(UserContext).user;
     const route = useRoute();
@@ -34,8 +35,8 @@ const ChatWindowComponent = () => {
         }
 
         fetchMessages().then((messages) => {
-
-            setMessageList(messages);
+            
+            setMessageList(sortByDateTime(messages).reverse());
             setIsSuccess(true);
         },
             (err) => {
@@ -44,7 +45,12 @@ const ChatWindowComponent = () => {
             }).finally(() => setIsLoading(false))
     }, [])
 
-
+    function sortByDateTime(messageList: MessageType[]){
+        return messageList.sort(function(a,b){
+            return new Date(b.timestamp).valueOf() - new Date(a.timestamp).valueOf();
+          });
+    }
+    
     function getLastMessageId() {
         const m = (messageList?.sort((a, b) => a.message_id - b.message_id))
         const last = m?.findLast((message) => message.message_id != null)
@@ -75,9 +81,13 @@ const ChatWindowComponent = () => {
         
         // TODO: This works to send a message but its basic
         MessageServices.sendMessage(chat_id, userInput).then((result) => {
-            result.status?  setMessageList([...messageList, new_message]) : alert(result.message);
+            if(result.status) {
+                setMessageList([...messageList, new_message]);
+                setUserInput("");
+            } else {
+                alert(result.message);
+            }
         })
-        
     }
 
     function triggerDelete(id: number) {

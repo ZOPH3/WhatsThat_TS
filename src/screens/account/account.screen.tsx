@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { UserContext } from "../../context/user.context";
 import { View } from "react-native";
 import { Button, Stack, Text } from "@react-native-material/core";
-import FileUploader from "../../components/fileUpload.component";
+import FileUploader from "../../components/upload.component";
 
 
 function ProfileScreen() {

@@ -1,20 +1,34 @@
-import { Platform } from "react-native";
 import AuthService from "../services/auth.services";
 import UrlBuilder from "../util/url.builder";
+import * as DocumentPicker from "expo-document-picker";
 
 export enum imageType {
   png = "image/png",
   jpeg = "image/jpeg",
 }
 
-class IoController {
-  static checkImageType() {}
+class IOController {
+  static async toBlob(uri: string){
+    const blob = await new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.onload = function () {
+        resolve(xhr.response);
+      };
+      xhr.onerror = function (e) {
+        reject(new TypeError("Network request failed"));
+      };
+      xhr.responseType = "blob";
+      xhr.open("GET", uri, true);
+      xhr.send(null);
+    });
+    
+  }
   public static async upload(
     user_id: number,
-    file: { name: any; type: any; uri: string }
+    file: DocumentPicker.DocumentResult
   ) {
     const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
+    
 
     const value = await AuthService.getToken();
 
@@ -23,33 +37,26 @@ class IoController {
     }
 
     const data = new FormData();
-    data.append("file", {
-      name: file.name,
-      type: file.type,
-      uri: Platform.OS === "ios" ? file.uri.replace("file://", "") : file.uri,
-    });
+
+    if (file.type === "success" && file.output && file.mimeType) {
+      
+      data.append("", file.output[0], file.uri);
+      myHeaders.append("Content-Type", file.mimeType);
+    }
 
     const requestOptions: RequestInit = {
       method: "POST",
       headers: myHeaders,
+      body: data,
       redirect: "follow",
-    };
+    }
 
-    return fetch(UrlBuilder.uploadUserPhoto(user_id), requestOptions)
-      .then((response) => {
-        return {
-          status: true,
-          message: `Successfully uploaded photo.`,
-          result: response,
-        };
-      })
-      .catch((error) => {
-        return {
-          status: false,
-          message: `Unable to upload file...`,
-          result: "",
-          error: error,
-        };
-      });
+    fetch(UrlBuilder.uploadUserPhoto(user_id), requestOptions)
+      .then((response) => response.text())
+      .then((result) => console.log(result))
+      .catch((error) => console.log("error", error));
   }
+  
 }
+
+export default IOController;

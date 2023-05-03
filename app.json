@@ -25,6 +25,14 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow WhatsThat_TS to access your camera."
+        }
+      ]
+    ]
   }
 }

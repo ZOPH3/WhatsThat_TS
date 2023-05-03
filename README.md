@@ -19,19 +19,4 @@ WhatsThat Application is a clone of a popular messaging application. This is wri
 
 ## Things to do
 - Use fetching chat list that contains the Last sent message to check if an update is available which should proc the fetch messages.
-- Check for empty messages and mark those and not send
-- 
-
-
-      <!-- <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Button
-          title="Go to Details"
-          onPress={() => {
-            /* 1. Navigate to the Details route with params */
-            navigation.navigate('Details', {
-              itemId: 86,
-              otherParam: 'anything you want here',
-            });
-          }} 
-          />
-      </View> -->
+- Check for empty messages and mark those and not send.

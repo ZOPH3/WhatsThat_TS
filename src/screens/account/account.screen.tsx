@@ -1,12 +1,15 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { UserContext } from "../../context/user.context";
 import { View } from "react-native";
 import { Button, Stack, Text } from "@react-native-material/core";
 import FileUploader from "../../components/upload.component";
+import CameraHelper from "../../util/camera.util";
+//TODO: allow the user to edit and submit their details
 
 
 function ProfileScreen() {
     const user = useContext(UserContext);
+    const [toggleC, setC] = useState(false);
 
     return (
         <View>
@@ -14,8 +17,7 @@ function ProfileScreen() {
                 <Text variant="h4">Hi! {user.user.first_name} {user.user.last_name} </Text>
                 <Text variant="h6">Email:</Text>
                 <Text variant="subtitle1">{user.user.email}</Text>
-                <Button title="Upload profile picture"/>
-                <FileUploader />
+                <Button title="Upload profile picture" onPress={() => toggleCamera()}/>
             </Stack>
         </View>
     )

@@ -2,6 +2,7 @@ import AsyncStorageHelper from "../util/as.helper";
 import { StorageKeys } from "../util/as.keys";
 import { logType, logOutput } from "../util/logger.util";
 
+// https://github.com/ZJav1310/WhatsThat_TS/issues/1
 export default class AuthController {
   public static async getToken() {
     const result = await AsyncStorageHelper.getData(StorageKeys.AuthToken);

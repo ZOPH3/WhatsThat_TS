@@ -2,6 +2,7 @@ import AuthService from "../services/auth.services";
 import UserType from "../util/types/user.type";
 import UrlBuilder from "../util/url.builder";
 
+// https://github.com/ZJav1310/WhatsThat_TS/issues/1
 class UserController {
   // FIXME: Some of the JSON things dont work and need ot be removed
   public static async login(email: string, password: string) {

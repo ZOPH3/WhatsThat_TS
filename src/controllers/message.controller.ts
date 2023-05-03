@@ -1,6 +1,7 @@
 import AuthService from "../services/auth.services";
 import UrlBuilder from "../util/url.builder";
 
+// https://github.com/ZJav1310/WhatsThat_TS/issues/1
 class MessageController {
   static async sendMessage(chat_id: number, message: string) {
     const myHeaders = new Headers();

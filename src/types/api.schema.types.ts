@@ -5,80 +5,80 @@ export type ChatSummary = {
     last_message: SingleMessage
 }
 
-type ChatSummaries = {
+export type ChatSummaries = {
     chatSummaries: ChatSummary[]
 }
 
-type User = {
+export type User = {
     user_id: number,
     first_name: string,
     last_name: string,
     email: string
 }
 
-type Users = {
+export type Users = {
     users: User[]
 }
 
-type AddUser = {
+export type AddUser = {
     first_name: string,
     last_name: string,
     email: string,
     password: string
 }
 
-type UpdateUser = {
+export type UpdateUser = {
     first_name?: string,
     last_name?: string,
     email?: string,
     password?: string
 }
 
-type LoginUser = {
+export type LoginUser = {
     email: string, 
     password: string
 }
 
-type LoginResponse = {
+export type LoginResponse = {
     user_id: number, 
     session_token: string
 }
 
-type SignUpResponse = {
+export type SignUpResponse = {
     user_id: number
 }
 
-type CreateChat = {
+export type CreateChat = {
     name: string
 }
 
-type CreateChatResponse = {
+export type CreateChatResponse = {
     chat_id: number
 }
 
-type Chat = {
+export type Chat = {
     name: string,
     creator: User,
     members: Users,
     messages: Messages
 }
 
-type UpdateChat = {
+export type UpdateChat = {
     name: string
 }
 
-type SingleMessage = {
+export type SingleMessage = {
     message_id: string,
     timestamp: number,
     message: string,
     author: User
 }
 
-type Messages = {
+export type Messages = {
     messages: SingleMessage[]
 }
 
 
-type SendMessage = {
+export type SendMessage = {
     message: string
 }

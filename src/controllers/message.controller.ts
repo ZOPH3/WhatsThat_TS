@@ -1,4 +1,4 @@
-import AuthService from "../services/auth.services";
+// import AuthService from "../services/auth.services";
 import { AuthHeader } from "../util/api.helper";
 import UrlBuilder from "../util/url.builder";
 
@@ -25,7 +25,6 @@ class MessageController {
     const requestOptions: RequestInit = {
       method: "DELETE",
       headers: myHeaders,
-      redirect: "follow",
     };
 
     return fetch(UrlBuilder.deleteMessage(chat_id, message_id), requestOptions)
@@ -46,7 +45,6 @@ class MessageController {
       method: "PATCH",
       headers: myHeaders,
       body: JSON.stringify({ message: message }),
-      redirect: "follow",
     };
 
     return fetch(UrlBuilder.updateMessage(chat_id, message_id), requestOptions)

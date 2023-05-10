@@ -1,18 +1,12 @@
 import AuthService from "../services/auth.services";
+import { AuthHeader } from "../util/api.helper";
 import UrlBuilder from "../util/url.builder";
 
 // https://github.com/ZJav1310/WhatsThat_TS/issues/1
 class MessageController {
   
   static async sendMessage(chat_id: number, message: string) {
-    const myHeaders = new Headers();
-    const value = await AuthService.getToken();
-
-    if (value.status) {
-      myHeaders.append("X-Authorization", value.result);
-    }
-
-    myHeaders.append("Content-Type", "application/json");
+    const myHeaders = await AuthHeader();
 
     const requestOptions: RequestInit = {
       method: "POST",

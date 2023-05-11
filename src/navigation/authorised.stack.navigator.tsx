@@ -4,7 +4,7 @@ import ChatScreen from '../screens/conversation/message.list.screen';
 import { TabNavigator } from './contacts.tab.navigator';
 import ModalScreen from '../components/modal.component';
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<AuthorisedStackParamList>();
 
 function AuthorisedNavigator() {
   return (

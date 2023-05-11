@@ -46,13 +46,13 @@ function ContactsScreen() {
     //     result.status?  setMessageList(messageList?.concat(new_message)) : alert(result.message);
     // })
     ContactServices.addContact(user_id).then((result) => {
-      result.status ? setContactList(contactList) : alert(result.message);
+      result && result.ok ? setContactList(contactList) : alert("Unable to add user to contact");
     });
   }
 
   function addToBlock(user_id: number) {
     ContactServices.addContact(user_id).then((result) => {
-      result.status ? setContactList(contactList) : alert(result.message);
+      result && result.ok ? setContactList(contactList) : alert("Unable to add user to block list");
     });
   }
 
@@ -61,8 +61,10 @@ function ContactsScreen() {
   } else {
     if (isSuccess && contactList) {
       return ContactListComponent(contactList);
+    } else {
+      return <></>
     }
-  }
+  } 
 }
 
 export default ContactsScreen;

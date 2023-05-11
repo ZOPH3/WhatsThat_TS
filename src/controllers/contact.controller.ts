@@ -1,6 +1,6 @@
-import AuthService from "../services/auth.services";
-import { AuthHeader } from "../util/api.helper";
-import UrlBuilder from "../util/url.builder";
+import AuthService from '../services/auth.services';
+import { AuthHeader } from '../util/api.helper';
+import UrlBuilder from '../util/url.builder';
 
 // https://github.com/ZJav1310/WhatsThat_TS/issues/1
 class ContactController {
@@ -8,89 +8,89 @@ class ContactController {
     const myHeaders = await AuthHeader();
 
     const requestOptions: RequestInit = {
-      method: "GET",
+      method: 'GET',
       headers: myHeaders,
-      redirect: "follow",
+      redirect: 'follow',
     };
 
     return fetch(UrlBuilder.fetchContacts(), requestOptions)
       .then((response) => response.json())
       .then((response) => response)
-      .catch((error) => console.log("Error caught while fetching contact list: ", error));
+      .catch((error) => console.log('Error caught while fetching contact list: ', error));
   }
   public static async addContact(user_id: number): Promise<Response | void> {
     const myHeaders = await AuthHeader();
 
     const requestOptions: RequestInit = {
-      method: "POST",
+      method: 'POST',
       headers: myHeaders,
-      redirect: "follow",
+      redirect: 'follow',
     };
 
     return fetch(UrlBuilder.addContact(user_id), requestOptions)
       .then((response) => response.json())
       .then((response) => response)
-      .catch((error) => console.log("Error caught while adding contact: ", error));
+      .catch((error) => console.log('Error caught while adding contact: ', error));
   }
 
   public static async deleteContact(user_id: number): Promise<Response | void> {
     const myHeaders = await AuthHeader();
 
     const requestOptions: RequestInit = {
-      method: "DELETE",
+      method: 'DELETE',
       headers: myHeaders,
-      redirect: "follow",
+      redirect: 'follow',
     };
 
     return fetch(UrlBuilder.deleteContact(user_id), requestOptions)
       .then((response) => response.json())
       .then((response) => response)
-      .catch((error) => console.log("Error caught while deleting contact: ", error));
+      .catch((error) => console.log('Error caught while deleting contact: ', error));
   }
 
   public static async blockUser(user_id: number) {
     const myHeaders = await AuthHeader();
 
     const requestOptions: RequestInit = {
-      method: "POST",
+      method: 'POST',
       headers: myHeaders,
-      redirect: "follow",
+      redirect: 'follow',
     };
 
     return fetch(UrlBuilder.blockUser(user_id), requestOptions)
       .then((response) => response.json())
       .then((response) => response)
-      .catch((error) => console.log("Error caught while blocking user: ", error));
+      .catch((error) => console.log('Error caught while blocking user: ', error));
   }
 
   public static async unblockUser(user_id: number): Promise<Response | void> {
     const myHeaders = await AuthHeader();
 
     const requestOptions: RequestInit = {
-      method: "POST",
+      method: 'POST',
       headers: myHeaders,
-      redirect: "follow",
+      redirect: 'follow',
     };
 
     return fetch(UrlBuilder.unblockUser(user_id), requestOptions)
       .then((response) => response.json())
       .then((response) => response)
-      .catch((error) => console.log("Error caught while unblocking user: ", error));
+      .catch((error) => console.log('Error caught while unblocking user: ', error));
   }
 
   public static async fetchblocked(): Promise<Response | void> {
     const myHeaders = await AuthHeader();
 
     const requestOptions: RequestInit = {
-      method: "GET",
+      method: 'GET',
       headers: myHeaders,
-      redirect: "follow",
+      redirect: 'follow',
     };
 
     return fetch(UrlBuilder.fetchBlocked(), requestOptions)
       .then((response) => response.json())
       .then((response) => response)
-      .catch((error) => console.log("Error caught while fetching blocked list: ", error));
+      .catch((error) => console.log('Error caught while fetching blocked list: ', error));
   }
 }
 

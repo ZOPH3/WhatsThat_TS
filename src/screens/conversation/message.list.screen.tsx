@@ -1,7 +1,7 @@
-import ChatWindowComponent from "../../components/messages/message.list.component";
+import ChatWindowComponent from '../../components/messages/message.list.component';
 
 function ChatScreen() {
-    return ChatWindowComponent();
-  }
+  return ChatWindowComponent();
+}
 
-  export default ChatScreen;
+export default ChatScreen;

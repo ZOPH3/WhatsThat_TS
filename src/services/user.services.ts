@@ -1,14 +1,14 @@
-import UserController from "../controllers/user.controller";
-import UserType from "../util/types/user.type";
+import UserController from '../controllers/user.controller';
+import UserType from '../util/types/user.type';
 
 class UserService {
   public static async login(email: string, password: string) {
-    const response = await UserController.login(email, password) ?? undefined;
+    const response = (await UserController.login(email, password)) ?? undefined;
     return response;
   }
 
   public static async logout() {
-    const response = await UserController.logout() ?? undefined;
+    const response = (await UserController.logout()) ?? undefined;
     return response;
   }
 
@@ -18,20 +18,18 @@ class UserService {
     email: string,
     password: string
   ) {
-    const response = await UserController.register(first_name, last_name, email, password) ?? undefined;
+    const response =
+      (await UserController.register(first_name, last_name, email, password)) ?? undefined;
     return response;
   }
 
   public static async getUserInfo(user_id: number) {
-    const response = await UserController.getUserInfo(user_id) ?? undefined;
+    const response = (await UserController.getUserInfo(user_id)) ?? undefined;
     return response;
   }
 
-  public static async updateUserInfo(
-    user_id: number,
-    payload: Partial<UserType>
-  ) {
-    const response = await UserController.updateUserInfo(user_id, payload) ?? undefined;
+  public static async updateUserInfo(user_id: number, payload: Partial<UserType>) {
+    const response = (await UserController.updateUserInfo(user_id, payload)) ?? undefined;
     return response;
   }
 }

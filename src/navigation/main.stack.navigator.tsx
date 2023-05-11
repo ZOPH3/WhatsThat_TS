@@ -17,29 +17,37 @@ function StackNavigator() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        {
-          isLoggedIn ? (
-            <Stack.Group>
-              <Stack.Screen
-                name="Home"
-                component={TabNavigator}
-                options={{ headerShown: false }}
-              />
-              <Stack.Screen name="MyModal" component={ModalScreen} options={{
-                gestureEnabled: false, headerShown: false, headerLeft: () => <></>
-              }} />
-              <Stack.Screen name="Chat" component={ChatScreen} options={({ route }) => ({
-                title: route.params.title, chat_id: route.params.chat_id
+        {isLoggedIn ? (
+          <Stack.Group>
+            <Stack.Screen name="Home" component={TabNavigator} options={{ headerShown: false }} />
+            <Stack.Screen
+              name="MyModal"
+              component={ModalScreen}
+              options={{
+                gestureEnabled: false,
+                headerShown: false,
+                headerLeft: () => <></>,
+              }}
+            />
+            <Stack.Screen
+              name="Chat"
+              component={ChatScreen}
+              options={({ route }) => ({
+                title: route.params.title,
+                chat_id: route.params.chat_id,
               })}
-              />
-              <Stack.Screen name="Blocked List" component={BlockedScreen}/>
-            </Stack.Group>
-          ) : (
-            <Stack.Group>
-              <Stack.Screen options={{ headerShown: false }} name="UnAuthorised" component={AuthTabNavigator} />
-            </Stack.Group>
-          )
-        }
+            />
+            <Stack.Screen name="Blocked List" component={BlockedScreen} />
+          </Stack.Group>
+        ) : (
+          <Stack.Group>
+            <Stack.Screen
+              options={{ headerShown: false }}
+              name="UnAuthorised"
+              component={AuthTabNavigator}
+            />
+          </Stack.Group>
+        )}
       </Stack.Navigator>
     </NavigationContainer>
   );

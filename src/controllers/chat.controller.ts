@@ -13,7 +13,12 @@ class ChatController {
     };
 
     return fetch(UrlBuilder.fetchChatList(), requestOptions)
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error, status = ${response.status}`);
+        }
+        return response.json();
+      })
       .then((response) => response)
       .catch((error) => console.log('Error caught while fetching chat summary list: ', error));
   }
@@ -29,7 +34,12 @@ class ChatController {
     };
 
     return fetch(UrlBuilder.startNewConversation(), requestOptions)
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error, status = ${response.status}`);
+        }
+        return response.json();
+      })
       .then((response) => response)
       .catch((error) => console.log('Error caught while creating new conversation: ', error));
   }
@@ -44,7 +54,12 @@ class ChatController {
     };
 
     return fetch(UrlBuilder.fetchChatDetails(chat_id), requestOptions)
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error, status = ${response.status}`);
+        }
+        return response.json();
+      })
       .then((response) => response)
       .catch((error) => console.log('Error caught while fetching chat details: ', error));
   }
@@ -60,7 +75,12 @@ class ChatController {
     };
 
     return fetch(UrlBuilder.updateChatDetails(chat_id), requestOptions)
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error, status = ${response.status}`);
+        }
+        return response.json();
+      })
       .then((response) => response)
       .catch((error) => console.log('Error caught while updating chat details: ', error));
   }
@@ -75,7 +95,12 @@ class ChatController {
     };
 
     return fetch(UrlBuilder.addUserToConversation(chat_id, user_id), requestOptions)
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error, status = ${response.status}`);
+        }
+        return response.json();
+      })
       .then((response) => response)
       .catch((error) => console.log('Error caught while adding user to conversation: ', error));
   }
@@ -93,7 +118,12 @@ class ChatController {
     };
 
     return fetch(UrlBuilder.removeUserFromConversation(chat_id, user_id), requestOptions)
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error, status = ${response.status}`);
+        }
+        return response.json();
+      })
       .then((response) => response)
       .catch((error) => console.log('Error caught while removing user from conversation: ', error));
   }

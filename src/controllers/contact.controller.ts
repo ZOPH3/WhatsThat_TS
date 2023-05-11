@@ -14,10 +14,16 @@ class ContactController {
     };
 
     return fetch(UrlBuilder.fetchContacts(), requestOptions)
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error, status = ${response.status}`);
+        }
+        return response.json();
+      })
       .then((response) => response)
       .catch((error) => console.log('Error caught while fetching contact list: ', error));
   }
+
   public static async addContact(user_id: number): Promise<Response | void> {
     const myHeaders = await AuthHeader();
 
@@ -28,7 +34,12 @@ class ContactController {
     };
 
     return fetch(UrlBuilder.addContact(user_id), requestOptions)
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error, status = ${response.status}`);
+        }
+        return response.json();
+      })
       .then((response) => response)
       .catch((error) => console.log('Error caught while adding contact: ', error));
   }
@@ -43,7 +54,12 @@ class ContactController {
     };
 
     return fetch(UrlBuilder.deleteContact(user_id), requestOptions)
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error, status = ${response.status}`);
+        }
+        return response.json();
+      })
       .then((response) => response)
       .catch((error) => console.log('Error caught while deleting contact: ', error));
   }
@@ -58,7 +74,12 @@ class ContactController {
     };
 
     return fetch(UrlBuilder.blockUser(user_id), requestOptions)
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error, status = ${response.status}`);
+        }
+        return response.json();
+      })
       .then((response) => response)
       .catch((error) => console.log('Error caught while blocking user: ', error));
   }
@@ -73,7 +94,12 @@ class ContactController {
     };
 
     return fetch(UrlBuilder.unblockUser(user_id), requestOptions)
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error, status = ${response.status}`);
+        }
+        return response.json();
+      })
       .then((response) => response)
       .catch((error) => console.log('Error caught while unblocking user: ', error));
   }
@@ -88,7 +114,12 @@ class ContactController {
     };
 
     return fetch(UrlBuilder.fetchBlocked(), requestOptions)
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error, status = ${response.status}`);
+        }
+        return response.json();
+      })
       .then((response) => response)
       .catch((error) => console.log('Error caught while fetching blocked list: ', error));
   }

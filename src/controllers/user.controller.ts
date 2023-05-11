@@ -17,7 +17,12 @@ class UserController {
     };
 
     return fetch(UrlBuilder.login(), requestOptions)
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error, status = ${response.status}`);
+        }
+        return response.json();
+      })
       .then((response) => response)
       .catch((error) => console.log('Error caught while logging in user: ', error));
   }
@@ -31,7 +36,12 @@ class UserController {
     };
 
     return fetch(UrlBuilder.logout(), requestOptions)
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error, status = ${response.status}`);
+        }
+        return response.json();
+      })
       .then((response) => response)
       .catch((error) => console.log('Error caught while logging out user: ', error));
   }
@@ -56,7 +66,12 @@ class UserController {
     };
 
     return fetch(UrlBuilder.createNewUser(), requestOptions)
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error, status = ${response.status}`);
+        }
+        return response.json();
+      })
       .then((response) => response)
       .catch((error) => console.log('Error caught while registering user: ', error));
   }
@@ -70,7 +85,12 @@ class UserController {
     };
 
     return fetch(UrlBuilder.fetchUserInformation(user_id), requestOptions)
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error, status = ${response.status}`);
+        }
+        return response.json();
+      })
       .then((response) => response)
       .catch((error) => console.log('Error caught while fetching user information: ', error));
   }
@@ -88,7 +108,12 @@ class UserController {
     };
 
     return fetch(UrlBuilder.fetchUserInformation(user_id), requestOptions)
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error, status = ${response.status}`);
+        }
+        return response.json();
+      })
       .then((response) => response)
       .catch((error) => console.log('Error caught while updating user information: ', error));
   }

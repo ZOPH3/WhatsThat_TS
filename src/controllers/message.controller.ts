@@ -20,7 +20,12 @@ class MessageController {
     };
 
     return fetch(UrlBuilder.sendMessage(chat_id), requestOptions)
-      .then((response) => response)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error, status = ${response.status}`);
+        }
+        return response;
+      })
       .catch((error) => console.log('Error caught while sending message: ', error));
   }
 
@@ -39,7 +44,12 @@ class MessageController {
     };
 
     return fetch(UrlBuilder.deleteMessage(chat_id, message_id), requestOptions)
-      .then((response) => response)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error, status = ${response.status}`);
+        }
+        return response;
+      })
       .catch((error) => console.log('Error caught while deleting message: ', error));
   }
 
@@ -64,7 +74,12 @@ class MessageController {
     };
 
     return fetch(UrlBuilder.updateMessage(chat_id, message_id), requestOptions)
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error, status = ${response.status}`);
+        }
+        return response.json();
+      })
       .then((response) => response)
       .catch((error) => console.log('Error caught while updating message: ', error));
   }

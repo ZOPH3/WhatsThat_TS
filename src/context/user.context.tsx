@@ -8,7 +8,6 @@ const initialState = {
     last_name: "",
     email: "",
   },
-  picture: null,
   // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
   setUser: (value: UserType) => {},
 }

@@ -3,8 +3,15 @@ import { AuthHeader } from "../util/api.helper";
 import UrlBuilder from "../util/url.builder";
 
 // https://github.com/ZJav1310/WhatsThat_TS/issues/1
+
 class MessageController {
-  static async sendMessage(chat_id: number, message: string) {
+  /**
+   * Current logged in user sends a message in a chat.
+   * @param chat_id 
+   * @param message 
+   * @returns 
+   */
+  static async sendMessage(chat_id: number, message: string) : Promise<Response | void> {
     // const myHeaders = await AuthHeader();
     const requestOptions: RequestInit = {
       method: "POST",
@@ -19,6 +26,12 @@ class MessageController {
       );
   }
 
+  /**
+   * Delete message in chat
+   * @param chat_id 
+   * @param message_id 
+   * @returns 
+   */
   static async deleteMessage(chat_id: number, message_id: number) {
     const myHeaders = await AuthHeader();
 
@@ -34,6 +47,13 @@ class MessageController {
       );
   }
 
+  /**
+   * Update message in chat
+   * @param chat_id 
+   * @param message_id 
+   * @param message 
+   * @returns 
+   */
   static async updateMessage(
     chat_id: number,
     message_id: number,

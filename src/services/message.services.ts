@@ -1,27 +1,20 @@
 import MessageController from "../controllers/message.controller";
-import { logType, logOutput } from "../util/logger.util";
 import ChatService from "./chat.services";
 
 class MessageServices {
   static async getMessage(chat_id: number) {
-    const data = await ChatService.fetchChatDetails(chat_id);
-    const type = data.status ? logType.success : logType.error;
-    logOutput(type, "Messages fetched: " + data.result.messages.length.toString());    
-    return data.result.messages;
+    const response = await ChatService.fetchChatDetails(chat_id) ?? undefined;
+    return response;
   }
 
   static async sendMessage(chat_id: number, message: string) {
-    const data = await MessageController.sendMessage(chat_id, message);
-    const type = data.status ? logType.success : logType.error;
-    logOutput(type, data.message);
-    return data;
+    const response = await MessageController.sendMessage(chat_id, message) ?? undefined;
+    return response;
   }
 
   static async deleteMessage(chat_id: number, message_id: number) {
-    const data = await MessageController.deleteMessage(chat_id, message_id);
-    const type = data.status ? logType.success : logType.error;
-    logOutput(type, data.message);
-    return data;
+    const response = await MessageController.deleteMessage(chat_id, message_id) ?? undefined;
+    return response;
   }
 
   static async updateMessage(
@@ -29,14 +22,8 @@ class MessageServices {
     message_id: number,
     message: string
   ) {
-    const data = await MessageController.updateMessage(
-      chat_id,
-      message_id,
-      message
-    );
-    const type = data.status ? logType.success : logType.error;
-    logOutput(type, data.message);
-    return data;
+    const response = await MessageController.updateMessage(chat_id, message_id, message) ?? undefined;
+    return response;
   }
 }
 

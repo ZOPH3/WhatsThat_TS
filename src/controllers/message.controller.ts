@@ -11,7 +11,7 @@ class MessageController {
    * @param message 
    * @returns 
    */
-  static async sendMessage(chat_id: number, message: string) : Promise<Response | void> {
+  static async sendMessage(chat_id: number, message: string): Promise<Response | void> {
     // const myHeaders = await AuthHeader();
     const requestOptions: RequestInit = {
       method: "POST",
@@ -32,7 +32,7 @@ class MessageController {
    * @param message_id 
    * @returns 
    */
-  static async deleteMessage(chat_id: number, message_id: number) {
+  static async deleteMessage(chat_id: number, message_id: number): Promise<Response | void> {
     const myHeaders = await AuthHeader();
 
     const requestOptions: RequestInit = {
@@ -58,7 +58,7 @@ class MessageController {
     chat_id: number,
     message_id: number,
     message: string
-  ) {
+  ): Promise<Response | void> {
     const myHeaders = await AuthHeader();
 
     const requestOptions: RequestInit = {

@@ -3,7 +3,7 @@ import UrlBuilder from "../util/url.builder";
 
 // https://github.com/ZJav1310/WhatsThat_TS/issues/1
 class ChatController {
-  static async fetchChatList() {
+  static async fetchChatList(): Promise<Response | void> {
     const myHeaders = await AuthHeader();
 
     const requestOptions: RequestInit = {
@@ -18,7 +18,7 @@ class ChatController {
       .catch((error) => console.log("Error caught while fetching chat summary list: ", error));
   }
 
-  static async newConversation(name: string) {
+  static async newConversation(name: string): Promise<Response | void> {
     const myHeaders = await AuthHeader();
 
     const requestOptions: RequestInit = {
@@ -34,7 +34,7 @@ class ChatController {
       .catch((error) => console.log("Error caught while creating new conversation: ", error));
   }
 
-  static async fetchChatDetails(chat_id: number) {
+  static async fetchChatDetails(chat_id: number): Promise<Response | void> {
     const myHeaders = await AuthHeader();
 
     const requestOptions: RequestInit = {
@@ -49,7 +49,7 @@ class ChatController {
       .catch((error) => console.log("Error caught while fetching chat details: ", error));
   }
 
-  static async updateChatDetails(chat_id: number, name: string) {
+  static async updateChatDetails(chat_id: number, name: string): Promise<Response | void> {
     const myHeaders = await AuthHeader();
 
     const requestOptions: RequestInit = {
@@ -65,7 +65,7 @@ class ChatController {
       .catch((error) => console.log("Error caught while updating chat details: ", error));
   }
 
-  static async addUserToConversation(chat_id: number, user_id: number) {
+  static async addUserToConversation(chat_id: number, user_id: number): Promise<Response | void> {
     const myHeaders = await AuthHeader();
 
     const requestOptions: RequestInit = {
@@ -83,7 +83,7 @@ class ChatController {
       .catch((error) => console.log("Error caught while adding user to conversation: ", error));
   }
 
-  static async removeUserFromConversation(chat_id: number, user_id: number) {
+  static async removeUserFromConversation(chat_id: number, user_id: number): Promise<Response | void> {
     const myHeaders = await AuthHeader();
 
     const requestOptions: RequestInit = {

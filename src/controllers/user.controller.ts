@@ -1,4 +1,6 @@
 import AuthService from "../services/auth.services";
+import { AuthHeader } from "../util/api.helper";
+import { RegularHeader } from "../util/api.helper";
 import UserType from "../util/types/user.type";
 import UrlBuilder from "../util/url.builder";
 
@@ -6,8 +8,7 @@ import UrlBuilder from "../util/url.builder";
 class UserController {
   // FIXME: Some of the JSON things dont work and need ot be removed
   public static async login(email: string, password: string) {
-    const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
+    const myHeaders = RegularHeader();
 
     const requestOptions: RequestInit = {
       method: "POST",
@@ -18,32 +19,11 @@ class UserController {
 
     return fetch(UrlBuilder.login(), requestOptions)
       .then((response) => response.json())
-      .then((response: { id: number; token: string }) => {
-        return {
-          status: true,
-          message: "Login credentials successful.",
-          result: response,
-        };
-      })
-      .catch((error) => {
-        console.log("ERROR FROM USER CONTROLLER FETCH", error);
-        return {
-          status: false,
-          message: "Credentials are incorrect...",
-          result: { id: -1, token: "" },
-          error: error,
-        };
-      });
+      .then((response) => response)
+      .catch((error) => console.log("Error caught while logging in user: ", error));
   }
   public static async logout() {
-    const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-
-    const value = await AuthService.getToken();
-
-    if (value != null) {
-      myHeaders.append("X-Authorization", value.result);
-    }
+    const myHeaders = await AuthHeader();
 
     const requestOptions: RequestInit = {
       method: "POST",
@@ -53,21 +33,8 @@ class UserController {
 
     return fetch(UrlBuilder.logout(), requestOptions)
       .then((response) => response.json())
-      .then((response) => {
-        return {
-          status: true,
-          message: "User successfully logged out.",
-          result: response,
-        };
-      })
-      .catch((error) => {
-        return {
-          status: false,
-          message: "Unable to proceed with logout request...",
-          result: "",
-          error: error,
-        };
-      });
+      .then((response) => response)
+      .catch((error) => console.log("Error caught while logging out user: ", error));
   }
   public static async register(
     first_name: string,
@@ -75,8 +42,7 @@ class UserController {
     email: string,
     password: string
   ) {
-    const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
+    const myHeaders = RegularHeader();
 
     const requestOptions: RequestInit = {
       method: "POST",
@@ -92,31 +58,11 @@ class UserController {
 
     return fetch(UrlBuilder.createNewUser(), requestOptions)
       .then((response) => response.json())
-      .then((response) => {
-        return {
-          status: true,
-          message: "User created successfully.",
-          result: response,
-        };
-      })
-      .catch((error) => {
-        return {
-          status: false,
-          message: "Unable to create user.",
-          result: "",
-          error: error,
-        };
-      });
+      .then((response) => response)
+      .catch((error) => console.log("Error caught while registering user: ", error));
   }
   public static async getUserInfo(user_id: number) {
-    const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-
-    const value = await AuthService.getToken();
-
-    if (value != null) {
-      myHeaders.append("X-Authorization", value.result);
-    }
+    const myHeaders = await AuthHeader();
 
     const requestOptions: RequestInit = {
       method: "GET",
@@ -126,31 +72,11 @@ class UserController {
 
     return fetch(UrlBuilder.fetchUserInformation(user_id), requestOptions)
       .then((response) => response.json())
-      .then((response) => {
-        return {
-          status: true,
-          message: `Successfully fetched user ${user_id} information.`,
-          result: response,
-        };
-      })
-      .catch((error) => {
-        return {
-          status: false,
-          message: `Unable to fetch user ${user_id} information...`,
-          result: "",
-          error: error,
-        };
-      });
+      .then((response) => response)
+      .catch((error) => console.log("Error caught while fetching user information: ", error));
   }
   public static async updateUserInfo(user_id: number, payload: Partial<UserType>) {
-    const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-
-    const value = await AuthService.getToken();
-
-    if (value != null) {
-      myHeaders.append("X-Authorization", value.result);
-    }
+    const myHeaders = await AuthHeader();
 
     const requestOptions: RequestInit = {
       method: "PATCH",
@@ -161,21 +87,8 @@ class UserController {
 
     return fetch(UrlBuilder.fetchUserInformation(user_id), requestOptions)
       .then((response) => response.json())
-      .then((response) => {
-        return {
-          status: true,
-          message: `Successfully updated user ${user_id} information.`,
-          result: response,
-        };
-      })
-      .catch((error) => {
-        return {
-          status: false,
-          message: `Unable to update user ${user_id} information...`,
-          result: "",
-          error: error,
-        };
-      });
+      .then((response) => response)
+      .catch((error) => console.log("Error caught while updating user information: ", error));
   }
   // TODO: Below API things
   // public static async getUserPhoto() {}

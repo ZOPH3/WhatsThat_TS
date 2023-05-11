@@ -1,17 +1,10 @@
-import AuthService from "../services/auth.services";
+import { AuthHeader } from "../util/api.helper";
 import UrlBuilder from "../util/url.builder";
 
 // https://github.com/ZJav1310/WhatsThat_TS/issues/1
 class ChatController {
   static async fetchChatList() {
-    const myHeaders = new Headers();
-    const value = await AuthService.getToken();
-
-    if (value.status) {
-      myHeaders.append("X-Authorization", value.result);
-    }
-
-    myHeaders.append("Content-Type", "application/json");
+    const myHeaders = await AuthHeader();
 
     const requestOptions: RequestInit = {
       method: "GET",
@@ -21,32 +14,12 @@ class ChatController {
 
     return fetch(UrlBuilder.fetchChatList(), requestOptions)
       .then((response) => response.json())
-      .then((response) => {
-        return {
-          status: true,
-          message: "Fetched chat list successfully.",
-          result: response,
-        };
-      })
-      .catch((error) => {
-        return {
-          status: false,
-          message: "Unable to fetch chat list...",
-          result: "",
-          error: error,
-        };
-      });
+      .then((response) => response)
+      .catch((error) => console.log("Error caught while fetching chat summary list: ", error));
   }
 
-  static async startNewConversation(name: string) {
-    const myHeaders = new Headers();
-    const value = await AuthService.getToken();
-
-    if (value.status) {
-      myHeaders.append("X-Authorization", value.result);
-    }
-
-    myHeaders.append("Content-Type", "application/json");
+  static async newConversation(name: string) {
+    const myHeaders = await AuthHeader();
 
     const requestOptions: RequestInit = {
       method: "POST",
@@ -57,32 +30,12 @@ class ChatController {
 
     return fetch(UrlBuilder.startNewConversation(), requestOptions)
       .then((response) => response.json())
-      .then((response) => {
-        return {
-          status: true,
-          message: `New conversation created: ${name}.`,
-          result: response,
-        };
-      })
-      .catch((error) => {
-        return {
-          status: false,
-          message: "Unable to create new conversation...",
-          result: "",
-          error: error,
-        };
-      });
+      .then((response) => response)
+      .catch((error) => console.log("Error caught while creating new conversation: ", error));
   }
 
   static async fetchChatDetails(chat_id: number) {
-    const myHeaders = new Headers();
-    const value = await AuthService.getToken();
-
-    if (value.status) {
-      myHeaders.append("X-Authorization", value.result);
-    }
-
-    myHeaders.append("Content-Type", "application/json");
+    const myHeaders = await AuthHeader();
 
     const requestOptions: RequestInit = {
       method: "GET",
@@ -92,32 +45,12 @@ class ChatController {
 
     return fetch(UrlBuilder.fetchChatDetails(chat_id), requestOptions)
       .then((response) => response.json())
-      .then((response) => {
-        return {
-          status: true,
-          message: `Fetched chat ${chat_id} successfully.`,
-          result: response,
-        };
-      })
-      .catch((error) => {
-        return {
-          status: false,
-          message: `Unable to fetch chat ${chat_id}...`,
-          result: "",
-          error: error,
-        };
-      });
+      .then((response) => response)
+      .catch((error) => console.log("Error caught while fetching chat details: ", error));
   }
 
   static async updateChatDetails(chat_id: number, name: string) {
-    const myHeaders = new Headers();
-    const value = await AuthService.getToken();
-
-    if (value.status) {
-      myHeaders.append("X-Authorization", value.result);
-    }
-
-    myHeaders.append("Content-Type", "application/json");
+    const myHeaders = await AuthHeader();
 
     const requestOptions: RequestInit = {
       method: "PATCH",
@@ -128,32 +61,12 @@ class ChatController {
 
     return fetch(UrlBuilder.updateChatDetails(chat_id), requestOptions)
       .then((response) => response.json())
-      .then((response) => {
-        return {
-          status: true,
-          message: `Updated chat ${chat_id}.`,
-          result: response,
-        };
-      })
-      .catch((error) => {
-        return {
-          status: false,
-          message: `Unable to update chat ${chat_id}...`,
-          result: "",
-          error: error,
-        };
-      });
+      .then((response) => response)
+      .catch((error) => console.log("Error caught while updating chat details: ", error));
   }
 
   static async addUserToConversation(chat_id: number, user_id: number) {
-    const myHeaders = new Headers();
-    const value = await AuthService.getToken();
-
-    if (value.status) {
-      myHeaders.append("X-Authorization", value.result);
-    }
-
-    myHeaders.append("Content-Type", "application/json");
+    const myHeaders = await AuthHeader();
 
     const requestOptions: RequestInit = {
       method: "POST",
@@ -166,32 +79,12 @@ class ChatController {
       requestOptions
     )
       .then((response) => response.json())
-      .then((response) => {
-        return {
-          status: true,
-          message: `Added user ${user_id} to chat ${chat_id}.`,
-          result: response,
-        };
-      })
-      .catch((error) => {
-        return {
-          status: false,
-          message: `Unable to add ${user_id} to chat ${chat_id}...`,
-          result: "",
-          error: error,
-        };
-      });
+      .then((response) => response)
+      .catch((error) => console.log("Error caught while adding user to conversation: ", error));
   }
 
   static async removeUserFromConversation(chat_id: number, user_id: number) {
-    const myHeaders = new Headers();
-    const value = await AuthService.getToken();
-
-    if (value.status) {
-      myHeaders.append("X-Authorization", value.result);
-    }
-
-    myHeaders.append("Content-Type", "application/json");
+    const myHeaders = await AuthHeader();
 
     const requestOptions: RequestInit = {
       method: "DELETE",
@@ -204,133 +97,10 @@ class ChatController {
       requestOptions
     )
       .then((response) => response.json())
-      .then((response) => {
-        return {
-          status: true,
-          message: `Successfully removed ${user_id} from chat ${chat_id}.`,
-          result: response,
-        };
-      })
-      .catch((error) => {
-        return {
-          status: false,
-          message: `Unable to remove ${user_id} from chat ${chat_id} ...`,
-          result: "",
-          error: error,
-        };
-      });
+      .then((response) => response)
+      .catch((error) => console.log("Error caught while removing user from conversation: ", error));
   }
 
-  static async sendMessage(chat_id: number, message: string) {
-    const myHeaders = new Headers();
-    const value = await AuthService.getToken();
-
-    if (value.status) {
-      myHeaders.append("X-Authorization", value.result);
-    }
-
-    myHeaders.append("Content-Type", "application/json");
-
-    const requestOptions: RequestInit = {
-      method: "POST",
-      headers: myHeaders,
-      body: JSON.stringify({ message: message }),
-      redirect: "follow",
-    };
-
-    return fetch(UrlBuilder.sendMessage(chat_id), requestOptions)
-    .then((response) => response.json())
-    .then((response) => {
-      return {
-        status: true,
-        message: `Sent message in chat ${chat_id}.`,
-        result: response,
-      };
-    })
-    .catch((error) => {
-      return {
-        status: false,
-        message: `Unable to send message in chat ${chat_id}...`,
-        result: "",
-        error: error,
-      };
-    });
-  }
-
-  static async updateMessage(
-    chat_id: number,
-    message_id: number,
-    message: string
-  ) {
-    const myHeaders = new Headers();
-    const value = await AuthService.getToken();
-
-    if (value.status) {
-      myHeaders.append("X-Authorization", value.result);
-    }
-
-    myHeaders.append("Content-Type", "application/json");
-
-    const requestOptions: RequestInit = {
-      method: "PATCH",
-      headers: myHeaders,
-      body: JSON.stringify({ message: message }),
-      redirect: "follow",
-    };
-
-    return fetch(UrlBuilder.updateMessage(chat_id, message_id), requestOptions)
-    .then((response) => response.json())
-    .then((response) => {
-      return {
-        status: true,
-        message: `Updated message ${message_id} in chat ${chat_id}.`,
-        result: response,
-      };
-    })
-    .catch((error) => {
-      return {
-        status: false,
-        message: `Unable to update message ${message_id} in chat ${chat_id}...`,
-        result: "",
-        error: error,
-      };
-    });
-  }
-
-  static async removeMessage(chat_id: number, message_id: number) {
-    const myHeaders = new Headers();
-    const value = await AuthService.getToken();
-
-    if (value.status) {
-      myHeaders.append("X-Authorization", value.result);
-    }
-
-    myHeaders.append("Content-Type", "application/json");
-
-    const requestOptions: RequestInit = {
-      method: "DELETE",
-      headers: myHeaders,
-      redirect: "follow",
-    };
-
-    return fetch(UrlBuilder.deleteMessage(chat_id, message_id), requestOptions)
-    .then((response) => response.json())
-    .then((response) => {
-      return {
-        status: true,
-        message: `Message ${message_id} successfully from ${chat_id}.`,
-        result: response,
-      };
-    })
-    .catch((error) => {
-      return {
-        status: false,
-        message: `Unable to delete message ${message_id} from chat ${chat_id}...`,
-        result: "",
-        error: error,
-      };
-    });
-  }
 }
 
 export default ChatController;

@@ -1,4 +1,4 @@
-export type PlainResponse = {
+export type SimpleResponse = {
     response: string;
 }
 

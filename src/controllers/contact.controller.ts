@@ -4,7 +4,7 @@ import UrlBuilder from "../util/url.builder";
 
 // https://github.com/ZJav1310/WhatsThat_TS/issues/1
 class ContactController {
-  public static async fetchContacts() {
+  public static async fetchContacts(): Promise<Response | void> {
     const myHeaders = await AuthHeader();
 
     const requestOptions: RequestInit = {
@@ -18,7 +18,7 @@ class ContactController {
       .then((response) => response)
       .catch((error) => console.log("Error caught while fetching contact list: ", error));
   }
-  public static async addContact(user_id: number) {
+  public static async addContact(user_id: number): Promise<Response | void> {
     const myHeaders = await AuthHeader();
 
     const requestOptions: RequestInit = {
@@ -33,7 +33,7 @@ class ContactController {
       .catch((error) => console.log("Error caught while adding contact: ", error));
   }
 
-  public static async deleteContact(user_id: number) {
+  public static async deleteContact(user_id: number): Promise<Response | void> {
     const myHeaders = await AuthHeader();
 
     const requestOptions: RequestInit = {
@@ -63,7 +63,7 @@ class ContactController {
       .catch((error) => console.log("Error caught while blocking user: ", error));
   }
 
-  public static async unblockUser(user_id: number) {
+  public static async unblockUser(user_id: number): Promise<Response | void> {
     const myHeaders = await AuthHeader();
 
     const requestOptions: RequestInit = {
@@ -78,7 +78,7 @@ class ContactController {
       .catch((error) => console.log("Error caught while unblocking user: ", error));
   }
 
-  public static async fetchblocked() {
+  public static async fetchblocked(): Promise<Response | void> {
     const myHeaders = await AuthHeader();
 
     const requestOptions: RequestInit = {

@@ -1,4 +1,3 @@
-import AuthService from "../services/auth.services";
 import { AuthHeader } from "../util/api.helper";
 import { RegularHeader } from "../util/api.helper";
 import UserType from "../util/types/user.type";
@@ -7,7 +6,7 @@ import UrlBuilder from "../util/url.builder";
 // https://github.com/ZJav1310/WhatsThat_TS/issues/1
 class UserController {
   // FIXME: Some of the JSON things dont work and need ot be removed
-  public static async login(email: string, password: string) {
+  public static async login(email: string, password: string): Promise<Response | void> {
     const myHeaders = RegularHeader();
 
     const requestOptions: RequestInit = {
@@ -22,7 +21,7 @@ class UserController {
       .then((response) => response)
       .catch((error) => console.log("Error caught while logging in user: ", error));
   }
-  public static async logout() {
+  public static async logout(): Promise<Response | void> {
     const myHeaders = await AuthHeader();
 
     const requestOptions: RequestInit = {
@@ -41,7 +40,7 @@ class UserController {
     last_name: string,
     email: string,
     password: string
-  ) {
+  ): Promise<Response | void> {
     const myHeaders = RegularHeader();
 
     const requestOptions: RequestInit = {
@@ -75,7 +74,7 @@ class UserController {
       .then((response) => response)
       .catch((error) => console.log("Error caught while fetching user information: ", error));
   }
-  public static async updateUserInfo(user_id: number, payload: Partial<UserType>) {
+  public static async updateUserInfo(user_id: number, payload: Partial<UserType>): Promise<Response | void> {
     const myHeaders = await AuthHeader();
 
     const requestOptions: RequestInit = {

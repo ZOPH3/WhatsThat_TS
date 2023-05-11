@@ -4,7 +4,9 @@
     ],
     "extends": [
         "eslint:recommended",
-        "plugin:react-native/all"
+        "plugin:react-native/all",
+        "prettier",
+        "prettier/react"
     ],
     "parser": "babel-eslint",
     "env": {

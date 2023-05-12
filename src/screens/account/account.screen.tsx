@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import { UserContext } from '../../context/user.context';
 import { View } from 'react-native';
 import { Button, Stack, Text } from '@react-native-material/core';
-import FileUploader from '../../components/upload.component';
+import FileUploader from '../../components/utils/upload.component';
 import CameraHelper from '../../util/camera.util';
 //TODO: allow the user to edit and submit their details
 

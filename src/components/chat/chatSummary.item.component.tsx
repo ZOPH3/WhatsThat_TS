@@ -18,7 +18,6 @@ function isUnread(isUnread: boolean) {
  */
 
 const ListItemComponent = (props: { key: number; chatSummary: ChatSummary }) => {
-  // const navigation = useNavigation();
   const navigation = useNavigation();
 
   return (

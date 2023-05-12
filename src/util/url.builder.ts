@@ -18,7 +18,7 @@ export default class UrlBuilder {
   static unblockUser = (user_id: number) => config.BASE_URL + `/user/${user_id}/block`;
 
   static fetchChatList = () => config.BASE_URL + '/chat';
-  static startNewConversation = () => '/chat';
+  static startNewConversation = () => config.BASE_URL + '/chat';
   static fetchChatDetails = (chat_id: number) => config.BASE_URL + `/chat/${chat_id}`;
   static updateChatDetails = (chat_id: number) => config.BASE_URL + `/chat/${chat_id}`;
 

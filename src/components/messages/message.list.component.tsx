@@ -46,7 +46,7 @@ const ChatWindowComponent = () => {
 
         setMessageList(sortByDateTime(response).reverse());
         setIsSuccess(true);
-        triggerScrollToEnd();
+        if(messageList.length >= 5) triggerScrollToEnd();
       } catch (err) {
         console.log(err);
       }
@@ -128,9 +128,6 @@ const ChatWindowComponent = () => {
                 ref={flatListRef}
                 data={messageList}
                 keyExtractor={(item) => item.message_id.toString()}
-                // onContentSizeChange={() => {
-                //     flatListRef.current?.scrollToEnd();
-                // }}
                 renderItem={(message) => (
                   <MessageBubbleComponent
                     message={message.item}

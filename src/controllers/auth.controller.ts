@@ -1,59 +1,45 @@
-import AsyncStorageHelper from '../util/as.helper';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StorageKeys } from '../util/as.keys';
-import { logType, logOutput } from '../util/logger.util';
 
 // https://github.com/ZJav1310/WhatsThat_TS/issues/1
 export default class AuthController {
+
   public static async getToken() {
-    const result = await AsyncStorageHelper.getData(StorageKeys.AuthToken);
-    return result
-      ? {
-          status: true,
-          message: `${StorageKeys.AuthToken} has been found. `,
-          result: JSON.parse(result).token,
-        }
-      : {
-          status: false,
-          message: `Unable to find token... `,
-          result: 'No token',
-        };
+    try {
+      const result = await AsyncStorage.getItem(StorageKeys.AuthToken);
+
+      if(!result) {
+        throw new Error(`Unable to get ${StorageKeys.AuthToken}...`);
+      }
+
+      return result;
+    }
+    catch(error) {
+      console.log(error);
+      return false;
+    }
   }
 
   public static async resetToken() {
-    let message = 'Request to reset authentication... ';
-    let type = logType.success;
-    const result = await AsyncStorageHelper.removeData(StorageKeys.AuthToken);
-
-    if (result) {
-      message += `${StorageKeys.AuthToken} has been removed successfully`;
-    } else {
-      type = logType.error;
-      message += `Unable to find ${StorageKeys.AuthToken}...`;
-    }
-
-    logOutput(type, message);
-
-    return {
-      status: result,
-      message: message,
-      result: result,
-    };
+    const result = await AsyncStorage.removeItem(StorageKeys.AuthToken);
+    return result;
   }
 
   public static async setToken(value: string) {
-    let message = '';
-    const result = await AsyncStorageHelper.storeData(StorageKeys.AuthToken, { token: value });
+    try {
+      let error = undefined;
 
-    if (result) {
-      message += `${StorageKeys.AuthToken} has been set. `;
-    } else {
-      message += `Unable to store token... `;
+      await AsyncStorage.setItem(StorageKeys.AuthToken, JSON.stringify({ token: value }), error);
+
+      if(error) {
+        throw new Error(`Unable to set ${StorageKeys.AuthToken}...`);
+      }
+
+      return true;
     }
-
-    return {
-      status: result,
-      message: message,
-      result: value,
-    };
+    catch(error) {
+      console.log(error);
+      return false;
+    }
   }
 }

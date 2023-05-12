@@ -3,7 +3,7 @@ import UserType from '../util/types/user.type';
 
 class UserService {
   public static async login(email: string, password: string) {
-    const response = (await UserController.login(email, password)) ?? undefined;
+    const response = await UserController.login(email, password);
     return response;
   }
 
@@ -25,6 +25,7 @@ class UserService {
 
   public static async getUserInfo(user_id: number) {
     const response = (await UserController.getUserInfo(user_id)) ?? undefined;
+    console.log("FROM SERVICE", response);
     return response;
   }
 

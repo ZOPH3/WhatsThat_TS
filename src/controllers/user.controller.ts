@@ -1,3 +1,5 @@
+import { User } from '../types/api.schema.types';
+import { AddUser, LoginResponse, SignUpResponse } from '../types/api.schema.types';
 import { AuthHeader } from '../util/api.helper';
 import { RegularHeader } from '../util/api.helper';
 import UserType from '../util/types/user.type';
@@ -6,7 +8,7 @@ import UrlBuilder from '../util/url.builder';
 // https://github.com/ZJav1310/WhatsThat_TS/issues/1
 class UserController {
   // FIXME: Some of the JSON things dont work and need ot be removed
-  public static async login(email: string, password: string): Promise<Response | void> {
+  public static async login(email: string, password: string): Promise<LoginResponse | void> {
     const myHeaders = RegularHeader();
 
     const requestOptions: RequestInit = {
@@ -23,8 +25,8 @@ class UserController {
         }
         return response.json();
       })
-      .then((response) => response)
-      .catch((error) => console.log('Error caught while logging in user: ', error));
+      .then((response) => response as LoginResponse);
+    // .catch((error) => console.log('Error caught while logging in user: ', error));
   }
   public static async logout(): Promise<Response | void> {
     const myHeaders = await AuthHeader();
@@ -43,14 +45,14 @@ class UserController {
         return response.json();
       })
       .then((response) => response)
-      .catch((error) => console.log('Error caught while logging out user: ', error));
+      // .catch((error) => console.log('Error caught while logging out user: ', error));
   }
   public static async register(
     first_name: string,
     last_name: string,
     email: string,
     password: string
-  ): Promise<Response | void> {
+  ): Promise<SignUpResponse | void> {
     const myHeaders = RegularHeader();
 
     const requestOptions: RequestInit = {
@@ -73,11 +75,12 @@ class UserController {
         return response.json();
       })
       .then((response) => response)
-      .catch((error) => console.log('Error caught while registering user: ', error));
+      // .catch((error) => console.log('Error caught while registering user: ', error));
   }
-  public static async getUserInfo(user_id: number) {
-    const myHeaders = await AuthHeader();
 
+  public static async getUserInfo(user_id: number): Promise<User | void> {
+    const myHeaders = await AuthHeader();
+    console.log("MY HEADER", myHeaders);
     const requestOptions: RequestInit = {
       method: 'GET',
       headers: myHeaders,
@@ -91,8 +94,8 @@ class UserController {
         }
         return response.json();
       })
-      .then((response) => response)
-      .catch((error) => console.log('Error caught while fetching user information: ', error));
+      .then((response) => response as User)
+      // .catch((error) => console.log('Error caught while fetching user information: ', error));
   }
   public static async updateUserInfo(
     user_id: number,
@@ -112,10 +115,9 @@ class UserController {
         if (!response.ok) {
           throw new Error(`HTTP error, status = ${response.status}`);
         }
-        return response.json();
+        return response;
       })
-      .then((response) => response)
-      .catch((error) => console.log('Error caught while updating user information: ', error));
+      // .catch((error) => console.log('Error caught while updating user information: ', error));
   }
   // TODO: Below API things
   // public static async getUserPhoto() {}

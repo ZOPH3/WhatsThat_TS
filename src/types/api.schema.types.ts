@@ -41,7 +41,7 @@ export type LoginUser = {
 
 export type LoginResponse = {
   user_id: number;
-  session_token: string;
+  token: string;
 };
 
 export type SignUpResponse = {

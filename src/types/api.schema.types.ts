@@ -5,19 +5,11 @@ export type ChatSummary = {
   last_message: SingleMessage;
 };
 
-export type ChatSummaries = {
-  chatSummaries: ChatSummary[];
-};
-
 export type User = {
   user_id: number;
   first_name: string;
   last_name: string;
   email: string;
-};
-
-export type Users = {
-  users: User[];
 };
 
 export type AddUser = {
@@ -40,7 +32,7 @@ export type LoginUser = {
 };
 
 export type LoginResponse = {
-  user_id: number;
+  id: number;
   token: string;
 };
 
@@ -59,8 +51,8 @@ export type CreateChatResponse = {
 export type Chat = {
   name: string;
   creator: User;
-  members: Users;
-  messages: Messages;
+  members: User[];
+  messages: SingleMessage[];
 };
 
 export type UpdateChat = {
@@ -68,14 +60,10 @@ export type UpdateChat = {
 };
 
 export type SingleMessage = {
-  message_id: string;
+  message_id: number;
   timestamp: number;
   message: string;
   author: User;
-};
-
-export type Messages = {
-  messages: SingleMessage[];
 };
 
 export type SendMessage = {

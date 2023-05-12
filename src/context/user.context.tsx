@@ -1,5 +1,5 @@
 import { createContext } from 'react';
-import UserType from '../util/types/user.type';
+import { User } from '../types/api.schema.types';
 
 const initialState = {
   user: {
@@ -9,7 +9,7 @@ const initialState = {
     email: '',
   },
   // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
-  setUser: (value: UserType) => {},
+  setUser: (value: User) => {},
 };
 
 export const UserContext = createContext(initialState);

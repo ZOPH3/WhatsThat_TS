@@ -27,7 +27,7 @@ export default class AuthController {
 
   public static async setToken(value: string) {
     try {
-      let error = undefined;
+      const error = undefined;
 
       await AsyncStorage.setItem(StorageKeys.AuthToken, JSON.stringify({ token: value }), error);
 

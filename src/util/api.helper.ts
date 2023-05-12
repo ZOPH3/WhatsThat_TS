@@ -1,4 +1,3 @@
-import { PrivateValueStore } from "@react-navigation/native";
 import AuthService from "../services/auth.services";
 
 export async function AuthHeader(){
@@ -7,7 +6,6 @@ export async function AuthHeader(){
 
     const value = await AuthService.getToken();
     if (value) {
-      console.log("THE TOKEN ISSSSS", value);
       myHeaders.append("X-Authorization", value);
     }
 

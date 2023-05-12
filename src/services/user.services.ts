@@ -1,5 +1,5 @@
 import UserController from '../controllers/user.controller';
-import UserType from '../util/types/user.type';
+import { User } from '../types/api.schema.types';
 
 class UserService {
   public static async login(email: string, password: string) {
@@ -25,11 +25,10 @@ class UserService {
 
   public static async getUserInfo(user_id: number) {
     const response = (await UserController.getUserInfo(user_id)) ?? undefined;
-    console.log("FROM SERVICE", response);
     return response;
   }
 
-  public static async updateUserInfo(user_id: number, payload: Partial<UserType>) {
+  public static async updateUserInfo(user_id: number, payload: Partial<User>) {
     const response = (await UserController.updateUserInfo(user_id, payload)) ?? undefined;
     return response;
   }

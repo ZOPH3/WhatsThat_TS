@@ -10,8 +10,8 @@ import { useRoute } from '@react-navigation/native';
 import IsLoadingIndicator from '../utils/isLoadingIndicator.component';
 import MessageBubbleComponent from './message.item.component';
 import MessageServices from '../../services/message.services';
-import MessageType from '../../util/types/message.type';
 import { UserContext } from '../../context/user.context';
+import { SingleMessage } from '../../types/api.schema.types';
 
 //DONE: Flat list provided a method to scroll to the bottom on the list, can use this to trigger when message is sent?
 //FIXME: When messages are sent successfully, need to clear the TextInput, current method does not work. -> UseRef might help here.
@@ -24,41 +24,40 @@ const ChatWindowComponent = () => {
   const route = useRoute();
   const chat_id = route.params.chat_id;
 
-  const flatListRef = useRef<FlatList<MessageType>>(null);
+  const flatListRef = useRef<FlatList<SingleMessage>>(null);
 
   const [isLoading, setIsLoading] = useState(true);
-  const [messageList, setMessageList] = useState<MessageType[]>([]);
+  const [messageList, setMessageList] = useState<SingleMessage[]>([]);
   const [userInput, setUserInput] = useState('');
   const [isSuccess, setIsSuccess] = useState(false);
 
   useEffect(() => {
     setIsLoading(true);
 
-    function fetchMessages() {
-      const result = MessageServices.getMessage(chat_id).then(
-        (response) => response,
-        (err) => err
-      );
-      return result;
+    async function handleFetchMessages() {
+      try {
+        const response = await MessageServices.getMessage(chat_id);
+
+        if (!response) {
+          throw new Error('Unable to fetch messages...');
+        }
+
+        // console.log(response.messages);
+
+        setMessageList(sortByDateTime(response).reverse());
+        setIsSuccess(true);
+        triggerScrollToEnd();
+      } catch (err) {
+        console.log(err);
+      }
     }
 
-    fetchMessages()
-      .then(
-        (messages) => {
-          setMessageList(sortByDateTime(messages).reverse());
-          setIsSuccess(true);
-          triggerScrollToEnd();
-          // flatListRef.current?.scrollToOffset({offset:0})
-        },
-        (err) => {
-          setIsSuccess(false);
-          console.log(err.status);
-        }
-      )
-      .finally(() => setIsLoading(false));
+    handleFetchMessages().finally(() => {
+      setIsLoading(false);
+    });
   }, []);
 
-  function sortByDateTime(messageList: MessageType[]) {
+  function sortByDateTime(messageList: SingleMessage[]) {
     return messageList.sort(function (a, b) {
       return new Date(b.timestamp).valueOf() - new Date(a.timestamp).valueOf();
     });
@@ -85,7 +84,7 @@ const ChatWindowComponent = () => {
 
       if (id === 0) id = id + 1;
 
-      const new_message: MessageType = {
+      const new_message: SingleMessage = {
         message_id: id,
         timestamp: Date.now(),
         message: userInput,

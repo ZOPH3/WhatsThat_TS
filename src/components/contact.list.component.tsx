@@ -3,10 +3,9 @@ import { ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Avatar, ListItem } from '@react-native-material/core';
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
+import { User } from '../types/api.schema.types';
 
-import UserType from '../util/types/user.type';
-
-function ContactListComponent(contactList: UserType[]) {
+function ContactListComponent(contactList: User[]) {
   return (
     <SafeAreaView>
       <ScrollView>

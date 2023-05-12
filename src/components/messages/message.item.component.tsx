@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import MessageType from '../../util/types/message.type';
+import { SingleMessage } from '../../types/api.schema.types';
 
 const MessageBubbleComponent = (props: {
-  message: MessageType;
+  message: SingleMessage;
   isSelf: boolean;
   position: number;
   triggerDelete: (message_id: number) => void;

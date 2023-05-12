@@ -1,7 +1,7 @@
 import React from 'react';
 import { ListItem, Avatar, Chip } from '@react-native-material/core';
 import { useNavigation } from '@react-navigation/native';
-import ChatInfoType from '../../util/types/chatinfo.type';
+import { ChatSummary } from '../../types/api.schema.types';
 
 function isUnread(isUnread: boolean) {
   if (isUnread) {
@@ -17,7 +17,7 @@ function isUnread(isUnread: boolean) {
  * Home screen chat list
  */
 
-const ListItemComponent = (props: { key: number; chatSummary: ChatInfoType }) => {
+const ListItemComponent = (props: { key: number; chatSummary: ChatSummary }) => {
   // const navigation = useNavigation();
   const navigation = useNavigation();
 

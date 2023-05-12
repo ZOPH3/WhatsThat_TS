@@ -1,18 +1,17 @@
 import React, { useEffect, useContext, useState, Fragment } from 'react';
 import { useRoute } from '@react-navigation/native';
 import { UserContext } from '../../context/user.context';
-import { Text } from 'react-native';
 import ContactServices from '../../services/contact.services';
-import UserType from '../../util/types/user.type';
 import ContactListComponent from '../../components/contact.list.component';
 import IsLoadingIndicator from '../../components/utils/isLoadingIndicator.component';
+import { User } from '../../types/api.schema.types';
 
 function BlockedScreen() {
   const current_user = useContext(UserContext);
   const route = useRoute();
 
   const [isLoading, setIsLoading] = useState(true);
-  const [contactList, setContactList] = useState<UserType[]>();
+  const [contactList, setContactList] = useState<User[]>();
   const [isSuccess, setIsSuccess] = useState(false);
 
   useEffect(() => {
@@ -46,13 +45,13 @@ function BlockedScreen() {
     //     result.status?  setMessageList(messageList?.concat(new_message)) : alert(result.message);
     // })
     ContactServices.addContact(user_id).then((result) => {
-      result.status ? setContactList(contactList) : alert(result.message);
+      result?.ok ? setContactList(contactList) : alert(result);
     });
   }
 
   function addToBlock(user_id: number) {
     ContactServices.addContact(user_id).then((result) => {
-      result.status ? setContactList(contactList) : alert(result.message);
+      result?.ok ? setContactList(contactList) : alert(result);
     });
   }
 

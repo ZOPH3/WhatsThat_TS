@@ -1,8 +1,7 @@
 import { User } from '../types/api.schema.types';
-import { AddUser, LoginResponse, SignUpResponse } from '../types/api.schema.types';
+import { LoginResponse, SignUpResponse } from '../types/api.schema.types';
 import { AuthHeader } from '../util/api.helper';
 import { RegularHeader } from '../util/api.helper';
-import UserType from '../util/types/user.type';
 import UrlBuilder from '../util/url.builder';
 
 // https://github.com/ZJav1310/WhatsThat_TS/issues/1
@@ -80,7 +79,7 @@ class UserController {
 
   public static async getUserInfo(user_id: number): Promise<User | void> {
     const myHeaders = await AuthHeader();
-    console.log("MY HEADER", myHeaders);
+
     const requestOptions: RequestInit = {
       method: 'GET',
       headers: myHeaders,
@@ -99,7 +98,7 @@ class UserController {
   }
   public static async updateUserInfo(
     user_id: number,
-    payload: Partial<UserType>
+    payload: Partial<User>
   ): Promise<Response | void> {
     const myHeaders = await AuthHeader();
 

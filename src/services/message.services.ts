@@ -4,7 +4,8 @@ import ChatService from './chat.services';
 class MessageServices {
   static async getMessage(chat_id: number) {
     const response = (await ChatService.fetchChatDetails(chat_id)) ?? undefined;
-    return response;
+    const messages = response !== undefined ? response.messages : undefined;
+    return messages;
   }
 
   static async sendMessage(chat_id: number, message: string) {

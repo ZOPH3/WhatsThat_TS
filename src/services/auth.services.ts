@@ -8,7 +8,7 @@ class AuthService {
       throw new Error(`Unable to get token...`);
     }
 
-    return data;
+    return JSON.parse(data).token;
   }
 
   public static async setToken(token: string) {

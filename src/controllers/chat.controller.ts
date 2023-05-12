@@ -1,9 +1,10 @@
+import { Chat, ChatSummary, CreateChatResponse } from '../types/api.schema.types';
 import { AuthHeader } from '../util/api.helper';
 import UrlBuilder from '../util/url.builder';
 
 // https://github.com/ZJav1310/WhatsThat_TS/issues/1
 class ChatController {
-  static async fetchChatList(): Promise<Response | void> {
+  static async fetchChatList(): Promise<ChatSummary[] | void> {
     const myHeaders = await AuthHeader();
 
     const requestOptions: RequestInit = {
@@ -19,11 +20,11 @@ class ChatController {
         }
         return response.json();
       })
-      .then((response) => response)
-      .catch((error) => console.log('Error caught while fetching chat summary list: ', error));
+      .then((response) => response as ChatSummary[])
+      // .catch((error) => console.log('Error caught while fetching chat summary list: ', error));
   }
 
-  static async newConversation(name: string): Promise<Response | void> {
+  static async newConversation(name: string): Promise<CreateChatResponse | void> {
     const myHeaders = await AuthHeader();
 
     const requestOptions: RequestInit = {
@@ -40,11 +41,11 @@ class ChatController {
         }
         return response.json();
       })
-      .then((response) => response)
-      .catch((error) => console.log('Error caught while creating new conversation: ', error));
+      .then((response) => response as CreateChatResponse)
+      // .catch((error) => console.log('Error caught while creating new conversation: ', error));
   }
 
-  static async fetchChatDetails(chat_id: number): Promise<Response | void> {
+  static async fetchChatDetails(chat_id: number): Promise<Chat | void> {
     const myHeaders = await AuthHeader();
 
     const requestOptions: RequestInit = {
@@ -60,8 +61,8 @@ class ChatController {
         }
         return response.json();
       })
-      .then((response) => response)
-      .catch((error) => console.log('Error caught while fetching chat details: ', error));
+      .then((response) => response as Chat)
+      // .catch((error) => console.log('Error caught while fetching chat details: ', error));
   }
 
   static async updateChatDetails(chat_id: number, name: string): Promise<Response | void> {

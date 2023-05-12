@@ -1,10 +1,8 @@
 import React, { useContext } from 'react';
 import { Button, View } from 'react-native';
-import UserService from '../../services/user.services';
-import AuthService from '../../services/auth.services';
 import { AuthContext } from '../../context/auth.context';
 import { UserContext } from '../../context/user.context';
-import { LoginResponse } from '../../types/api.schema.types';
+import { loginHandler } from '../../handlers/auth.handler';
 
 //FIXME: THIS BE HARDCODED
 const user = {
@@ -17,44 +15,15 @@ function UnauthorisedScreen() {
   const { setUser } = useContext(UserContext);
 
   async function handleLogin(email: string, password: string) {
-    try {
-      // UserService.login(user.email, user.password).then((element) => {
-      //   if (element?.user_id) {
-      //     UserService.getUserInfo(element.user_id).then(async (result) => {
-      //       if (result) {
-      //         console.log('USER FOUND', result.user_id);
-      //         setUser(result);
-      //         setIsLoggedIn(true);
-      //         await AuthService.setToken(element.session_token);
-      //       }
-      //     });
-      //   }
-      //   else {
-      //     alert("Unable to login");
-      //   }
-      // },
-      // (error) => alert(`${error}`) );
-      const loginResult = await UserService.login(user.email, user.password);
-      console.log(loginResult);
+    const user = await loginHandler(email, password);
 
-      if (!loginResult) {
-        throw new Error(`Unable to login user`);
-      }
-
-      await AuthService.setToken(loginResult.token);
-
-      let fetchedUser = await UserService.getUserInfo(loginResult.user_id);
-
-      if (!fetchedUser) {
-        throw new Error(`Unable to find user`);
-      }
-
-      console.log('USER FOUND', loginResult.user_id);
-      setUser(fetchedUser);
-      setIsLoggedIn(true);
-    } catch (error) {
-      console.log(error);
+    if(!user) {
+      alert("Unable to login");
+      return;
     }
+
+    setUser(user);
+    setIsLoggedIn(true);
   }
 
   return (

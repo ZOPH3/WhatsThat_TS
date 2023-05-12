@@ -1,46 +1,44 @@
-import { View, Text, SafeAreaView, ScrollView } from 'react-native';
+import { View, SafeAreaView, ScrollView } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import ChatService from '../../services/chat.services';
-import ChatInfoType from '../../util/types/chatinfo.type';
 import { Button } from '@react-native-material/core';
 import ChatListHomeComponent from '../../components/chat/chatSummary.list.component';
 import { styles } from './ChatListScreen.styles';
 import IsLoadingIndicator from '../../components/utils/isLoadingIndicator.component';
+import { ChatSummary } from '../../types/api.schema.types';
 
 //FIXME: This needs to be moved to context which is used to watch if a chat is updated too from user message?
 function HomeScreen() {
-  const [messageList, setMessageList] = useState<ChatInfoType[]>([]);
+  const [messageList, setMessageList] = useState<ChatSummary[]>([]);
+
   const [isLoading, setIsLoading] = useState(true);
   const [isSuccess, setIsSuccess] = useState(false);
 
   useEffect(() => {
     setIsLoading(true);
 
-    function fetchChat() {
-      const result = ChatService.fetchChatList().then(
-        (response) => response,
-        (err) => err
-      );
-      return result;
+    async function handleFetchChat() {
+      try {
+        const response = await ChatService.fetchChatList();
+
+        if (!response) {
+          throw new Error('Unable to fetch chat list...');
+        }
+
+        setMessageList(sortByDateTime(response));
+        setIsSuccess(true);
+      } catch (err) {
+        console.log(err);
+      }
     }
 
-    fetchChat()
-      .then(
-        (chatSummaries) => {
-          // console.log("Chat Summaries List", chatSummaries.result);
-          setMessageList(sortByDateTime(chatSummaries.result));
-          setIsSuccess(true);
-        },
-        (err) => {
-          setIsSuccess(false);
-          err;
-        }
-      )
-      .finally(() => setIsLoading(false));
+    handleFetchChat().finally(() => {
+      setIsLoading(false);
+    });
   }, []);
 
-  function sortByDateTime(chatSummaries: ChatInfoType[]) {
-    return chatSummaries.sort(function (a, b) {
+  function sortByDateTime(list: ChatSummary[]) {
+    return list.sort(function (a, b) {
       return (
         new Date(b.last_message.timestamp).valueOf() - new Date(a.last_message.timestamp).valueOf()
       );

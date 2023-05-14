@@ -1,4 +1,7 @@
 /**
+ * @deprecated The method should not be used
+ */
+/**
  * Auth Module
  * Chat Module
  *  Messages

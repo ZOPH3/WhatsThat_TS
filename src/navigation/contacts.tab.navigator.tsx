@@ -7,7 +7,13 @@ import Icon from '@expo/vector-icons/MaterialCommunityIcons';
 import ContactsScreen from '../screens/account/contacts.list.screen';
 import { useNavigation } from '@react-navigation/native';
 
-const Tab = createBottomTabNavigator();
+export type BottomTabNavigator = {
+  Chats: undefined;
+  Contacts: undefined;
+  Profile: undefined;
+};
+
+const Tab = createBottomTabNavigator<BottomTabNavigator>();
 
 export function TabNavigator() {
   const navigation = useNavigation();
@@ -28,7 +34,7 @@ export function TabNavigator() {
               <IconButton
                 icon={(props) => <Icon name="account-remove" {...props} />}
                 color="primary"
-                onPress={() => navigation.navigate('Blocked List')}
+                // onPress={() => navigation.navigate('Blocked List')} //FIXME: Shouldn't need to navigate to a new page
               />
             </HStack>
           ),

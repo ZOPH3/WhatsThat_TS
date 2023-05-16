@@ -4,7 +4,9 @@ import ListItemComponent from "./chatSummary.item.component";
 import { ChatSummary } from "../../types/api.schema.types";
 
 export default function ChatListHomeComponent(props: ChatSummary[]) {
-  return props.map((chat) => {
+  const chatSummaries = props;
+  
+  return chatSummaries.map((chat) => {
     return (
       <Pressable key={chat.chat_id}>
         <ListItemComponent key={chat.chat_id} chatSummary={chat} />

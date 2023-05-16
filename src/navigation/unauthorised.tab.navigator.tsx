@@ -5,7 +5,7 @@ import LoginScreen from '../screens/login/login.screen';
 
 const Tab = createBottomTabNavigator();
 
-export function AuthTabNavigator() {
+export function UnAuthTabNavigator() {
   return (
     <Tab.Navigator initialRouteName="Login">
       <Tab.Screen name="Login" component={LoginScreen} />

@@ -6,11 +6,16 @@ import { useContext } from 'react';
 import ChatScreen from '../screens/conversation/message.list.screen';
 import { TabNavigator } from './contacts.tab.navigator';
 import { AuthContext } from '../context/auth.context';
-import { AuthTabNavigator } from './unauthorised.tab.navigator';
+import { UnAuthTabNavigator } from './unauthorised.tab.navigator';
 import ModalScreen from '../components/modal.component';
-import BlockedScreen from '../screens/account/blocked.list.screen';
 
-const Stack = createNativeStackNavigator();
+export type MainStackNavigator = {
+  Home: undefined;
+  MyModal: undefined;
+  Chat: { title: string; chat_id: number };
+  UnAuthorised: undefined;
+};
+const Stack = createNativeStackNavigator<MainStackNavigator>();
 
 function StackNavigator() {
   const { isLoggedIn } = useContext(AuthContext);
@@ -37,14 +42,14 @@ function StackNavigator() {
                 chat_id: route.params.chat_id,
               })}
             />
-            <Stack.Screen name="Blocked List" component={BlockedScreen} />
+            {/* <Stack.Screen name="Blocked List" component={BlockedScreen} /> */}
           </Stack.Group>
         ) : (
           <Stack.Group>
             <Stack.Screen
               options={{ headerShown: false }}
               name="UnAuthorised"
-              component={AuthTabNavigator}
+              component={UnAuthTabNavigator}
             />
           </Stack.Group>
         )}

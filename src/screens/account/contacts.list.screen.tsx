@@ -29,8 +29,7 @@ function ContactsScreen() {
     fetchContactList()
       .then(
         (contacts) => {
-          console.log('CONTACTS', contacts.result);
-          setContactList(contacts.result);
+          setContactList(contacts);
           setIsSuccess(true);
         },
         (err) => {

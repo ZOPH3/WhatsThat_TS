@@ -27,6 +27,7 @@ class ContactServices {
 
   public static async fetchblocked() {
     const response = (await ContactController.fetchblocked()) ?? undefined;
+    console.log("FETCHED BLOCKEd", response)
     return response;
   }
 }

@@ -28,8 +28,8 @@ function BlockedScreen() {
     fetchContactList()
       .then(
         (contacts) => {
-          console.log('BLOCKED', contacts.result);
-          setContactList(contacts.result);
+          console.log('BLOCKED', contacts);
+          setContactList(contacts);
           setIsSuccess(true);
         },
         (err) => {

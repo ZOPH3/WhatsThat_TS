@@ -1,6 +1,26 @@
-module.exports = function(api: any) {
+module.exports = function (api: any) {
   api.cache(true);
   return {
-    presets: ['@babel/preset-typescript', '@babel/preset-env'],
+    presets: ['@babel/preset-typescript', '@babel/preset-env', 'babel-preset-expo'],
+    plugins: [
+      // NOTE: this is required to pass the right environment
+      [
+        'transform-inline-environment-variables',
+        {
+          include: 'TAMAGUI_TARGET',
+        },
+      ],
+      // NOTE: this is optional, you don't *need* the compiler
+      [
+        '@tamagui/babel-plugin',
+        {
+          components: ['tamagui'],
+          config: './tamagui.config.ts',
+          logTimings: true,
+        },
+      ],
+      // NOTE: this is only necessary if you are using reanimated for animations
+      'react-native-reanimated/plugin',
+    ],
   };
 };

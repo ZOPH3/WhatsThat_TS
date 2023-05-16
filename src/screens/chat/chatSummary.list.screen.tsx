@@ -9,7 +9,7 @@ import { ChatSummary } from '../../types/api.schema.types';
 
 //FIXME: This needs to be moved to context which is used to watch if a chat is updated too from user message?
 function HomeScreen() {
-  const [messageList, setMessageList] = useState<ChatSummary[]>([]);
+  const [chatList, setChatList] = useState<ChatSummary[]>([]);
 
   const [isLoading, setIsLoading] = useState(true);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -24,9 +24,14 @@ function HomeScreen() {
         if (!response) {
           throw new Error('Unable to fetch chat list...');
         }
-
-        setMessageList(sortByDateTime(response));
+        const sortedChatList = sortByDateTime(response);
+        setChatList(sortedChatList);
         setIsSuccess(true);
+
+        // sortedChatList.forEach(element => {
+        //   console.log(element.last_message.timestamp)
+        // });
+
       } catch (err) {
         console.log(err);
       }
@@ -37,10 +42,17 @@ function HomeScreen() {
     });
   }, []);
 
+  function filterChatListByTime(list: ChatSummary[]){
+    return list.filter((c) => c.last_message.timestamp !== undefined);
+  }
+
+  function getOnlyUndefined(list: ChatSummary[]) {
+    return list.filter((c) => c.last_message.timestamp === undefined);
+  }
   function sortByDateTime(list: ChatSummary[]) {
-    return list.sort(function (a, b) {
+    return filterChatListByTime(list).sort(function (a, b) {
       return (
-        new Date(b.last_message.timestamp).valueOf() - new Date(a.last_message.timestamp).valueOf()
+        b.last_message.timestamp - a.last_message.timestamp
       );
     });
   }
@@ -48,13 +60,13 @@ function HomeScreen() {
   if (isLoading) {
     return <IsLoadingIndicator />;
   } else {
-    if (isSuccess && messageList) {
+    if (isSuccess && chatList) {
       return (
         <>
           <View style={styles.containerMain}>
             <SafeAreaView style={styles.container}>
               <ScrollView style={styles.scrollView}>
-                <View>{ChatListHomeComponent(messageList)}</View>
+                <View>{ChatListHomeComponent(chatList)}</View>
               </ScrollView>
             </SafeAreaView>
           </View>
@@ -66,7 +78,7 @@ function HomeScreen() {
           <Button
             title="Y"
             onPress={() => {
-              console.log(messageList);
+              console.log(chatList);
             }}
           />
         </>

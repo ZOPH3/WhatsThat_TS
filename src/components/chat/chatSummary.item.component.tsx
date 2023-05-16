@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { ListItem, Avatar, Chip } from '@react-native-material/core';
 import { useNavigation } from '@react-navigation/native';
 import { ChatSummary } from '../../types/api.schema.types';
@@ -20,7 +20,7 @@ const ListItemComponent = (props: { key: number; chatSummary: ChatSummary }) => 
         leading={generateAvatar(chatSummary)}
         title={generateTitle(chatSummary)}
         secondaryText={generateLastMessage(chatSummary)}
-        trailing={generateUnreadChip(true)}
+        trailing={() => <GenerateUnreadChip isUnread={true} />}
         onPress={() => {
           navigation.navigate('Chat', {
             title: generateTitle(chatSummary),
@@ -32,12 +32,12 @@ const ListItemComponent = (props: { key: number; chatSummary: ChatSummary }) => 
   );
 };
 
-const generateUnreadChip = (isUnread: boolean) => {
-  return isUnread ? <Chip label="Filled" color="primary" /> : <></>;
+const GenerateUnreadChip: FC<{ isUnread: boolean }> = (input) => {
+  return input.isUnread ? <Chip label="Filled" color="primary" /> : <></>;
 };
 
 const generateAvatar = (chatSummary: ChatSummary) => {
-  return <Avatar label={`${generateTitle(chatSummary)}`} color={`${randomNumber()}`} />;
+  return <Avatar label={`${generateTitle(chatSummary)}`} color={`${generateColor(chatSummary)}`} />;
 };
 
 const generateTitle = (chatSummary: ChatSummary) => {
@@ -53,6 +53,23 @@ const randomNumber = () => {
     .toString(16)
     .padStart(6, '0');
   return `#${generateRandomColor}`;
+};
+
+const stringToColour = (str: string) => {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  let colour = '#';
+  for (let i = 0; i < 3; i++) {
+    const value = (hash >> (i * 8)) & 0xff;
+    colour += ('00' + value.toString(16)).substr(-2);
+  }
+  return colour;
+};
+
+const generateColor = (chatSummary: ChatSummary) => {
+  return stringToColour(`${chatSummary.chat_id}${generateTitle(chatSummary)}`);
 };
 
 export default ListItemComponent;

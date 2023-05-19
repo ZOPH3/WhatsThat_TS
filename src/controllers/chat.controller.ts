@@ -4,7 +4,7 @@ import UrlBuilder from '../util/url.builder';
 
 // https://github.com/ZJav1310/WhatsThat_TS/issues/1
 class ChatController {
-  static async fetchChatList(): Promise<ChatSummary[] | void> {
+  static async fetchChatList(): Promise<ChatSummary[]> {
     const myHeaders = await AuthHeader();
 
     const requestOptions: RequestInit = {

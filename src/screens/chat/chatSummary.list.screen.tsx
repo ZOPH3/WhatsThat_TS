@@ -6,46 +6,53 @@ import ChatListHomeComponent from '../../components/chat/chatSummary.list.compon
 import { styles } from './ChatListScreen.styles';
 import IsLoadingIndicator from '../../components/utils/isLoadingIndicator.component';
 import { ChatSummary } from '../../types/api.schema.types';
+import useQuery from '../../hooks/useQuery';
 
 //FIXME: This needs to be moved to context which is used to watch if a chat is updated too from user message?
 function HomeScreen() {
-  const [chatList, setChatList] = useState<ChatSummary[]>([]);
+  // const [chatList, setChatList] = useState<ChatSummary[]>([]);
+  // const [isLoading, setIsLoading] = useState(true);
+  // const [isSuccess, setIsSuccess] = useState(false);
 
-  const [isLoading, setIsLoading] = useState(true);
-  const [isSuccess, setIsSuccess] = useState(false);
+  // useEffect(() => {
+  //   setIsLoading(true);
 
-  useEffect(() => {
-    setIsLoading(true);
+  //   async function handleFetchChat() {
+  //     try {
+  //       const response = await ChatService.fetchChatList();
 
-    async function handleFetchChat() {
-      try {
-        const response = await ChatService.fetchChatList();
+  //       if (!response) {
+  //         throw new Error('Unable to fetch chat list...');
+  //       }
+  //       const sortedChatList = sortByDateTime(response);
+  //       setChatList(sortedChatList);
+  //       setIsSuccess(true);
 
-        if (!response) {
-          throw new Error('Unable to fetch chat list...');
-        }
-        const sortedChatList = sortByDateTime(response);
-        setChatList(sortedChatList);
-        setIsSuccess(true);
+  //       // sortedChatList.forEach(element => {
+  //       //   console.log(element.last_message.timestamp)
+  //       // });
 
-        // sortedChatList.forEach(element => {
-        //   console.log(element.last_message.timestamp)
-        // });
+  //     } catch (err) {
+  //       console.log(err);
+  //     }
+  //   }
 
-      } catch (err) {
-        console.log(err);
-      }
-    }
+  //   handleFetchChat().finally(() => {
+  //     setIsLoading(false);
+  //   });
+  // }, []);
 
-    handleFetchChat().finally(() => {
-      setIsLoading(false);
-    });
-  }, []);
+  const {
+    data,
+    isLoading,
+    isSuccess,
+    error,
+    refetch
+  } = useQuery<ChatSummary[]>(() => ChatService.fetchChatList());
 
   function filterChatListByTime(list: ChatSummary[]){
     return list.filter((c) => c.last_message.timestamp !== undefined);
   }
-
   function getOnlyUndefined(list: ChatSummary[]) {
     return list.filter((c) => c.last_message.timestamp === undefined);
   }
@@ -60,13 +67,13 @@ function HomeScreen() {
   if (isLoading) {
     return <IsLoadingIndicator />;
   } else {
-    if (isSuccess && chatList) {
+    if (isSuccess && data) {
       return (
         <>
           <View style={styles.containerMain}>
             <SafeAreaView style={styles.container}>
               <ScrollView style={styles.scrollView}>
-                <View>{ChatListHomeComponent(chatList)}</View>
+                <View>{ChatListHomeComponent(data)}</View>
               </ScrollView>
             </SafeAreaView>
           </View>
@@ -78,7 +85,7 @@ function HomeScreen() {
           <Button
             title="Y"
             onPress={() => {
-              console.log(chatList);
+              console.log(data);
             }}
           />
         </>

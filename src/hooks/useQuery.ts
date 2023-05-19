@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 
-interface State<T> {
+export interface State<T> {
   data: T | undefined;
   isLoading: boolean;
   isSuccess: boolean;
   isError: boolean;
-  error?: string | undefined;
+  error?: string;
 }
 
 const doNothing = (): void => {
@@ -13,8 +13,8 @@ const doNothing = (): void => {
 };
 
 interface QueryConfig {
-  onSuccess: (data: any) => void;
-  onError: (error: any) => void;
+  onSuccess?: (data: any) => void;
+  onError?: (error: any) => void;
 }
 
 const defaultConfig: QueryConfig = {
@@ -47,7 +47,7 @@ function useQuery<T>(callback: () => Promise<T>, config = defaultConfig) {
           isError: false,
           error: '',
         });
-        onSuccess(response as T);
+        if(onSuccess) onSuccess(response as T);
       })
       .catch((error) => {
         setState({
@@ -57,7 +57,7 @@ function useQuery<T>(callback: () => Promise<T>, config = defaultConfig) {
           isError: true,
           error: error || 'Failed to fetch...',
         });
-        onError(error);
+        if(onError) onError(error);
       });
   };
 

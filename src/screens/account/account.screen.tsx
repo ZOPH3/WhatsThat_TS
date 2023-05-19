@@ -4,6 +4,7 @@ import { View } from 'react-native';
 import { Button, Stack, Text } from '@react-native-material/core';
 import FileUploader from '../../components/utils/upload.component';
 import CameraHelper from '../../util/camera.util';
+import UrlBuilder from '../../util/url.builder';
 //TODO: allow the user to edit and submit their details
 
 function ProfileScreen() {
@@ -20,7 +21,7 @@ function ProfileScreen() {
         <Text variant="subtitle1">{user.user.email}</Text>
         <Button
           title="Upload profile picture"
-          onPress={() => console.log('Clicked upload picture...')}
+          onPress={() => console.log('upload')}
         />
       </Stack>
     </View>

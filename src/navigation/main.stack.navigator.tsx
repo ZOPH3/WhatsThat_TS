@@ -4,16 +4,18 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useContext } from 'react';
 
 import ChatScreen from '../screens/conversation/message.list.screen';
-import { TabNavigator } from './contacts.tab.navigator';
+import { TabNavigator } from './tab.navigator';
 import { AuthContext } from '../context/auth.context';
 import { UnAuthTabNavigator } from './unauthorised.tab.navigator';
 import ModalScreen from '../components/modal.component';
+import AddContactScreen from '../screens/account/addContact.screen';
 
 export type MainStackNavigator = {
   Home: undefined;
   MyModal: undefined;
   Chat: { title: string; chat_id: number };
   UnAuthorised: undefined;
+  AddContact: undefined;
 };
 const Stack = createNativeStackNavigator<MainStackNavigator>();
 
@@ -32,6 +34,13 @@ function StackNavigator() {
                 gestureEnabled: false,
                 headerShown: false,
                 headerLeft: () => <></>,
+              }}
+            />
+            <Stack.Screen
+              name="Add Contact"
+              component={AddContactScreen}
+              options={{
+                gestureEnabled: false,
               }}
             />
             <Stack.Screen

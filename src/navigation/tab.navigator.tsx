@@ -30,10 +30,12 @@ export function TabNavigator() {
               <IconButton
                 icon={(props) => <Icon name="account-plus" {...props} />}
                 color="primary"
+                onPress={() => navigation.navigate('Add Contact')}
               />
               <IconButton
                 icon={(props) => <Icon name="account-remove" {...props} />}
                 color="primary"
+                onPress={() => console.log("block contact")}
                 // onPress={() => navigation.navigate('Blocked List')} //FIXME: Shouldn't need to navigate to a new page
               />
             </HStack>

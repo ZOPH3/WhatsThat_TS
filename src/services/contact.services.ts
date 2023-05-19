@@ -1,4 +1,5 @@
 import ContactController from '../controllers/contact.controller';
+import { SearchParams } from '../util/url.builder';
 
 class ContactServices {
   public static async fetchContacts() {
@@ -27,7 +28,12 @@ class ContactServices {
 
   public static async fetchblocked() {
     const response = (await ContactController.fetchblocked()) ?? undefined;
-    console.log("FETCHED BLOCKEd", response)
+    console.log("FETCHED BLOCKEd", response);
+    return response;
+  }
+
+  public static async search(params: SearchParams) {
+    const response = (await ContactController.search(params)) ?? undefined;
     return response;
   }
 }

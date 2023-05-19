@@ -1,4 +1,10 @@
 import config from '../config.json';
+export interface SearchParams {
+  q: string;
+  search_in?: 'all' | 'contacts';
+  limit?: number;
+  offset?: number;
+}
 
 export default class UrlBuilder {
   static createNewUser = () => config.BASE_URL + '/user';
@@ -8,7 +14,15 @@ export default class UrlBuilder {
   static logout = () => config.BASE_URL + '/logout';
   static fetchUserPhoto = (user_id: number) => config.BASE_URL + `/user/${user_id}/photo`;
   static uploadUserPhoto = (user_id: number) => config.BASE_URL + `/user/${user_id}/photo`;
-  static search = () => config.BASE_URL + '/search';
+  static search = (parameters: SearchParams) => {
+    let base = config.BASE_URL + `/search?q=${parameters.q}`;
+    const search_in = `&search_in=${parameters.search_in ? parameters.search_in : 'all'}`;
+    base += search_in;
+    if(parameters.limit) base += '&limit=' + parameters.limit;
+    if(parameters.offset) base += '&offset='+parameters.offset;
+
+    return base;
+  };
 
   static fetchContacts = () => config.BASE_URL + '/contacts';
   static addContact = (user_id: number) => config.BASE_URL + `/user/${user_id}/contact`;

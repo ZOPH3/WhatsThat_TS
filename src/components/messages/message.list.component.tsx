@@ -27,24 +27,23 @@ const ChatWindowComponent = () => {
 
   const flatListRef = useRef<FlatList<SingleMessage>>(null);
   const [userInput, setUserInput] = useState('');
+  const [messageList, setMessageList] = useState<SingleMessage[]>();
 
-  const {
-    data,
-    isLoading,
-    isSuccess,
-    error,
-    refetch
-  } = useQuery<SingleMessage[]>(() => MessageServices.getMessage(chat_id));
+  const { data, isLoading, isSuccess, error, refetch } = useQuery<SingleMessage[]>(
+    () => MessageServices.getMessage(chat_id),
+    {
+      onSuccess: (data) => {
+        setMessageList(data);
+      },
+    }
+  );
 
-
-  function sortByDateTime(messageList: SingleMessage[]) {
-    return messageList.sort(function (a, b) {
-      return new Date(b.timestamp).valueOf() - new Date(a.timestamp).valueOf();
-    });
+  function sortByDateTime(list: SingleMessage[]) {
+    return list.sort((a, b) => a.timestamp - b.timestamp);
   }
 
   function getLastMessageId() {
-    const m = data?.sort((a, b) => a.message_id - b.message_id);
+    const m = messageList?.sort((a, b) => a.message_id - b.message_id);
     const last = m?.findLast((message) => message.message_id != null);
 
     if (last != null) {
@@ -73,8 +72,9 @@ const ChatWindowComponent = () => {
 
       // TODO: This works to send a message but its basic
       MessageServices.sendMessage(chat_id, userInput).then((result) => {
-        if (result && result.ok) {
+        if (result && messageList) {
           setMessageList([...messageList, new_message]);
+          // refetch();
           setUserInput('');
           triggerScrollToEnd();
         } else {
@@ -99,14 +99,14 @@ const ChatWindowComponent = () => {
   if (isLoading) {
     return <IsLoadingIndicator />;
   } else {
-    if (isSuccess && data) {
+    if (isSuccess && messageList) {
       return (
         <>
           <View style={styles.containerMain}>
             <SafeAreaView style={styles.container}>
               <FlatList
                 ref={flatListRef}
-                data={data}
+                data={sortByDateTime(messageList)}
                 keyExtractor={(item) => item.message_id.toString()}
                 renderItem={(message) => (
                   <MessageBubbleComponent

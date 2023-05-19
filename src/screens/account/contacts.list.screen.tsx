@@ -1,69 +1,89 @@
-import React, { useEffect, useContext, useState, Fragment } from 'react';
-import { useRoute } from '@react-navigation/native';
-import { UserContext } from '../../context/user.context';
-import { Text } from 'react-native';
+import React, { useState, Fragment } from 'react';
+// import { useRoute } from '@react-navigation/native';
+// import { UserContext } from '../../context/user.context';
+import { SafeAreaView, ScrollView} from 'react-native';
 import ContactServices from '../../services/contact.services';
-import ContactListComponent from '../../components/contact.list.component';
+// import ContactListComponent from '../../components/contact.list.component';
 import IsLoadingIndicator from '../../components/utils/isLoadingIndicator.component';
 import { User } from '../../types/api.schema.types';
+import useQuery from '../../hooks/useQuery';
+import { Avatar, ListItem } from '@react-native-material/core';
+import Icon from '@expo/vector-icons/MaterialCommunityIcons';
+import { stringToColour } from '../../util/utilities';
 
 function ContactsScreen() {
-  const current_user = useContext(UserContext);
-  const route = useRoute();
+  // const current_user = useContext(UserContext);
+  // const route = useRoute();
 
-  const [isLoading, setIsLoading] = useState(true);
   const [contactList, setContactList] = useState<User[]>();
-  const [isSuccess, setIsSuccess] = useState(false);
 
-  useEffect(() => {
-    setIsLoading(true);
-
-    function fetchContactList() {
-      const result = ContactServices.fetchContacts().then(
-        (response) => response,
-        (err) => err
-      );
-      return result;
+  const { data, isLoading, isSuccess, error, refetch } = useQuery<User[]>(
+    () => ContactServices.fetchContacts(),
+    {
+      onSuccess: (data) => {
+        setContactList(data);
+      },
     }
-
-    fetchContactList()
-      .then(
-        (contacts) => {
-          setContactList(contacts);
-          setIsSuccess(true);
-        },
-        (err) => {
-          setIsSuccess(false);
-        }
-      )
-      .finally(() => setIsLoading(false));
-  }, []);
+  );
 
   function addContact(user_id: number) {
-    //Check if theyre in list already
-    // MessageServices.sendMessage(chat_id, userInput).then((result) => {
-    //     result.status?  setMessageList(messageList?.concat(new_message)) : alert(result.message);
-    // })
     ContactServices.addContact(user_id).then((result) => {
-      result && result.ok ? setContactList(contactList) : alert("Unable to add user to contact");
+      if (result) {
+        refetch();
+      } else {
+        alert('Unable to add user to contact');
+      }
     });
   }
 
   function addToBlock(user_id: number) {
     ContactServices.addContact(user_id).then((result) => {
-      result && result.ok ? setContactList(contactList) : alert("Unable to add user to block list");
+      if (result && result.ok) {
+        refetch();
+      } else {
+        alert('Unable to add user to contact');
+      }
     });
   }
 
+  //TODO: Use Composition instead of this mess
   if (isLoading) {
     return <IsLoadingIndicator />;
   } else {
     if (isSuccess && contactList) {
-      return ContactListComponent(contactList);
+      // return ContactListComponent(contactList);
+      return (
+        <SafeAreaView>
+          <ScrollView>
+            {contactList.map((contact, key) => {
+              const name = `${contact.first_name} ${contact.last_name}`;
+              const email = `${contact.email}`;
+
+              return (
+                <Fragment key={key}>
+                  {
+                    <ListItem
+                      leadingMode="avatar"
+                      leading={
+                        <Avatar label={name} color={`${stringToColour(name + email)}`} />
+                      }
+                      title={name}
+                      secondaryText={email}
+                      trailing={(props) => <Icon name="chevron-right" {...props} />}
+                      //TODO: remove contact or block
+                      onPress={() => alert(`Go to ${name}'s profile?`)}
+                    />
+                  }
+                </Fragment>
+              );
+            })}
+          </ScrollView>
+        </SafeAreaView>
+      );
     } else {
-      return <></>
+      return <></>;
     }
-  } 
+  }
 }
 
 export default ContactsScreen;

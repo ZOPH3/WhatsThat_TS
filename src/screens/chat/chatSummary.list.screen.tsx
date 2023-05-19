@@ -1,5 +1,5 @@
 import { View, SafeAreaView, ScrollView } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import ChatService from '../../services/chat.services';
 import { Button } from '@react-native-material/core';
 import ChatListHomeComponent from '../../components/chat/chatSummary.list.component';
@@ -10,38 +10,6 @@ import useQuery from '../../hooks/useQuery';
 
 //FIXME: This needs to be moved to context which is used to watch if a chat is updated too from user message?
 function HomeScreen() {
-  // const [chatList, setChatList] = useState<ChatSummary[]>([]);
-  // const [isLoading, setIsLoading] = useState(true);
-  // const [isSuccess, setIsSuccess] = useState(false);
-
-  // useEffect(() => {
-  //   setIsLoading(true);
-
-  //   async function handleFetchChat() {
-  //     try {
-  //       const response = await ChatService.fetchChatList();
-
-  //       if (!response) {
-  //         throw new Error('Unable to fetch chat list...');
-  //       }
-  //       const sortedChatList = sortByDateTime(response);
-  //       setChatList(sortedChatList);
-  //       setIsSuccess(true);
-
-  //       // sortedChatList.forEach(element => {
-  //       //   console.log(element.last_message.timestamp)
-  //       // });
-
-  //     } catch (err) {
-  //       console.log(err);
-  //     }
-  //   }
-
-  //   handleFetchChat().finally(() => {
-  //     setIsLoading(false);
-  //   });
-  // }, []);
-
   const {
     data,
     isLoading,

@@ -2,7 +2,7 @@ import AuthService from '../services/auth.services';
 import UserService from '../services/user.services';
 
 export async function loginHandler(email: string, password: string) {
-  try {
+  // try {
     const loginResult = await UserService.login(email, password);
 
     if (!loginResult) {
@@ -18,7 +18,7 @@ export async function loginHandler(email: string, password: string) {
     }
 
     return fetchedUser;
-  } catch (error) {
-    console.log('[Login Handler] ', error);
-  }
+  // } catch (error) {
+  //   console.log('[Login Handler] ', error);
+  // }
 }

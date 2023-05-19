@@ -17,8 +17,8 @@ function UnauthorisedScreen() {
   async function handleLogin(email: string, password: string) {
     const user = await loginHandler(email, password);
 
-    if(!user) {
-      alert("Unable to login");
+    if (!user) {
+      alert('Unable to login');
       return;
     }
 

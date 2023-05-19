@@ -11,7 +11,7 @@ class MessageController {
    * @param message
    * @returns
    */
-  static async sendMessage(chat_id: number, message: string): Promise<Response | void> {
+  static async sendMessage(chat_id: number, message: string): Promise<Response> {
     // const myHeaders = await AuthHeader();
     const requestOptions: RequestInit = {
       method: 'POST',
@@ -26,7 +26,7 @@ class MessageController {
         }
         return response;
       })
-      .catch((error) => console.log('Error caught while sending message: ', error));
+      // .catch((error) => console.log('Error caught while sending message: ', error));
   }
 
   /**
@@ -35,7 +35,7 @@ class MessageController {
    * @param message_id
    * @returns
    */
-  static async deleteMessage(chat_id: number, message_id: number): Promise<Response | void> {
+  static async deleteMessage(chat_id: number, message_id: number): Promise<Response> {
     const myHeaders = await AuthHeader();
 
     const requestOptions: RequestInit = {
@@ -50,7 +50,7 @@ class MessageController {
         }
         return response;
       })
-      .catch((error) => console.log('Error caught while deleting message: ', error));
+      // .catch((error) => console.log('Error caught while deleting message: ', error));
   }
 
   /**
@@ -64,7 +64,7 @@ class MessageController {
     chat_id: number,
     message_id: number,
     message: string
-  ): Promise<Response | void> {
+  ): Promise<Response> {
     const myHeaders = await AuthHeader();
 
     const requestOptions: RequestInit = {
@@ -81,7 +81,7 @@ class MessageController {
         return response.json();
       })
       .then((response) => response)
-      .catch((error) => console.log('Error caught while updating message: ', error));
+      // .catch((error) => console.log('Error caught while updating message: ', error));
   }
 }
 

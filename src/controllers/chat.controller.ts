@@ -24,7 +24,7 @@ class ChatController {
       // .catch((error) => console.log('Error caught while fetching chat summary list: ', error));
   }
 
-  static async newConversation(name: string): Promise<CreateChatResponse | void> {
+  static async newConversation(name: string): Promise<CreateChatResponse> {
     const myHeaders = await AuthHeader();
 
     const requestOptions: RequestInit = {
@@ -45,7 +45,7 @@ class ChatController {
       // .catch((error) => console.log('Error caught while creating new conversation: ', error));
   }
 
-  static async fetchChatDetails(chat_id: number): Promise<Chat | void> {
+  static async fetchChatDetails(chat_id: number): Promise<Chat> {
     const myHeaders = await AuthHeader();
 
     const requestOptions: RequestInit = {
@@ -65,7 +65,7 @@ class ChatController {
       // .catch((error) => console.log('Error caught while fetching chat details: ', error));
   }
 
-  static async updateChatDetails(chat_id: number, name: string): Promise<Response | void> {
+  static async updateChatDetails(chat_id: number, name: string): Promise<Response> {
     const myHeaders = await AuthHeader();
 
     const requestOptions: RequestInit = {
@@ -86,7 +86,7 @@ class ChatController {
       .catch((error) => console.log('Error caught while updating chat details: ', error));
   }
 
-  static async addUserToConversation(chat_id: number, user_id: number): Promise<Response | void> {
+  static async addUserToConversation(chat_id: number, user_id: number): Promise<Response> {
     const myHeaders = await AuthHeader();
 
     const requestOptions: RequestInit = {
@@ -109,7 +109,7 @@ class ChatController {
   static async removeUserFromConversation(
     chat_id: number,
     user_id: number
-  ): Promise<Response | void> {
+  ): Promise<Response> {
     const myHeaders = await AuthHeader();
 
     const requestOptions: RequestInit = {

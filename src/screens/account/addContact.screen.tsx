@@ -10,15 +10,12 @@ import { stringToColour } from '../../util/utilities';
 import { SearchParams } from '../../util/url.builder';
 
 function AddContactScreen() {
-  // const current_user = useContext(UserContext);
-  // const route = useRoute();
 
   const initialParams: SearchParams = {
     q: '',
     search_in: 'all',
   };
 
-  //   const [contactList, setContactList] = useState<User[]>();
   const [params, setParams] = useState<SearchParams>(initialParams);
   const [state, setState] = useState<State<User[]>>({
     data: undefined,
@@ -27,8 +24,6 @@ function AddContactScreen() {
     isError: false,
     error: '',
   });
-
-  //   const { data, isLoading, isSuccess, error, refetch } =
 
   function findUser(q: string) {
     ContactServices.search({ q: q }).then((response) => {

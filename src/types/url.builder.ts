@@ -18,8 +18,8 @@ export default class UrlBuilder {
     let base = config.BASE_URL + `/search?q=${parameters.q}`;
     const search_in = `&search_in=${parameters.search_in ? parameters.search_in : 'all'}`;
     base += search_in;
-    if(parameters.limit) base += '&limit=' + parameters.limit;
-    if(parameters.offset) base += '&offset='+parameters.offset;
+    if (parameters.limit) base += '&limit=' + parameters.limit;
+    if (parameters.offset) base += '&offset=' + parameters.offset;
 
     return base;
   };

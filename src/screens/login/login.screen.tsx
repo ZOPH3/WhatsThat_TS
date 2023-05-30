@@ -5,9 +5,14 @@ import { UserContext } from '../../context/user.context';
 import { loginHandler } from '../../handlers/auth.handler';
 
 //FIXME: THIS BE HARDCODED
+// const user = {
+//   email: 'ashley.williams@mmu.ac.uk',
+//   password: 'Wr3xh4m!',
+// };
+
 const user = {
-  email: 'ashley.williams@mmu.ac.uk',
-  password: 'Wr3xh4m!',
+  email: 'newwilliams@mmu.ac.uk',
+  password: 'Characters1*',
 };
 
 function UnauthorisedScreen() {

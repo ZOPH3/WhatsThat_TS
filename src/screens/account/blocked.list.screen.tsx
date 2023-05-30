@@ -1,65 +1,67 @@
-import React, { useEffect, useContext, useState, Fragment } from 'react';
-import { useRoute } from '@react-navigation/native';
-import { UserContext } from '../../context/user.context';
-import ContactServices from '../../services/contact.services';
-import ContactListComponent from '../../components/contact.list.component';
+import React, { useState } from 'react';
 import IsLoadingIndicator from '../../components/utils/isLoadingIndicator.component';
 import { User } from '../../types/api.schema.types';
+import useQuery from '../../hooks/useQuery';
+import { ListItem, Avatar, Icon } from '@react-native-material/core';
+import { SafeAreaView, ScrollView } from 'react-native';
+import { stringToColour } from '../../util/colors.util';
+import ContactController from '../../controllers/contact.controller';
 
 function BlockedScreen() {
-  const current_user = useContext(UserContext);
-  const route = useRoute();
-
-  const [isLoading, setIsLoading] = useState(true);
   const [contactList, setContactList] = useState<User[]>();
-  const [isSuccess, setIsSuccess] = useState(false);
 
-  useEffect(() => {
-    setIsLoading(true);
-
-    function fetchContactList() {
-      const result = ContactServices.fetchblocked().then(
-        (response) => response,
-        (err) => err
-      );
-      return result;
+  const { data, isLoading, isSuccess, error, refetch } = useQuery<User[]>(
+    () => ContactController.fetchblocked(),
+    {
+      onSuccess: (data) => {
+        setContactList(data);
+      },
     }
+  );
 
-    fetchContactList()
-      .then(
-        (contacts) => {
-          console.log('BLOCKED', contacts);
-          setContactList(contacts);
-          setIsSuccess(true);
-        },
-        (err) => {
-          setIsSuccess(false);
-        }
-      )
-      .finally(() => setIsLoading(false));
-  }, []);
+  // function addContact(user_id: number) {
+  //   ContactServices.addContact(user_id).then((result) => {
+  //     result?.ok ? setContactList(contactList) : alert(result);
+  //   });
+  // }
 
-  function addContact(user_id: number) {
-    //Check if theyre in list already
-    // MessageServices.sendMessage(chat_id, userInput).then((result) => {
-    //     result.status?  setMessageList(messageList?.concat(new_message)) : alert(result.message);
-    // })
-    ContactServices.addContact(user_id).then((result) => {
-      result?.ok ? setContactList(contactList) : alert(result);
-    });
-  }
-
-  function addToBlock(user_id: number) {
-    ContactServices.addContact(user_id).then((result) => {
-      result?.ok ? setContactList(contactList) : alert(result);
-    });
-  }
+  // function addToBlock(user_id: number) {
+  //   ContactServices.addContact(user_id).then((result) => {
+  //     result?.ok ? setContactList(contactList) : alert(result);
+  //   });
+  // }
 
   if (isLoading) {
     return <IsLoadingIndicator />;
   } else {
     if (isSuccess && contactList) {
-      return ContactListComponent(contactList);
+      return (
+        <SafeAreaView>
+          <ScrollView>
+            {contactList.map((contact, key) => (
+              <ListItem
+                key={key}
+                leadingMode="avatar"
+                leading={
+                  <Avatar
+                    label={`${contact.first_name} ${contact.last_name}`}
+                    color={`${stringToColour(
+                      `${contact.first_name} ${contact.last_name}` + `${contact.email}`
+                    )}`}
+                  />
+                }
+                title={`${contact.first_name} ${contact.last_name}`}
+                secondaryText={`${contact.email}`}
+                trailing={(props) => <Icon name="chevron-right" {...props} />}
+                //TODO: remove contact or block
+                onPress={() =>
+                  alert(`Go to ${`${contact.first_name} ${contact.last_name}`}'s profile?`)
+                }
+              />
+            ))}
+          </ScrollView>
+        </SafeAreaView>
+      );
     } else {
       return <></>;
     }

@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { ListItem, Avatar, Chip, Stack, Text } from '@react-native-material/core';
 import { useNavigation } from '@react-navigation/native';
 import { ChatSummary } from '../../types/api.schema.types';
-import { stringToColour } from '../../util/utilities';
+import { stringToColour } from '../../util/colors.util';
 
 //TODO: isUnread is determined by the time of the last message and when the user last opened the message (which would be saved to the state).
 
@@ -55,8 +55,6 @@ const generateTitle = (chatSummary: ChatSummary) => {
 const generateLastMessage = (chatSummary: ChatSummary) => {
   return chatSummary.last_message?.message ?? 'No Messages';
 };
-
-
 
 const generateColor = (chatSummary: ChatSummary) => {
   return stringToColour(`${chatSummary.chat_id}${generateTitle(chatSummary)}`);

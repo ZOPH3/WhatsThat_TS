@@ -9,10 +9,10 @@ import { useRoute } from '@react-navigation/native';
 
 import IsLoadingIndicator from '../utils/isLoadingIndicator.component';
 import MessageBubbleComponent from './message.item.component';
-import MessageServices from '../../services/message.services';
 import { UserContext } from '../../context/user.context';
 import { SingleMessage } from '../../types/api.schema.types';
 import useQuery from '../../hooks/useQuery';
+import MessageController from '../../controllers/message.controller';
 
 //DONE: Flat list provided a method to scroll to the bottom on the list, can use this to trigger when message is sent?
 //FIXME: When messages are sent successfully, need to clear the TextInput, current method does not work. -> UseRef might help here.
@@ -30,7 +30,7 @@ const ChatWindowComponent = () => {
   const [messageList, setMessageList] = useState<SingleMessage[]>();
 
   const { data, isLoading, isSuccess, error, refetch } = useQuery<SingleMessage[]>(
-    () => MessageServices.getMessage(chat_id),
+    () => MessageController.getMessage(chat_id),
     {
       onSuccess: (data) => {
         setMessageList(data);

@@ -1,16 +1,15 @@
 import React, { useState, Fragment } from 'react';
 import { SafeAreaView, ScrollView, Text, View } from 'react-native';
-import ContactServices from '../../services/contact.services';
 import IsLoadingIndicator from '../../components/utils/isLoadingIndicator.component';
 import { User } from '../../types/api.schema.types';
 import useQuery, { State } from '../../hooks/useQuery';
 import { Avatar, Button, ListItem, TextInput } from '@react-native-material/core';
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
-import { stringToColour } from '../../util/utilities';
-import { SearchParams } from '../../util/url.builder';
+import { stringToColour } from '../../util/colors.util';
+import { SearchParams } from '../../types/url.builder';
+import ContactController from '../../controllers/contact.controller';
 
 function AddContactScreen() {
-
   const initialParams: SearchParams = {
     q: '',
     search_in: 'all',
@@ -26,23 +25,25 @@ function AddContactScreen() {
   });
 
   function findUser(q: string) {
-    ContactServices.search({ q: q }).then((response) => {
-      setState({
-        data: response,
-        isLoading: false,
-        isSuccess: true,
-        isError: false,
-        error: '',
-      });
-    }).catch((error) => {
+    ContactController.search({ q: q })
+      .then((response) => {
         setState({
-            data: undefined,
-            isLoading: false,
-            isSuccess: false,
-            isError: true,
-            error: 'Error finding users...',
-          });
-    });
+          data: response,
+          isLoading: false,
+          isSuccess: true,
+          isError: false,
+          error: '',
+        });
+      })
+      .catch((error) => {
+        setState({
+          data: undefined,
+          isLoading: false,
+          isSuccess: false,
+          isError: true,
+          error: 'Error finding users...',
+        });
+      });
   }
 
   function addContact(user_id: number) {

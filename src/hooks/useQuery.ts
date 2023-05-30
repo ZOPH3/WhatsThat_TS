@@ -25,7 +25,7 @@ const defaultConfig: QueryConfig = {
 function useQuery<T>(callback: () => Promise<T>, config = defaultConfig) {
   const [state, setState] = useState<State<T>>({
     data: undefined,
-    isLoading: true,
+    isLoading: false,
     isSuccess: false,
     isError: false,
     error: '',
@@ -47,7 +47,7 @@ function useQuery<T>(callback: () => Promise<T>, config = defaultConfig) {
           isError: false,
           error: '',
         });
-        if(onSuccess) onSuccess(response as T);
+        if (onSuccess) onSuccess(response as T);
       })
       .catch((error) => {
         setState({
@@ -57,7 +57,7 @@ function useQuery<T>(callback: () => Promise<T>, config = defaultConfig) {
           isError: true,
           error: error || 'Failed to fetch...',
         });
-        if(onError) onError(error);
+        if (onError) onError(error);
       });
   };
 

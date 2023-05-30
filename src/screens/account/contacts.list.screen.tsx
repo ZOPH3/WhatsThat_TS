@@ -1,24 +1,18 @@
-import React, { useState, Fragment } from 'react';
-// import { useRoute } from '@react-navigation/native';
-// import { UserContext } from '../../context/user.context';
-import { SafeAreaView, ScrollView} from 'react-native';
-import ContactServices from '../../services/contact.services';
-// import ContactListComponent from '../../components/contact.list.component';
+import React, { useState } from 'react';
+import { SafeAreaView, ScrollView } from 'react-native';
 import IsLoadingIndicator from '../../components/utils/isLoadingIndicator.component';
 import { User } from '../../types/api.schema.types';
 import useQuery from '../../hooks/useQuery';
 import { Avatar, ListItem } from '@react-native-material/core';
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
-import { stringToColour } from '../../util/utilities';
+import { stringToColour } from '../../util/colors.util';
+import ContactController from '../../controllers/contact.controller';
 
 function ContactsScreen() {
-  // const current_user = useContext(UserContext);
-  // const route = useRoute();
-
   const [contactList, setContactList] = useState<User[]>();
 
   const { data, isLoading, isSuccess, error, refetch } = useQuery<User[]>(
-    () => ContactServices.fetchContacts(),
+    () => ContactController.fetchContacts(),
     {
       onSuccess: (data) => {
         setContactList(data);
@@ -26,57 +20,56 @@ function ContactsScreen() {
     }
   );
 
-  function addContact(user_id: number) {
-    ContactServices.addContact(user_id).then((result) => {
-      if (result) {
-        refetch();
-      } else {
-        alert('Unable to add user to contact');
-      }
-    });
-  }
+  // function addContact(user_id: number) {
+  //   ContactServices.addContact(user_id).then((result) => {
+  //     if (result) {
+  //       refetch();
+  //     } else {
+  //       alert('Unable to add user to contact' + error);
+  //     }
+  //   });
+  // }
 
-  function addToBlock(user_id: number) {
-    ContactServices.addContact(user_id).then((result) => {
-      if (result && result.ok) {
-        refetch();
-      } else {
-        alert('Unable to add user to contact');
-      }
-    });
-  }
+  // function addToBlock(user_id: number) {
+  //   ContactServices.addContact(user_id).then((result) => {
+  //     if (result && result.ok) {
+  //       refetch();
+  //     } else {
+  //       alert('Unable to add user to contact');
+  //     }
+  //   });
+  // }
 
   //TODO: Use Composition instead of this mess
   if (isLoading) {
     return <IsLoadingIndicator />;
-  } else {
+  } 
+  else {
     if (isSuccess && contactList) {
-      // return ContactListComponent(contactList);
       return (
         <SafeAreaView>
           <ScrollView>
-            {contactList.map((contact, key) => {
-              const name = `${contact.first_name} ${contact.last_name}`;
-              const email = `${contact.email}`;
-
-              return (
-                <Fragment key={key}>
-                  {
-                    <ListItem
-                      leadingMode="avatar"
-                      leading={
-                        <Avatar label={name} color={`${stringToColour(name + email)}`} />
-                      }
-                      title={name}
-                      secondaryText={email}
-                      trailing={(props) => <Icon name="chevron-right" {...props} />}
-                      //TODO: remove contact or block
-                      onPress={() => alert(`Go to ${name}'s profile?`)}
-                    />
-                  }
-                </Fragment>
-              );
-            })}
+            {contactList.map((contact, key) => (
+              <ListItem
+                key={key}
+                leadingMode="avatar"
+                leading={
+                  <Avatar
+                    label={`${contact.first_name} ${contact.last_name}`}
+                    color={`${stringToColour(
+                      `${contact.first_name} ${contact.last_name}` + `${contact.email}`
+                    )}`}
+                  />
+                }
+                title={`${contact.first_name} ${contact.last_name}`}
+                secondaryText={`${contact.email}`}
+                trailing={(props) => <Icon name="chevron-right" {...props} />}
+                //TODO: remove contact or block
+                onPress={() =>
+                  alert(`Go to ${`${contact.first_name} ${contact.last_name}`}'s profile?`)
+                }
+              />
+            ))}
           </ScrollView>
         </SafeAreaView>
       );

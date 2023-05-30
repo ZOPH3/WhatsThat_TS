@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { View, Text } from 'react-native';
 import { Button, TextInput } from '@react-native-material/core';
-import ChatService from '../services/chat.services';
 import { useNavigation } from '@react-navigation/native';
 import IsLoadingIndicator from './utils/isLoadingIndicator.component';
+import ChatController from '../controllers/chat.controller';
 
 function ModalScreen() {
   const navigation = useNavigation();
@@ -14,7 +14,7 @@ function ModalScreen() {
     setIsLoading(true);
     let outcome = false;
     try {
-      const response = await ChatService.newConversation(text);
+      const response = await ChatController.newConversation(text);
 
       if (!response) {
         throw new Error('Unable to create new chat...');

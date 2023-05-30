@@ -1,10 +1,16 @@
 // import AuthService from "../services/auth.services";
-import { AuthHeader } from '../util/api.helper';
-import UrlBuilder from '../util/url.builder';
+import { AuthHeader } from '../util/helpers/api.helper';
+import UrlBuilder from '../types/url.builder';
+import ChatController from './chat.controller';
 
 // https://github.com/ZJav1310/WhatsThat_TS/issues/1
 
 class MessageController {
+  static async getMessage(chat_id: any): Promise<import("../types/api.schema.types").SingleMessage[]> {
+    const response = (await ChatController.fetchChatDetails(chat_id));
+    const messages = response.messages;
+    return messages;
+  }
   /**
    * Current logged in user sends a message in a chat.
    * @param chat_id
@@ -19,14 +25,13 @@ class MessageController {
       body: JSON.stringify({ message: message }),
     };
 
-    return fetch(UrlBuilder.sendMessage(chat_id), requestOptions)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error, status = ${response.status}`);
-        }
-        return response;
-      })
-      // .catch((error) => console.log('Error caught while sending message: ', error));
+    return fetch(UrlBuilder.sendMessage(chat_id), requestOptions).then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error, status = ${response.status}`);
+      }
+      return response;
+    });
+    // .catch((error) => console.log('Error caught while sending message: ', error));
   }
 
   /**
@@ -43,14 +48,13 @@ class MessageController {
       headers: myHeaders,
     };
 
-    return fetch(UrlBuilder.deleteMessage(chat_id, message_id), requestOptions)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error, status = ${response.status}`);
-        }
-        return response;
-      })
-      // .catch((error) => console.log('Error caught while deleting message: ', error));
+    return fetch(UrlBuilder.deleteMessage(chat_id, message_id), requestOptions).then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error, status = ${response.status}`);
+      }
+      return response;
+    });
+    // .catch((error) => console.log('Error caught while deleting message: ', error));
   }
 
   /**
@@ -80,8 +84,8 @@ class MessageController {
         }
         return response.json();
       })
-      .then((response) => response)
-      // .catch((error) => console.log('Error caught while updating message: ', error));
+      .then((response) => response);
+    // .catch((error) => console.log('Error caught while updating message: ', error));
   }
 }
 

@@ -1,7 +1,7 @@
 import AuthService from '../services/auth.services';
 import { User } from '../types/api.schema.types';
-import { AuthHeader } from '../util/api.helper';
-import UrlBuilder, { SearchParams } from '../util/url.builder';
+import { AuthHeader } from '../util/helpers/api.helper';
+import UrlBuilder, { SearchParams } from '../types/url.builder';
 
 // https://github.com/ZJav1310/WhatsThat_TS/issues/1
 class ContactController {
@@ -105,7 +105,7 @@ class ContactController {
     // .catch((error) => console.log('Error caught while unblocking user: ', error));
   }
 
-  public static async fetchblocked(): Promise<Response> {
+  public static async fetchblocked(): Promise<User[]> {
     const myHeaders = await AuthHeader();
 
     const requestOptions: RequestInit = {
@@ -121,7 +121,7 @@ class ContactController {
         }
         return response.json();
       })
-      .then((response) => response);
+      .then((response) => response as User[]);
     // .catch((error) => console.log('Error caught while fetching blocked list: ', error));
   }
 
@@ -142,15 +142,24 @@ class ContactController {
         return response.json();
       })
       .then((response) => {
-        const userList: { user_id: any; first_name: any; last_name: any; email: any; }[] = [];
-        response.forEach((user: { user_id: any; first_name: any; given_name: any; last_name: any; family_name: any; email: any; }) => {
-          userList.push({
-            user_id: user.user_id,
-            first_name: user.first_name ?? user.given_name,
-            last_name: user.last_name ?? user.family_name,
-            email: user.email
-          })
-        });
+        const userList: { user_id: any; first_name: any; last_name: any; email: any }[] = [];
+        response.forEach(
+          (user: {
+            user_id: any;
+            first_name: any;
+            given_name: any;
+            last_name: any;
+            family_name: any;
+            email: any;
+          }) => {
+            userList.push({
+              user_id: user.user_id,
+              first_name: user.first_name ?? user.given_name,
+              last_name: user.last_name ?? user.family_name,
+              email: user.email,
+            });
+          }
+        );
         return userList as User[];
       });
     // .catch((error) => console.log('Error caught while fetching contact list: ', error));

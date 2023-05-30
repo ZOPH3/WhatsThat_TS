@@ -1,24 +1,30 @@
-import { View, SafeAreaView, ScrollView } from 'react-native';
-import React from 'react';
-import ChatService from '../../services/chat.services';
+import { View, SafeAreaView, ScrollView, Pressable } from 'react-native';
+import React, { useEffect, useState } from 'react';
 import { Button } from '@react-native-material/core';
-import ChatListHomeComponent from '../../components/chat/chatSummary.list.component';
 import { styles } from './ChatListScreen.styles';
 import IsLoadingIndicator from '../../components/utils/isLoadingIndicator.component';
 import { ChatSummary } from '../../types/api.schema.types';
 import useQuery from '../../hooks/useQuery';
+import ChatController from '../../controllers/chat.controller';
+import ListItemComponent from '../../components/chat/chatSummary.item.component';
 
 //FIXME: This needs to be moved to context which is used to watch if a chat is updated too from user message?
 function HomeScreen() {
-  const {
-    data,
-    isLoading,
-    isSuccess,
-    error,
-    refetch
-  } = useQuery<ChatSummary[]>(() => ChatService.fetchChatList());
+  const [chatList, setChatList] = useState<ChatSummary[]>();
 
-  function filterChatListByTime(list: ChatSummary[]){
+  const { data, isLoading, isSuccess, isError, refetch } = useQuery<ChatSummary[]>(
+    () => ChatController.fetchChatList(),
+    {
+      onSuccess(data) {
+        setChatList(data);
+      },
+      onError(error){
+        console.log("IM ERRRRRRRR");
+      }
+    }
+  );
+
+  function filterChatListByTime(list: ChatSummary[]) {
     return list.filter((c) => c.last_message.timestamp !== undefined);
   }
   function getOnlyUndefined(list: ChatSummary[]) {
@@ -26,22 +32,37 @@ function HomeScreen() {
   }
   function sortByDateTime(list: ChatSummary[]) {
     return filterChatListByTime(list).sort(function (a, b) {
-      return (
-        b.last_message.timestamp - a.last_message.timestamp
-      );
+      return b.last_message.timestamp - a.last_message.timestamp;
     });
   }
 
-  if (isLoading) {
-    return <IsLoadingIndicator />;
-  } else {
-    if (isSuccess && data) {
+  return (
+    <>
+      <View style={styles.containerMain}>
+        <SafeAreaView style={styles.container}>
+          <ScrollView style={styles.scrollView}>{render()}</ScrollView>
+        </SafeAreaView>
+      </View>
+    </>
+  );
+
+  function render() {
+    if (isLoading) return <IsLoadingIndicator />;
+    if (chatList) {
       return (
         <>
           <View style={styles.containerMain}>
             <SafeAreaView style={styles.container}>
               <ScrollView style={styles.scrollView}>
-                <View>{ChatListHomeComponent(data)}</View>
+                <View>
+                  {chatList.map((chat) => {
+                    return (
+                      <Pressable key={chat.chat_id}>
+                        <ListItemComponent key={chat.chat_id} chatSummary={chat} />
+                      </Pressable>
+                    );
+                  })}
+                </View>
               </ScrollView>
             </SafeAreaView>
           </View>
@@ -52,9 +73,7 @@ function HomeScreen() {
         <>
           <Button
             title="Y"
-            onPress={() => {
-              console.log(data);
-            }}
+            onPress={() => console.log("fsdfsdf")}
           />
         </>
       );

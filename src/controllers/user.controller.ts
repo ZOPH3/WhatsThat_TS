@@ -1,8 +1,8 @@
 import { User } from '../types/api.schema.types';
 import { LoginResponse, SignUpResponse } from '../types/api.schema.types';
-import { AuthHeader } from '../util/api.helper';
-import { RegularHeader } from '../util/api.helper';
-import UrlBuilder from '../util/url.builder';
+import { AuthHeader } from '../util/helpers/api.helper';
+import { RegularHeader } from '../util/helpers/api.helper';
+import UrlBuilder from '../types/url.builder';
 
 // https://github.com/ZJav1310/WhatsThat_TS/issues/1
 class UserController {
@@ -43,8 +43,8 @@ class UserController {
         }
         return response.json();
       })
-      .then((response) => response)
-      // .catch((error) => console.log('Error caught while logging out user: ', error));
+      .then((response) => response);
+    // .catch((error) => console.log('Error caught while logging out user: ', error));
   }
   public static async register(
     first_name: string,
@@ -73,8 +73,8 @@ class UserController {
         }
         return response.json();
       })
-      .then((response) => response)
-      // .catch((error) => console.log('Error caught while registering user: ', error));
+      .then((response) => response);
+    // .catch((error) => console.log('Error caught while registering user: ', error));
   }
 
   public static async getUserInfo(user_id: number): Promise<User> {
@@ -93,13 +93,10 @@ class UserController {
         }
         return response.json();
       })
-      .then((response) => response as User)
-      // .catch((error) => console.log('Error caught while fetching user information: ', error));
+      .then((response) => response as User);
+    // .catch((error) => console.log('Error caught while fetching user information: ', error));
   }
-  public static async updateUserInfo(
-    user_id: number,
-    payload: Partial<User>
-  ): Promise<Response> {
+  public static async updateUserInfo(user_id: number, payload: Partial<User>): Promise<Response> {
     const myHeaders = await AuthHeader();
 
     const requestOptions: RequestInit = {
@@ -109,14 +106,13 @@ class UserController {
       redirect: 'follow',
     };
 
-    return fetch(UrlBuilder.fetchUserInformation(user_id), requestOptions)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error, status = ${response.status}`);
-        }
-        return response;
-      })
-      // .catch((error) => console.log('Error caught while updating user information: ', error));
+    return fetch(UrlBuilder.fetchUserInformation(user_id), requestOptions).then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error, status = ${response.status}`);
+      }
+      return response;
+    });
+    // .catch((error) => console.log('Error caught while updating user information: ', error));
   }
   // TODO: Below API things
   // public static async getUserPhoto() {}

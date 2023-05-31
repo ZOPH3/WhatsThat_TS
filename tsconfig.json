@@ -4,6 +4,9 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "jsx": "react",
-    "isolatedModules": true
+    "isolatedModules": true,
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "sourceMap": true
   }
 }

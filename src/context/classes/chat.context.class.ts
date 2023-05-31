@@ -1,9 +1,9 @@
-import { ChatSummary } from "../../types/api.schema.types";
+import { ChatSummary } from '../../types/TSchema';
 
 class ChatContextClass {
-    private chatSummaries: ChatSummary[] = [];
+  private chatSummaries: ChatSummary[] = [];
 
-    fetchChatSummaries(){
-        throw new Error("Not implemented");
-    }
+  fetchChatSummaries() {
+    throw new Error('Not implemented');
+  }
 }

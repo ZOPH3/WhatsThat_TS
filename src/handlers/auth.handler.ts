@@ -1,4 +1,4 @@
-import UserController from '../controllers/user.controller';
+import UserController from '../controllers/UserController';
 import AuthService from '../services/auth.services';
 
 export async function loginHandler(email: string, password: string) {

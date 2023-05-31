@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { StorageKeys } from '../../types/as.keys';
-import log from '../logger.util';
+import { StorageKeys } from '../../types/TStorageKeys';
+import log from '../LoggerUtil';
 
 export default class AsyncStorageHelper {
   static async storeData(keyName: StorageKeys, value: object) {

@@ -1,5 +1,5 @@
 import { createContext } from 'react';
-import { User } from '../../types/api.schema.types';
+import { User } from '../../types/TSchema';
 
 const initialState = {
   user: {

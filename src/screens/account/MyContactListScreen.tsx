@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { SafeAreaView, ScrollView } from 'react-native';
-import IsLoadingIndicator from '../../components/utils/isLoadingIndicator.component';
-import { User } from '../../types/api.schema.types';
-import useQuery from '../../hooks/useQuery';
+import IsLoadingIndicator from '../../components/utils/LoadingIndicator';
+import { User } from '../../types/TSchema';
+import useQuery from '../../hooks/UseQueryHook';
 import { Avatar, ListItem } from '@react-native-material/core';
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
-import { stringToColour } from '../../util/colors.util';
-import ContactController from '../../controllers/contact.controller';
+import { stringToColour } from '../../util/ColorGeneratorUtil';
+import ContactController from '../../controllers/ContactController';
 
 function ContactsScreen() {
   const [contactList, setContactList] = useState<User[]>();
@@ -43,8 +43,7 @@ function ContactsScreen() {
   //TODO: Use Composition instead of this mess
   if (isLoading) {
     return <IsLoadingIndicator />;
-  } 
-  else {
+  } else {
     if (isSuccess && contactList) {
       return (
         <SafeAreaView>

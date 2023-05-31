@@ -3,12 +3,12 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useContext } from 'react';
 
-import ChatScreen from '../screens/conversation/message.list.screen';
-import { TabNavigator } from './tab.navigator';
+import ChatScreen from '../screens/conversation/MessagesScreen';
+import { TabNavigator } from './TabNav';
 import { AuthContext } from '../context/classes/auth.context';
-import { UnAuthTabNavigator } from './unauthorised.tab.navigator';
-import ModalScreen from '../components/modal.component';
-import AddContactScreen from '../screens/account/addContact.screen';
+import { UnAuthTabNavigator } from './RegisterTabNav';
+import ModalScreen from '../screens/ModalScreen';
+import AddContactScreen from '../screens/account/AddContactScreen';
 
 export type MainStackNavigator = {
   Home: undefined;

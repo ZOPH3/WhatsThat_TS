@@ -4,7 +4,7 @@ import { View } from 'react-native';
 import { Button, Stack, Text } from '@react-native-material/core';
 import FileUploader from '../../components/utils/upload.component';
 import CameraHelper from '../../util/camera.util';
-import UrlBuilder from '../../types/url.builder';
+import UrlBuilder from '../../util/URLBuilder';
 //TODO: allow the user to edit and submit their details
 
 function ProfileScreen() {

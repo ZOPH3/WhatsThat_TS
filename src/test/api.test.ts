@@ -1,14 +1,14 @@
 import { describe, expect, test } from '@jest/globals';
 import axios from 'axios';
-import UrlBuilder from '../../src/types/url.builder';
+import UrlBuilder from '../util/URLBuilder';
 import { AuthHeaderTest } from '../../src/util/helpers/api.helper';
 
 const config = {
-    headers:{
-      'X-Authorization': 'ed2dde0e8cfc22816cd5c5cefec72e05',
-      'Content-Type': 'application/json'
-    }
-  };
+  headers: {
+    'X-Authorization': 'ed2dde0e8cfc22816cd5c5cefec72e05',
+    'Content-Type': 'application/json',
+  },
+};
 
 const fetchChatList = async () => {
   const response = await axios.get(UrlBuilder.fetchChatList(), config);

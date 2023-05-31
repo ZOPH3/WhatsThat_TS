@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { StorageKeys } from '../types/as.keys';
+import { StorageKeys } from '../types/TStorageKeys';
 
 // https://github.com/ZJav1310/WhatsThat_TS/issues/1
 export default class AuthController {

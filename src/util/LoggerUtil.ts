@@ -1,4 +1,5 @@
 import { logger, consoleTransport } from "react-native-logs";
+
 export enum logType {
   debug,
   info,

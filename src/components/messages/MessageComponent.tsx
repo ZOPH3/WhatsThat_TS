@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { SingleMessage } from '../../types/api.schema.types';
+import { SingleMessage } from '../../types/TSchema';
 
 const MessageBubbleComponent = (props: {
   message: SingleMessage;

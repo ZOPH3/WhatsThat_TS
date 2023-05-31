@@ -1,4 +1,4 @@
-import AuthController from '../controllers/auth.controller';
+import AuthController from '../controllers/AuthController';
 
 class AuthService {
   public static async getToken() {

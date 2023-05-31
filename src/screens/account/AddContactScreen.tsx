@@ -1,13 +1,13 @@
 import React, { useState, Fragment } from 'react';
 import { SafeAreaView, ScrollView, Text, View } from 'react-native';
-import IsLoadingIndicator from '../../components/utils/isLoadingIndicator.component';
-import { User } from '../../types/api.schema.types';
-import useQuery, { State } from '../../hooks/useQuery';
+import IsLoadingIndicator from '../../components/utils/LoadingIndicator';
+import { User } from '../../types/TSchema';
+import useQuery, { State } from '../../hooks/UseQueryHook';
 import { Avatar, Button, ListItem, TextInput } from '@react-native-material/core';
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
-import { stringToColour } from '../../util/colors.util';
-import { SearchParams } from '../../types/url.builder';
-import ContactController from '../../controllers/contact.controller';
+import { stringToColour } from '../../util/ColorGeneratorUtil';
+import { SearchParams } from '../../util/URLBuilder';
+import ContactController from '../../controllers/ContactController';
 
 function AddContactScreen() {
   const initialParams: SearchParams = {

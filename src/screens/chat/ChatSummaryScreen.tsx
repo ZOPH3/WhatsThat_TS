@@ -2,11 +2,11 @@ import { View, SafeAreaView, ScrollView, Pressable } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { Button } from '@react-native-material/core';
 import { styles } from './ChatListScreen.styles';
-import IsLoadingIndicator from '../../components/utils/isLoadingIndicator.component';
-import { ChatSummary } from '../../types/api.schema.types';
-import useQuery from '../../hooks/useQuery';
-import ChatController from '../../controllers/chat.controller';
-import ListItemComponent from '../../components/chat/chatSummary.item.component';
+import IsLoadingIndicator from '../../components/utils/LoadingIndicator';
+import { ChatSummary } from '../../types/TSchema';
+import useQuery from '../../hooks/UseQueryHook';
+import ChatController from '../../controllers/ChatController';
+import ListItemComponent from '../../components/chat/ChatSummaryComponent';
 
 //FIXME: This needs to be moved to context which is used to watch if a chat is updated too from user message?
 function HomeScreen() {
@@ -18,9 +18,9 @@ function HomeScreen() {
       onSuccess(data) {
         setChatList(data);
       },
-      onError(error){
-        console.log("IM ERRRRRRRR");
-      }
+      onError(error) {
+        console.log('IM ERRRRRRRR');
+      },
     }
   );
 
@@ -71,10 +71,7 @@ function HomeScreen() {
     } else {
       return (
         <>
-          <Button
-            title="Y"
-            onPress={() => console.log("fsdfsdf")}
-          />
+          <Button title="Y" onPress={() => console.log('fsdfsdf')} />
         </>
       );
     }

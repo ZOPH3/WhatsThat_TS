@@ -1,10 +1,10 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import HomeScreen from '../screens/chat/chatSummary.list.screen';
-import ProfileScreen from '../screens/account/account.screen';
+import HomeScreen from '../screens/chat/ChatSummaryScreen';
+import ProfileScreen from '../screens/account/MyProfileScreen';
 import { HStack, IconButton } from '@react-native-material/core';
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
-import ContactsScreen from '../screens/account/contacts.list.screen';
+import ContactsScreen from '../screens/account/MyContactListScreen';
 import { useNavigation } from '@react-navigation/native';
 
 export type BottomTabNavigator = {

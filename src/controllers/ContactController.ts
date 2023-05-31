@@ -1,7 +1,7 @@
 import AuthService from '../services/auth.services';
-import { User } from '../types/api.schema.types';
+import { User } from '../types/TSchema';
 import { AuthHeader } from '../util/helpers/api.helper';
-import UrlBuilder, { SearchParams } from '../types/url.builder';
+import UrlBuilder, { SearchParams } from '../util/URLBuilder';
 
 // https://github.com/ZJav1310/WhatsThat_TS/issues/1
 class ContactController {

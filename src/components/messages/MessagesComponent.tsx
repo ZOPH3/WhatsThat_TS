@@ -7,12 +7,12 @@ import { AntDesign } from '@expo/vector-icons';
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
 import { useRoute } from '@react-navigation/native';
 
-import IsLoadingIndicator from '../utils/isLoadingIndicator.component';
-import MessageBubbleComponent from './message.item.component';
+import IsLoadingIndicator from '../utils/LoadingIndicator';
+import MessageBubbleComponent from './MessageComponent';
 import { UserContext } from '../../context/classes/user.context';
-import { SingleMessage } from '../../types/api.schema.types';
-import useQuery from '../../hooks/useQuery';
-import MessageController from '../../controllers/message.controller';
+import { SingleMessage } from '../../types/TSchema';
+import useQuery from '../../hooks/UseQueryHook';
+import MessageController from '../../controllers/MessageController';
 
 //DONE: Flat list provided a method to scroll to the bottom on the list, can use this to trigger when message is sent?
 //FIXME: When messages are sent successfully, need to clear the TextInput, current method does not work. -> UseRef might help here.

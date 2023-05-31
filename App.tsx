@@ -1,5 +1,5 @@
 import * as React from 'react';
-import StackNavigator from './src/navigation/main.stack.navigator';
+import StackNavigator from './src/navigation/MainStackNav';
 
 import { AuthContext } from './src/context/classes/auth.context';
 import { UserContext } from './src/context/classes/user.context';

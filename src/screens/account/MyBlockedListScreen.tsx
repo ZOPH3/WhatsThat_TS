@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import IsLoadingIndicator from '../../components/utils/isLoadingIndicator.component';
-import { User } from '../../types/api.schema.types';
-import useQuery from '../../hooks/useQuery';
+import IsLoadingIndicator from '../../components/utils/LoadingIndicator';
+import { User } from '../../types/TSchema';
+import useQuery from '../../hooks/UseQueryHook';
 import { ListItem, Avatar, Icon } from '@react-native-material/core';
 import { SafeAreaView, ScrollView } from 'react-native';
-import { stringToColour } from '../../util/colors.util';
-import ContactController from '../../controllers/contact.controller';
+import { stringToColour } from '../../util/ColorGeneratorUtil';
+import ContactController from '../../controllers/ContactController';
 
 function BlockedScreen() {
   const [contactList, setContactList] = useState<User[]>();

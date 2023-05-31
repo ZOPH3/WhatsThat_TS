@@ -1,14 +1,16 @@
-import { Chat, ChatSummary, CreateChatResponse } from '../types/api.schema.types';
+import { Chat, ChatSummary, CreateChatResponse } from '../types/TSchema';
 import { AuthHeader, AuthHeaderTest } from '../util/helpers/api.helper';
-import UrlBuilder from '../types/url.builder';
+import UrlBuilder from '../util/URLBuilder';
 import axios from 'axios';
 
 // https://github.com/ZJav1310/WhatsThat_TS/issues/1
 class ChatController {
   static async fetchChatList(): Promise<ChatSummary[]> {
-    const response = await axios.get(UrlBuilder.fetchChatList(), await AuthHeaderTest()).catch((error) => {
-      throw new Error(`HTTP error, status = ${error.response.status}`);
-    });
+    const response = await axios
+      .get(UrlBuilder.fetchChatList(), await AuthHeaderTest())
+      .catch((error) => {
+        throw new Error(`HTTP error, status = ${error.response.status}`);
+      });
     return response.data;
   }
 

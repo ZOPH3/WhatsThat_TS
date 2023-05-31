@@ -1,8 +1,8 @@
-import { User } from '../types/api.schema.types';
-import { LoginResponse, SignUpResponse } from '../types/api.schema.types';
+import { User } from '../types/TSchema';
+import { LoginResponse, SignUpResponse } from '../types/TSchema';
 import { AuthHeader } from '../util/helpers/api.helper';
 import { RegularHeader } from '../util/helpers/api.helper';
-import UrlBuilder from '../types/url.builder';
+import UrlBuilder from '../util/URLBuilder';
 
 // https://github.com/ZJav1310/WhatsThat_TS/issues/1
 class UserController {

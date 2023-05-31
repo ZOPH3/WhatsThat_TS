@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { Button, View } from 'react-native';
-import { AuthContext } from '../../context/auth.context';
-import { UserContext } from '../../context/user.context';
+import { AuthContext } from '../../context/classes/auth.context';
+import { UserContext } from '../../context/classes/user.context';
 import { loginHandler } from '../../handlers/auth.handler';
 
 //FIXME: THIS BE HARDCODED

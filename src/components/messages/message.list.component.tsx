@@ -9,7 +9,7 @@ import { useRoute } from '@react-navigation/native';
 
 import IsLoadingIndicator from '../utils/isLoadingIndicator.component';
 import MessageBubbleComponent from './message.item.component';
-import { UserContext } from '../../context/user.context';
+import { UserContext } from '../../context/classes/user.context';
 import { SingleMessage } from '../../types/api.schema.types';
 import useQuery from '../../hooks/useQuery';
 import MessageController from '../../controllers/message.controller';

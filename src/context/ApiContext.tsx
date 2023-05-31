@@ -4,12 +4,12 @@ import { AuthContext } from './AuthContext';
 import React from 'react';
 import { GlobalContext } from './GlobalContext';
 
-interface IApiProvider {
+interface IApiContext {
   authApi: AxiosInstance;
   publicApi: AxiosInstance;
 }
 
-const ApiContext = createContext<IApiProvider | undefined>(undefined);
+const ApiContext = createContext<IApiContext | undefined>(undefined);
 const { Provider } = ApiContext;
 
 interface Props {
@@ -31,9 +31,12 @@ const ApiProvider = ({ children }: Props) => {
 
   const authApi = axios.create({
     baseURL: setBaseURL(),
+    timeout: 5000
   });
+
   const publicApi = axios.create({
     baseURL: setBaseURL(),
+    timeout: 5000
   });
 
   authApi.interceptors.request.use(
@@ -51,3 +54,5 @@ const ApiProvider = ({ children }: Props) => {
 
   return <Provider value={{ authApi, publicApi }}>{children}</Provider>;
 };
+
+export { ApiProvider };

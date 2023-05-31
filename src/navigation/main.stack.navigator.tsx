@@ -5,7 +5,7 @@ import { useContext } from 'react';
 
 import ChatScreen from '../screens/conversation/message.list.screen';
 import { TabNavigator } from './tab.navigator';
-import { AuthContext } from '../context/auth.context';
+import { AuthContext } from '../context/classes/auth.context';
 import { UnAuthTabNavigator } from './unauthorised.tab.navigator';
 import ModalScreen from '../components/modal.component';
 import AddContactScreen from '../screens/account/addContact.screen';

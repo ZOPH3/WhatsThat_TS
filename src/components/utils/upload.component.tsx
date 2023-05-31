@@ -1,6 +1,6 @@
 import { Button } from '@react-native-material/core';
 import React, { useContext, useEffect, useState } from 'react';
-import { UserContext } from '../../context/user.context';
+import { UserContext } from '../../context/classes/user.context';
 import { StyleSheet, Text, View, Image } from 'react-native';
 import { Camera, CameraType } from 'expo-camera';
 

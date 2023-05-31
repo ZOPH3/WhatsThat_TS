@@ -1,8 +1,8 @@
 import * as React from 'react';
 import StackNavigator from './src/navigation/main.stack.navigator';
 
-import { AuthContext } from './src/context/auth.context';
-import { UserContext } from './src/context/user.context';
+import { AuthContext } from './src/context/classes/auth.context';
+import { UserContext } from './src/context/classes/user.context';
 import { GlobalProvider } from './src/context/GlobalContext';
 
 function App() {

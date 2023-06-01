@@ -1,8 +1,10 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Button, View } from 'react-native';
-import { AuthContext } from '../../context/classes/auth.context';
+import log from '../../util/LoggerUtil';
+import { ApiContext } from '../../context/ApiContext';
+import { AuthContext } from '../../context/AuthContext';
+import UserController from '../../controllers/UserController';
 import { UserContext } from '../../context/classes/user.context';
-import { loginHandler } from '../../handlers/auth.handler';
 
 //FIXME: THIS BE HARDCODED
 // const user = {
@@ -16,20 +18,45 @@ const user = {
 };
 
 function UnauthorisedScreen() {
-  const { setIsLoggedIn } = useContext(AuthContext);
+  // const { setAuthState } = useContext(AuthContext);
   const { setUser } = useContext(UserContext);
+  const { publicApi } = useContext(ApiContext);
+  const authContext = useContext(AuthContext);
 
-  async function handleLogin(email: string, password: string) {
-    const user = await loginHandler(email, password);
+  // const [email, setEmail] = useState('');
+  // const [password, setPassword] = useState('');
 
-    if (!user) {
-      alert('Unable to login');
-      return;
+  const onLogin = async (email: string, password: string) => {
+    try {
+      if (!publicApi || !authContext.setAuthState) {
+        throw new Error('Unable to find Public API');
+      }
+
+      const post = await publicApi.post('/login', {
+        email,
+        password,
+      });
+
+      const { id, token } = post.data;
+      const user = await UserController.getUserInfo(id);
+
+      if (!user) {
+        throw new Error(`Unable to find user`);
+      }
+
+      setUser(user);
+
+      authContext.setAuthState({
+        accessToken: token,
+        refreshToken: undefined,
+        authenticated: true,
+      });
+
+    } catch (error) {
+      log.error('Unable to login...');
+      alert(error);
     }
-
-    setUser(user);
-    setIsLoggedIn(true);
-  }
+  };
 
   return (
     <>
@@ -37,39 +64,12 @@ function UnauthorisedScreen() {
         <Button
           title="Login"
           onPress={async () => {
-            handleLogin(user.email, user.password);
+            onLogin(user.email, user.password);
           }}
         />
       </View>
     </>
   );
 }
-
-// function UnauthorisedScreen({ route }) {
-//   // const { setIsLoggedIn } = useContext(AuthContext);
-//   const dispatch = useAppDispatch()
-
-//   function handleLogin(email: string, password: string) {
-//     UserService.login(user.email, user.password)
-//       .then(async (element) => {
-//         if (element.status) {
-//           await AuthService.setToken(element.result.token);
-//           dispatch(login());
-//         } else {
-//           alert(element.message);
-//         }
-//       },
-//       );
-//   }
-
-//   return <>
-//     <View>
-//       <Button title='Login' onPress={async () => {
-//         handleLogin(user.email, user.password);
-//       }} />
-//     </View>
-//   </>
-
-// }
 
 export default UnauthorisedScreen;

@@ -30,7 +30,7 @@ export function TabNavigator() {
               <IconButton
                 icon={(props) => <Icon name="account-plus" {...props} />}
                 color="primary"
-                onPress={() => navigation.navigate('Add Contact')}
+                onPress={() => navigation.navigate('AddContact')}
               />
               <IconButton
                 icon={(props) => <Icon name="account-remove" {...props} />}

@@ -1,4 +1,5 @@
 // import AuthService from "../services/auth.services";
+import { TSingleMessage } from '../types/TSchema';
 import { AuthHeader } from '../util/helpers/api.helper';
 import UrlBuilder from '../util/URLBuilder';
 import ChatController from './ChatController';
@@ -6,7 +7,7 @@ import ChatController from './ChatController';
 // https://github.com/ZJav1310/WhatsThat_TS/issues/1
 
 class MessageController {
-  static async getMessage(chat_id: any): Promise<import('../types/TSchema').SingleMessage[]> {
+  static async getMessage(chat_id: any): Promise<TSingleMessage[]> {
     const response = await ChatController.fetchChatDetails(chat_id);
     const messages = response.messages;
     return messages;

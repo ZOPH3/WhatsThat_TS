@@ -1,20 +1,51 @@
-import { Chat, ChatSummary, CreateChatResponse } from '../types/TSchema';
+import { useContext } from 'react';
+import { AuthContext } from '../context/AuthContext';
+import { TChat, TChatSummary, TCreateChatResponse } from '../types/TSchema';
 import { AuthHeader, AuthHeaderTest } from '../util/helpers/api.helper';
 import UrlBuilder from '../util/URLBuilder';
-import axios from 'axios';
+import axios, { AxiosInstance, AxiosResponse } from 'axios';
+import { ApiContext } from '../context/ApiContext';
+import log from '../util/LoggerUtil';
 
 // https://github.com/ZJav1310/WhatsThat_TS/issues/1
 class ChatController {
-  static async fetchChatList(): Promise<ChatSummary[]> {
-    const response = await axios
-      .get(UrlBuilder.fetchChatList(), await AuthHeaderTest())
-      .catch((error) => {
-        throw new Error(`HTTP error, status = ${error.response.status}`);
-      });
-    return response.data;
+  static fetchChatList(apiProvider: AxiosInstance | undefined) {
+    let error = undefined;
+
+    try {
+      if (!apiProvider) {
+        throw new Error('Unable to find Auth API');
+      }
+
+      const response = apiProvider
+        .get('/chat', {
+          signal: AbortSignal.timeout(5000)
+        })
+        .then(
+          (res) => res,
+          (err) => {
+            error = err;
+            log.error(err.response);
+          }
+        );
+
+
+      if (error) {
+        throw new Error('Failed to fetch chat list');
+      }
+
+      if (response == undefined) {
+        throw new Error('No data found');
+      }
+
+      log.debug('Fetch Response: ', response);
+      return response;
+    } catch (err) {
+      log.error(err);
+    }
   }
 
-  static async newConversation(name: string): Promise<CreateChatResponse> {
+  static async newConversation(name: string): Promise<TCreateChatResponse> {
     const myHeaders = await AuthHeader();
 
     const requestOptions: RequestInit = {
@@ -31,11 +62,11 @@ class ChatController {
         }
         return response.json();
       })
-      .then((response) => response as CreateChatResponse);
+      .then((response) => response as TCreateChatResponse);
     // .catch((error) => console.log('Error caught while creating new conversation: ', error));
   }
 
-  static async fetchChatDetails(chat_id: number): Promise<Chat> {
+  static async fetchChatDetails(chat_id: number): Promise<TChat> {
     const myHeaders = await AuthHeader();
 
     const requestOptions: RequestInit = {
@@ -51,7 +82,7 @@ class ChatController {
         }
         return response.json();
       })
-      .then((response) => response as Chat);
+      .then((response) => response as TChat);
     // .catch((error) => console.log('Error caught while fetching chat details: ', error));
   }
 

@@ -1,11 +1,11 @@
 import AuthService from '../services/auth.services';
-import { User } from '../types/TSchema';
+import { TUser } from '../types/TSchema';
 import { AuthHeader } from '../util/helpers/api.helper';
 import UrlBuilder, { SearchParams } from '../util/URLBuilder';
 
 // https://github.com/ZJav1310/WhatsThat_TS/issues/1
 class ContactController {
-  public static async fetchContacts(): Promise<User[]> {
+  public static async fetchContacts(): Promise<TUser[]> {
     const myHeaders = await AuthHeader();
 
     const requestOptions: RequestInit = {
@@ -21,7 +21,7 @@ class ContactController {
         }
         return response.json();
       })
-      .then((response) => response as User[]);
+      .then((response) => response as TUser[]);
     // .catch((error) => console.log('Error caught while fetching contact list: ', error));
   }
 
@@ -105,7 +105,7 @@ class ContactController {
     // .catch((error) => console.log('Error caught while unblocking user: ', error));
   }
 
-  public static async fetchblocked(): Promise<User[]> {
+  public static async fetchblocked(): Promise<TUser[]> {
     const myHeaders = await AuthHeader();
 
     const requestOptions: RequestInit = {
@@ -121,11 +121,11 @@ class ContactController {
         }
         return response.json();
       })
-      .then((response) => response as User[]);
+      .then((response) => response as TUser[]);
     // .catch((error) => console.log('Error caught while fetching blocked list: ', error));
   }
 
-  public static async search(params: SearchParams): Promise<User[]> {
+  public static async search(params: SearchParams): Promise<TUser[]> {
     const myHeaders = await AuthHeader();
 
     const requestOptions: RequestInit = {
@@ -160,7 +160,7 @@ class ContactController {
             });
           }
         );
-        return userList as User[];
+        return userList as TUser[];
       });
     // .catch((error) => console.log('Error caught while fetching contact list: ', error));
   }

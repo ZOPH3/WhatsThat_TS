@@ -14,12 +14,16 @@ const AuthStateDefault: IAuthState = {
 
 interface IAuthProvider {
   authState: IAuthState;
-  getAccessToken: () => string | undefined;
-  setAuthState: Dispatch<SetStateAction<IAuthState>>;
-  logout: () => void;
+  getAccessToken?: () => string | undefined;
+  setAuthState?: Dispatch<SetStateAction<IAuthState>>;
+  logout?: () => void;
 }
 
-const AuthContext = createContext<IAuthProvider | undefined>(undefined);
+const AuthProviderDefault: IAuthProvider = {
+  authState: AuthStateDefault,
+}
+
+const AuthContext = createContext<IAuthProvider>(AuthProviderDefault);
 const { Provider } = AuthContext;
 
 interface Props {

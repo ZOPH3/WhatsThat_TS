@@ -1,71 +1,71 @@
-export type ChatSummary = {
+export type TChatSummary = {
   chat_id: number;
   name: string;
-  creator: User;
-  last_message: SingleMessage;
+  creator: TUser;
+  last_message: TSingleMessage;
 };
 
-export type User = {
+export type TUser = {
   user_id: number;
   first_name: string;
   last_name: string;
   email: string;
 };
 
-export type AddUser = {
+export type TAddUser = {
   first_name: string;
   last_name: string;
   email: string;
   password: string;
 };
 
-export type UpdateUser = {
+export type TUpdateUser = {
   first_name?: string;
   last_name?: string;
   email?: string;
   password?: string;
 };
 
-export type LoginUser = {
+export type TLoginUser = {
   email: string;
   password: string;
 };
 
-export type LoginResponse = {
+export type TLoginResponse = {
   id: number;
   token: string;
 };
 
-export type SignUpResponse = {
+export type TSignUpResponse = {
   user_id: number;
 };
 
-export type CreateChat = {
+export type TCreateChat = {
   name: string;
 };
 
-export type CreateChatResponse = {
+export type TCreateChatResponse = {
   chat_id: number;
 };
 
-export type Chat = {
+export type TChat = {
   name: string;
-  creator: User;
-  members: User[];
-  messages: SingleMessage[];
+  creator: TUser;
+  members: TUser[];
+  messages: TSingleMessage[];
 };
 
-export type UpdateChat = {
+export type TUpdateChat = {
   name: string;
 };
 
-export type SingleMessage = {
+export type TSingleMessage = {
   message_id: number;
   timestamp: number;
   message: string;
-  author: User;
+  author: TUser;
 };
 
-export type SendMessage = {
+export type TSendMessage = {
   message: string;
 };

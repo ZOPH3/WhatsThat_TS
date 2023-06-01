@@ -5,10 +5,11 @@ import { useContext } from 'react';
 
 import ChatScreen from '../screens/conversation/MessagesScreen';
 import { TabNavigator } from './TabNav';
-import { AuthContext } from '../context/classes/auth.context';
+// import { AuthContext } from '../context/classes/auth.context';
 import { UnAuthTabNavigator } from './RegisterTabNav';
 import ModalScreen from '../screens/ModalScreen';
 import AddContactScreen from '../screens/account/AddContactScreen';
+import { AuthContext } from '../context/AuthContext';
 
 export type MainStackNavigator = {
   Home: undefined;
@@ -20,11 +21,13 @@ export type MainStackNavigator = {
 const Stack = createNativeStackNavigator<MainStackNavigator>();
 
 function StackNavigator() {
-  const { isLoggedIn } = useContext(AuthContext);
+  // const { isLoggedIn } = useContext(AuthContext);
+  const authContext = useContext(AuthContext);
+
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        {isLoggedIn ? (
+        {authContext.authState.authenticated ? (
           <Stack.Group>
             <Stack.Screen name="Home" component={TabNavigator} options={{ headerShown: false }} />
             <Stack.Screen
@@ -37,7 +40,7 @@ function StackNavigator() {
               }}
             />
             <Stack.Screen
-              name="Add Contact"
+              name="AddContact"
               component={AddContactScreen}
               options={{
                 gestureEnabled: false,

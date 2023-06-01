@@ -1,5 +1,5 @@
-import { User } from '../types/TSchema';
-import { LoginResponse, SignUpResponse } from '../types/TSchema';
+import { TUser } from '../types/TSchema';
+import { TLoginResponse, TSignUpResponse } from '../types/TSchema';
 import { AuthHeader } from '../util/helpers/api.helper';
 import { RegularHeader } from '../util/helpers/api.helper';
 import UrlBuilder from '../util/URLBuilder';
@@ -7,7 +7,7 @@ import UrlBuilder from '../util/URLBuilder';
 // https://github.com/ZJav1310/WhatsThat_TS/issues/1
 class UserController {
   // FIXME: Some of the JSON things dont work and need ot be removed
-  public static async login(email: string, password: string): Promise<LoginResponse> {
+  public static async login(email: string, password: string): Promise<TLoginResponse> {
     const myHeaders = RegularHeader();
 
     const requestOptions: RequestInit = {
@@ -24,7 +24,7 @@ class UserController {
         }
         return response.json();
       })
-      .then((response) => response as LoginResponse);
+      .then((response) => response as TLoginResponse);
     // .catch((error) => console.log('Error caught while logging in user: ', error));
   }
   public static async logout(): Promise<Response> {
@@ -51,7 +51,7 @@ class UserController {
     last_name: string,
     email: string,
     password: string
-  ): Promise<SignUpResponse> {
+  ): Promise<TSignUpResponse> {
     const myHeaders = RegularHeader();
 
     const requestOptions: RequestInit = {
@@ -77,7 +77,7 @@ class UserController {
     // .catch((error) => console.log('Error caught while registering user: ', error));
   }
 
-  public static async getUserInfo(user_id: number): Promise<User> {
+  public static async getUserInfo(user_id: number): Promise<TUser> {
     const myHeaders = await AuthHeader();
 
     const requestOptions: RequestInit = {
@@ -93,10 +93,10 @@ class UserController {
         }
         return response.json();
       })
-      .then((response) => response as User);
+      .then((response) => response as TUser);
     // .catch((error) => console.log('Error caught while fetching user information: ', error));
   }
-  public static async updateUserInfo(user_id: number, payload: Partial<User>): Promise<Response> {
+  public static async updateUserInfo(user_id: number, payload: Partial<TUser>): Promise<Response> {
     const myHeaders = await AuthHeader();
 
     const requestOptions: RequestInit = {

@@ -1,36 +1,78 @@
 import { View, SafeAreaView, ScrollView, Pressable } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Button } from '@react-native-material/core';
 import { styles } from './ChatListScreen.styles';
 import IsLoadingIndicator from '../../components/utils/LoadingIndicator';
-import { ChatSummary } from '../../types/TSchema';
+import { TChatSummary } from '../../types/TSchema';
 import useQuery from '../../hooks/UseQueryHook';
 import ChatController from '../../controllers/ChatController';
 import ListItemComponent from '../../components/chat/ChatSummaryComponent';
+import { ApiContext } from '../../context/ApiContext';
+import log from '../../util/LoggerUtil';
 
 //FIXME: This needs to be moved to context which is used to watch if a chat is updated too from user message?
 function HomeScreen() {
-  const [chatList, setChatList] = useState<ChatSummary[]>();
+  const { authApi } = useContext(ApiContext);
+  const [chatList, setChatList] = useState<TChatSummary[]>();
 
-  const { data, isLoading, isSuccess, isError, refetch } = useQuery<ChatSummary[]>(
-    () => ChatController.fetchChatList(),
-    {
-      onSuccess(data) {
-        setChatList(data);
-      },
-      onError(error) {
-        console.log('IM ERRRRRRRR');
-      },
+  // const { data, isLoading, isSuccess, isError, refetch } = useQuery<ChatSummary[]>(
+  //   async () => ChatController.fetchChatList(authApi),
+  //   {
+  //     onSuccess(data) {
+  //       setChatList(data);
+  //     },
+  //     onError(error) {
+  //       console.log(error);
+  //     },
+  //   }
+  // );
+
+  async function fetch(){
+    let error = undefined;
+
+    try {
+      if (!authApi) {
+        throw new Error('Unable to find Auth API');
+      }
+
+      const response = authApi
+        .get('/chat')
+        .then(
+          (res) => res,
+          (err) => {
+            error = err;
+            log.error(err.response);
+          }
+        );
+
+
+      if (error) {
+        throw new Error('Failed to fetch chat list');
+      }
+
+      if (response == undefined) {
+        throw new Error('No data found');
+      }
+
+      log.debug('Fetch Response: ', response);
+      // return response;
+    } catch (err) {
+      log.error(err);
     }
-  );
+    
+  }
+  useEffect(() => {
+    fetch();
+  },[])
 
-  function filterChatListByTime(list: ChatSummary[]) {
+
+  function filterChatListByTime(list: TChatSummary[]) {
     return list.filter((c) => c.last_message.timestamp !== undefined);
   }
-  function getOnlyUndefined(list: ChatSummary[]) {
+  function getOnlyUndefined(list: TChatSummary[]) {
     return list.filter((c) => c.last_message.timestamp === undefined);
   }
-  function sortByDateTime(list: ChatSummary[]) {
+  function sortByDateTime(list: TChatSummary[]) {
     return filterChatListByTime(list).sort(function (a, b) {
       return b.last_message.timestamp - a.last_message.timestamp;
     });
@@ -40,7 +82,9 @@ function HomeScreen() {
     <>
       <View style={styles.containerMain}>
         <SafeAreaView style={styles.container}>
-          <ScrollView style={styles.scrollView}>{render()}</ScrollView>
+          <ScrollView style={styles.scrollView}>{
+          // render()
+          }</ScrollView>
         </SafeAreaView>
       </View>
     </>

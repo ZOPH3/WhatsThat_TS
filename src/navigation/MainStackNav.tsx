@@ -9,7 +9,7 @@ import { TabNavigator } from './TabNav';
 import { UnAuthTabNavigator } from './RegisterTabNav';
 import ModalScreen from '../screens/ModalScreen';
 import AddContactScreen from '../screens/account/AddContactScreen';
-import { AuthContext } from '../context/AuthContext';
+import { useAuthContext } from '../context/AuthContext';
 
 export type MainStackNavigator = {
   Home: undefined;
@@ -22,7 +22,7 @@ const Stack = createNativeStackNavigator<MainStackNavigator>();
 
 function StackNavigator() {
   // const { isLoggedIn } = useContext(AuthContext);
-  const authContext = useContext(AuthContext);
+  const authContext = useAuthContext();
 
   return (
     <NavigationContainer>

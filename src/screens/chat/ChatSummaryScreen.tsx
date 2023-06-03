@@ -29,6 +29,7 @@ function HomeScreen() {
 
   async function fetch(){
     let error = undefined;
+    console.log(process.version)
 
     try {
       if (!authApi) {
@@ -36,7 +37,9 @@ function HomeScreen() {
       }
 
       const response = authApi
-        .get('/chat')
+        .get('/chat', {
+          signal: AbortSignal.timeout(5000)
+        })
         .then(
           (res) => res,
           (err) => {

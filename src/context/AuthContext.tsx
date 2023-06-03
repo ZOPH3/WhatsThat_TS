@@ -1,47 +1,51 @@
-import React, { Dispatch, ReactNode, SetStateAction, createContext, useState } from 'react';
+import React, { Dispatch, ReactNode, SetStateAction, createContext, useContext, useState } from 'react';
 
 interface IAuthState {
   accessToken: string | undefined;
-  refreshToken: boolean | undefined;
   authenticated: boolean | undefined;
+}
+
+interface IAuthContext {
+  authState: IAuthState;
+  setAuthState: Dispatch<SetStateAction<IAuthState>>;
+  getAccessToken?: () => string | undefined;
+  logout?: () => void;
 }
 
 const AuthStateDefault: IAuthState = {
   accessToken: undefined,
-  refreshToken: undefined,
   authenticated: undefined,
 };
 
-interface IAuthProvider {
-  authState: IAuthState;
-  getAccessToken?: () => string | undefined;
-  setAuthState?: Dispatch<SetStateAction<IAuthState>>;
-  logout?: () => void;
-}
-
-const AuthProviderDefault: IAuthProvider = {
+const AuthContextDefault: IAuthContext = {
   authState: AuthStateDefault,
-}
+  setAuthState: () => {/* */},
+};
 
-const AuthContext = createContext<IAuthProvider>(AuthProviderDefault);
-const { Provider } = AuthContext;
+const AuthContext = createContext<IAuthContext>(AuthContextDefault);
+
 
 interface Props {
   children?: ReactNode;
 }
 
 const AuthProvider = ({ children }: Props) => {
-  const [authState, setAuthState] = useState<IAuthState>(AuthStateDefault);
+  const { Provider } = AuthContext;
+
+  const [authState, setAuthState] = useState<IAuthState>({
+    accessToken: undefined,
+    authenticated: false,
+  });
 
   const logout = async () => {
     setAuthState({
       accessToken: undefined,
-      refreshToken: undefined,
       authenticated: false,
     });
   };
 
   const getAccessToken = () => {
+    console.log('FROM AUTHSTATE: ' + authState);
     return authState.accessToken;
   };
 
@@ -50,4 +54,16 @@ const AuthProvider = ({ children }: Props) => {
   );
 };
 
-export { AuthContext, AuthProvider };
+const useAuthContext = () => {
+  // get the context
+  const context = useContext(AuthContext);
+
+  // if `undefined`, throw an error
+  if (context === undefined) {
+    throw new Error("useAuthContext was used outside of its Provider");
+  }
+
+  return context;
+};
+
+export { useAuthContext, AuthProvider };

@@ -1,151 +1,94 @@
-import { useContext } from 'react';
-import { AuthContext } from '../context/AuthContext';
-import { TChat, TChatSummary, TCreateChatResponse } from '../types/TSchema';
-import { AuthHeader, AuthHeaderTest } from '../util/helpers/api.helper';
-import UrlBuilder from '../util/URLBuilder';
-import axios, { AxiosInstance, AxiosResponse } from 'axios';
-import { ApiContext } from '../context/ApiContext';
+import { TChat, TCreateChatResponse, TChatSummary } from '../types/TSchema';
 import log from '../util/LoggerUtil';
+import { useApiContext } from '../context/ApiContext';
 
-// https://github.com/ZJav1310/WhatsThat_TS/issues/1
-class ChatController {
-  static fetchChatList(apiProvider: AxiosInstance | undefined) {
-    let error = undefined;
+interface IChatController {
+  fetchChatList: () => Promise<TChatSummary | undefined>;
+  newConversation: (name: string) => Promise<TCreateChatResponse | undefined>;
+  fetchChatDetails: (chat_id: number) => Promise<TChat | undefined>;
+  updateChatDetails: (chat_id: number, name: string) => Promise<Response | undefined>;
+  addUserToConversation: (chat_id: number, user_id: number) => Promise<Response | undefined>;
+  removeUserFromConversation: (chat_id: number, user_id: number) => Promise<Response | undefined>;
+}
+const ChatController = (): IChatController => {
+  const apiProvider = useApiContext();
+  const { authApi } = apiProvider;
 
+  if (!apiProvider || !authApi) {
+    throw new Error('Unable to find Auth API...');
+  }
+
+  const fetchChatList = async (): Promise<TChatSummary | undefined> => {
     try {
-      if (!apiProvider) {
-        throw new Error('Unable to find Auth API');
-      }
-
-      const response = apiProvider
-        .get('/chat', {
-          signal: AbortSignal.timeout(5000)
-        })
-        .then(
-          (res) => res,
-          (err) => {
-            error = err;
-            log.error(err.response);
-          }
-        );
-
-
-      if (error) {
-        throw new Error('Failed to fetch chat list');
-      }
-
-      if (response == undefined) {
-        throw new Error('No data found');
-      }
-
-      log.debug('Fetch Response: ', response);
-      return response;
+      const response = await authApi.get('/chat');
+      return response.data as TChatSummary;
     } catch (err) {
       log.error(err);
     }
-  }
+  };
 
-  static async newConversation(name: string): Promise<TCreateChatResponse> {
-    const myHeaders = await AuthHeader();
+  const newConversation = async (name: string): Promise<TCreateChatResponse | undefined> => {
+    try {
+      const response = await authApi.post('/chat', { data: name });
+      return response.data as TCreateChatResponse;
+    } catch (err) {
+      log.error(err);
+    }
+  };
 
-    const requestOptions: RequestInit = {
-      method: 'POST',
-      headers: myHeaders,
-      body: JSON.stringify({ name: name }),
-      redirect: 'follow',
-    };
+  const fetchChatDetails = async (chat_id: number): Promise<TChat | undefined> => {
+    try {
+      const response = await authApi.get(`/chat/${chat_id}`);
+      return response.data as TChat;
+    } catch (err) {
+      log.error(err);
+    }
+  };
 
-    return fetch(UrlBuilder.startNewConversation(), requestOptions)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error, status = ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((response) => response as TCreateChatResponse);
-    // .catch((error) => console.log('Error caught while creating new conversation: ', error));
-  }
+  const updateChatDetails = async (
+    chat_id: number,
+    name: string
+  ): Promise<Response | undefined> => {
+    try {
+      const response = await authApi.post(`/chat/${chat_id}`, { data: name });
+      return response.data as Response;
+    } catch (err) {
+      log.error(err);
+    }
+  };
 
-  static async fetchChatDetails(chat_id: number): Promise<TChat> {
-    const myHeaders = await AuthHeader();
+  const addUserToConversation = async (
+    chat_id: number,
+    user_id: number
+  ): Promise<Response | undefined> => {
+    try {
+      const response = await authApi.post(`/chat/${chat_id}/user/${user_id}`);
+      return response.data as Response;
+    } catch (err) {
+      log.error(err);
+    }
+  };
 
-    const requestOptions: RequestInit = {
-      method: 'GET',
-      headers: myHeaders,
-      redirect: 'follow',
-    };
+  const removeUserFromConversation = async (
+    chat_id: number,
+    user_id: number
+  ): Promise<Response | undefined> => {
+    try {
+      const response = await authApi.delete(`/chat/${chat_id}/user/${user_id}`);
+      return response.data as Response;
+    } catch (err) {
+      log.error(err);
+    }
+  };
 
-    return fetch(UrlBuilder.fetchChatDetails(chat_id), requestOptions)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error, status = ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((response) => response as TChat);
-    // .catch((error) => console.log('Error caught while fetching chat details: ', error));
-  }
+  return {
+    fetchChatDetails,
+    newConversation,
+    fetchChatList,
+    updateChatDetails,
+    addUserToConversation,
+    removeUserFromConversation,
+  };
+};
 
-  static async updateChatDetails(chat_id: number, name: string): Promise<Response> {
-    const myHeaders = await AuthHeader();
-
-    const requestOptions: RequestInit = {
-      method: 'PATCH',
-      headers: myHeaders,
-      body: JSON.stringify({ name: name }),
-      redirect: 'follow',
-    };
-
-    return fetch(UrlBuilder.updateChatDetails(chat_id), requestOptions)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error, status = ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((response) => response)
-      .catch((error) => console.log('Error caught while updating chat details: ', error));
-  }
-
-  static async addUserToConversation(chat_id: number, user_id: number): Promise<Response> {
-    const myHeaders = await AuthHeader();
-
-    const requestOptions: RequestInit = {
-      method: 'POST',
-      headers: myHeaders,
-      redirect: 'follow',
-    };
-
-    return fetch(UrlBuilder.addUserToConversation(chat_id, user_id), requestOptions)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error, status = ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((response) => response)
-      .catch((error) => console.log('Error caught while adding user to conversation: ', error));
-  }
-
-  static async removeUserFromConversation(chat_id: number, user_id: number): Promise<Response> {
-    const myHeaders = await AuthHeader();
-
-    const requestOptions: RequestInit = {
-      method: 'DELETE',
-      headers: myHeaders,
-      redirect: 'follow',
-    };
-
-    return fetch(UrlBuilder.removeUserFromConversation(chat_id, user_id), requestOptions)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error, status = ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((response) => response)
-      .catch((error) => console.log('Error caught while removing user from conversation: ', error));
-  }
-}
-
-export default ChatController;
+export { ChatController };

@@ -1,11 +1,16 @@
-import AuthService from '../../services/auth.services';
+// import AuthService from '../../services/auth.services';
+
+import { StorageKeys } from "../../types/TStorageKeys";
+import ASHelper from "../AsyncStorageHelper";
+import log from "../LoggerUtil";
 
 export async function AuthHeader() {
   const myHeaders = new Headers();
 
-  const value = await AuthService.getToken();
-  if (value) {
-    myHeaders.append('X-Authorization', value);
+  const item = await ASHelper.getItem(StorageKeys.AuthToken);
+  if (item) {
+    log.debug("TOKEN FOUND: " + item);
+    myHeaders.append('X-Authorization', item.value);
   }
 
   myHeaders.append('Content-Type', 'application/json');
@@ -20,9 +25,9 @@ export function RegularHeader() {
 
 export async function AuthHeaderTest() {
   let token;
-  const value = await AuthService.getToken();
-  if (value) {
-    token = value as string;
+  const item = await ASHelper.getItem(StorageKeys.AuthToken);
+  if (item) {
+    token = item.value as string;
   }
   
   const config = {

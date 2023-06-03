@@ -1,8 +1,8 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { Button, View } from 'react-native';
 import log from '../../util/LoggerUtil';
-import { ApiContext } from '../../context/ApiContext';
-import { AuthContext } from '../../context/AuthContext';
+import { useApiContext } from '../../context/ApiContext';
+import { useAuthContext } from '../../context/AuthContext';
 import UserController from '../../controllers/UserController';
 import { UserContext } from '../../context/classes/user.context';
 
@@ -20,8 +20,8 @@ const user = {
 function UnauthorisedScreen() {
   // const { setAuthState } = useContext(AuthContext);
   const { setUser } = useContext(UserContext);
-  const { publicApi } = useContext(ApiContext);
-  const authContext = useContext(AuthContext);
+  const { publicApi, authApi } = useApiContext();
+  const authContext = useAuthContext();
 
   // const [email, setEmail] = useState('');
   // const [password, setPassword] = useState('');
@@ -38,19 +38,26 @@ function UnauthorisedScreen() {
       });
 
       const { id, token } = post.data;
-      const user = await UserController.getUserInfo(id);
+      
+      // await ASHelper.setKey(StorageKeys.AuthToken, token);
+      // const t = await ASHelper.getItem(StorageKeys.AuthToken);
+
+      log.debug("TOKEN FOUND: " + token);
+
+      if(token){
+        authContext.setAuthState({
+          accessToken: token,
+          authenticated: true,
+        });
+      }
+
+      const user = await UserController.getUserInfo(id, authApi!);
 
       if (!user) {
         throw new Error(`Unable to find user`);
       }
-
+     
       setUser(user);
-
-      authContext.setAuthState({
-        accessToken: token,
-        refreshToken: undefined,
-        authenticated: true,
-      });
 
     } catch (error) {
       log.error('Unable to login...');

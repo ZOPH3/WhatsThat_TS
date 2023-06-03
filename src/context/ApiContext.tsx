@@ -1,9 +1,8 @@
-import axios, { AxiosInstance } from 'axios';
-import { ReactNode, createContext, useContext } from 'react';
-import { AuthContext } from './AuthContext';
-import React from 'react';
+import React, { ReactNode, createContext, useContext } from 'react';
+import { useAuthContext } from './AuthContext';
 import { GlobalContext } from './GlobalContext';
 import log from '../util/LoggerUtil';
+import axios, { AxiosInstance } from 'axios';
 
 interface IApiContext {
   authApi?: AxiosInstance;
@@ -28,8 +27,7 @@ function setBaseURL() {
 }
 
 const ApiProvider = ({ children }: Props) => {
-  
-  const authContext = useContext(AuthContext);
+  const authContext = useAuthContext();
 
   const authApi = axios.create({
     baseURL: setBaseURL(),
@@ -43,10 +41,10 @@ const ApiProvider = ({ children }: Props) => {
 
   authApi.interceptors.request.use(
     (config) => {
-      log.debug("[AUTH API] Intercepting: " + config.url);
-      
-      if (!config.headers['X-Authorization'] && authContext.getAccessToken) {
-        config.headers['X-Authorization'] = `${authContext?.getAccessToken()}`;
+      log.debug('[AUTH API] Intercepting: ' + config.url);
+
+      if (!config.headers['X-Authorization'] && authContext.authState.accessToken) {
+        config.headers['X-Authorization'] = `${authContext.authState.accessToken}`;
       }
 
       return config;
@@ -58,11 +56,11 @@ const ApiProvider = ({ children }: Props) => {
 
   authApi.interceptors.response.use(
     (response) => {
-      log.debug("response: ", response);
+      log.debug('response: ', response);
       return response;
     },
     (error) => {
-      log.debug("response error: ", error);
+      log.debug('response error: ', error);
       return Promise.reject(error);
     }
   );
@@ -70,4 +68,16 @@ const ApiProvider = ({ children }: Props) => {
   return <Provider value={{ authApi, publicApi }}>{children}</Provider>;
 };
 
-export { ApiProvider, ApiContext };
+const useApiContext = () => {
+  // get the context
+  const context = useContext(ApiContext);
+
+  // if `undefined`, throw an error
+  if (context === undefined) {
+    throw new Error("useAuthContext was used outside of its Provider");
+  }
+
+  return context;
+};
+
+export { ApiProvider, useApiContext };

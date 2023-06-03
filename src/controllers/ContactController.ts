@@ -1,4 +1,3 @@
-import AuthService from '../services/auth.services';
 import { TUser } from '../types/TSchema';
 import { AuthHeader } from '../util/helpers/api.helper';
 import UrlBuilder, { SearchParams } from '../util/URLBuilder';

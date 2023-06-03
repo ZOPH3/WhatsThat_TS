@@ -10,7 +10,7 @@ import { useRoute } from '@react-navigation/native';
 import IsLoadingIndicator from '../utils/LoadingIndicator';
 import MessageBubbleComponent from './MessageComponent';
 import { UserContext } from '../../context/classes/user.context';
-import { SingleMessage } from '../../types/TSchema';
+import { TSingleMessage } from '../../types/TSchema';
 import useQuery from '../../hooks/UseQueryHook';
 import MessageController from '../../controllers/MessageController';
 
@@ -21,16 +21,16 @@ import MessageController from '../../controllers/MessageController';
 //TODO: instead of delete on hold, it should open a context modal with edit and delete
 
 const ChatWindowComponent = () => {
-  const current_user = useContext(UserContext).user;
   const route = useRoute();
   const chat_id = route.params.chat_id;
+  const current_user = useContext(UserContext).user;
 
-  const flatListRef = useRef<FlatList<SingleMessage>>(null);
+  const flatListRef = useRef<FlatList<TSingleMessage>>(null);
   const [userInput, setUserInput] = useState('');
-  const [messageList, setMessageList] = useState<SingleMessage[]>();
+  const [messageList, setMessageList] = useState<TSingleMessage[]>();
 
-  const { data, isLoading, isSuccess, error, refetch } = useQuery<SingleMessage[]>(
-    () => MessageController.getMessage(chat_id),
+  const { data, isLoading, isSuccess, error, refetch } = useQuery<TSingleMessage[] | undefined>(
+    () => MessageController().getMessages(chat_id),
     {
       onSuccess: (data) => {
         setMessageList(data);
@@ -38,7 +38,7 @@ const ChatWindowComponent = () => {
     }
   );
 
-  function sortByDateTime(list: SingleMessage[]) {
+  function sortByDateTime(list: TSingleMessage[]) {
     return list.sort((a, b) => a.timestamp - b.timestamp);
   }
 
@@ -63,7 +63,7 @@ const ChatWindowComponent = () => {
 
       if (id === 0) id = id + 1;
 
-      const new_message: SingleMessage = {
+      const new_message: TSingleMessage = {
         message_id: id,
         timestamp: Date.now(),
         message: userInput,
@@ -71,25 +71,28 @@ const ChatWindowComponent = () => {
       };
 
       // TODO: This works to send a message but its basic
-      MessageServices.sendMessage(chat_id, userInput).then((result) => {
-        if (result && messageList) {
-          setMessageList([...messageList, new_message]);
-          // refetch();
-          setUserInput('');
-          triggerScrollToEnd();
-        } else {
-          alert('Unable to send message');
-        }
-      });
+      MessageController()
+        .sendMessage(chat_id, userInput)
+        .then((result) => {
+          if (result && messageList) {
+            setMessageList([...messageList, new_message]);
+            setUserInput('');
+            triggerScrollToEnd();
+          } else {
+            alert('Unable to send message');
+          }
+        });
     }
   }
 
   function triggerDelete(id: number) {
     Alert.alert('Deleting', id.toString());
     const newList = messageList?.filter((message) => message.message_id !== id);
-    MessageServices.deleteMessage(chat_id, id).then((result) => {
-      result && result.ok ? setMessageList(newList) : alert('Unable to delete message');
-    });
+    MessageController()
+      .deleteMessage(chat_id, id)
+      .then((result) => {
+        result && result.ok ? setMessageList(newList) : alert('Unable to delete message');
+      });
   }
 
   function triggerScrollToEnd(): void {
@@ -140,18 +143,10 @@ const ChatWindowComponent = () => {
                 />
 
                 <Button
-                  style={{
-                    flex: 1,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    marginBottom: 6,
-                    marginLeft: 6,
-                  }}
+                  style={styles.btnAdd}
                   title="Send"
                   trailing={(props) => <Icon name="send" {...props} />}
-                  onPress={() => {
-                    addMessage();
-                  }}
+                  onPress={() => addMessage()}
                 />
               </View>
             </View>
@@ -165,6 +160,13 @@ const ChatWindowComponent = () => {
 };
 
 const styles = StyleSheet.create({
+  btnAdd: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 6,
+    marginLeft: 6,
+  },
   container: {
     flex: 1,
     paddingBottom: 10,

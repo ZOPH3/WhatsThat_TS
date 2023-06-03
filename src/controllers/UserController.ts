@@ -90,7 +90,7 @@ const UserController = (): IUserController => {
   // public static async uploadUserPhoto() {}
   // public static async searchForUser() {}
 
-  return {login, logout, register, getUserInfo, updateUserInfo}
+  return { login, logout, register, getUserInfo, updateUserInfo };
 };
 
 export default UserController;

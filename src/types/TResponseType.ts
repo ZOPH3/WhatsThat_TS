@@ -1,10 +1,10 @@
-export type SimpleResponse = {
+export type TSimpleResponse = {
   response: string;
 };
 
-export type ExpandedResponse = {
+export type TExpandedResponse = {
   status: Response['status'];
   body?: Response['body'];
 };
 
-export type ApiResponse<T> = keyof T;
+export type TApiResponse<T> = keyof T;

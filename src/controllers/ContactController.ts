@@ -9,10 +9,10 @@ interface IContactsController {
   blockUser: (user_id: number) => Promise<Response | undefined>;
   unblockUser: (user_id: number) => Promise<Response | undefined>;
   fetchBlockedList: () => Promise<TUser[] | undefined>;
-  searchUsers: (params: SearchParams) => Promise<TUser[] | undefined>;
+  searchUsers: (params: TSearchParams) => Promise<TUser[] | undefined>;
 }
 
-interface SearchParams {
+export type TSearchParams = {
   q: string;
   search_in?: 'all' | 'contacts';
   limit?: number;
@@ -82,7 +82,7 @@ const ContactsController = (): IContactsController => {
     }
   };
 
-  const searchUsers = async (parameters: SearchParams): Promise<TUser[] | undefined> => {
+  const searchUsers = async (parameters: TSearchParams): Promise<TUser[] | undefined> => {
     let base = `/search?q=${parameters.q}`;
     const search_in = `&search_in=${parameters.search_in ? parameters.search_in : 'all'}`;
     base += search_in;

@@ -1,31 +1,28 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { SingleMessage } from '../../types/TSchema';
+import { TSingleMessage } from '../../types/TSchema';
 
 const MessageBubbleComponent = (props: {
-  message: SingleMessage;
+  message: TSingleMessage;
   isSelf: boolean;
   position: number;
   triggerDelete: (message_id: number) => void;
 }) => {
-  const message = props.message;
-  const isSelf = props.isSelf;
-  const triggerDelete = () => props.triggerDelete(message.message_id);
+  const { message, isSelf, triggerDelete } = props;
+  const date = dateTimeString(new Date(message.timestamp));
+  const author = isSelf ? 'Me' : `${message.author.first_name} ${message.author.last_name}`;
 
   return (
     <>
       <View>
         <TouchableOpacity
           style={[isSelf ? styles.self : styles.others]}
-          onLongPress={() => triggerDelete()}
+          onLongPress={() => triggerDelete(message.message_id)}
         >
-          <Text>{isSelf ? 'Me' : `${message.author.first_name} ${message.author.last_name}`}</Text>
+          <Text>{author}</Text>
           <View onTouchStart={() => console.log(message.timestamp, message.message_id.toString())}>
-            <Text style={{ fontSize: 12, color: '#C3C3C3' }}>
-              {' '}
-              {dateTimeString(new Date(message.timestamp))}
-            </Text>
-            <Text style={{ fontSize: 16, color: '#fff' }}> {message.message}</Text>
+            <Text style={styles.date}> {date}</Text>
+            <Text style={styles.messageText}> {message.message}</Text>
           </View>
         </TouchableOpacity>
       </View>
@@ -48,6 +45,8 @@ const dateTimeString = (date: Date) => {
 };
 
 const styles = StyleSheet.create({
+  date: { fontSize: 12, color: '#C3C3C3' },
+  messageText: { fontSize: 16, color: '#fff' },
   self: {
     textAlign: 'right',
     backgroundColor: '#0078fe',

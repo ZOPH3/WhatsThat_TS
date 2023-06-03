@@ -1,4 +1,4 @@
-export enum StorageKeys {
+export enum TStorageKeys {
     AuthToken = '@AuthToken',
     SavedUser = '@SavedUser',
     SavedChatSummaries = '@SavedChatSummaries',

@@ -1,22 +1,21 @@
 import React, { useState, Fragment } from 'react';
-import { SafeAreaView, ScrollView, Text, View } from 'react-native';
+import { SafeAreaView, ScrollView, View } from 'react-native';
 import IsLoadingIndicator from '../../components/utils/LoadingIndicator';
-import { User } from '../../types/TSchema';
-import useQuery, { State } from '../../hooks/UseQueryHook';
-import { Avatar, Button, ListItem, TextInput } from '@react-native-material/core';
+import { TUser } from '../../types/TSchema';
+import { State } from '../../hooks/UseQueryHook';
+import { Avatar, ListItem, TextInput } from '@react-native-material/core';
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
 import { stringToColour } from '../../util/ColorGeneratorUtil';
-import { SearchParams } from '../../util/URLBuilder';
-import ContactController from '../../controllers/ContactController';
+import ContactController, { TSearchParams } from '../../controllers/ContactController';
 
 function AddContactScreen() {
-  const initialParams: SearchParams = {
+  const initialParams: TSearchParams = {
     q: '',
     search_in: 'all',
   };
 
-  const [params, setParams] = useState<SearchParams>(initialParams);
-  const [state, setState] = useState<State<User[]>>({
+  const [params, setParams] = useState<TSearchParams>(initialParams);
+  const [state, setState] = useState<State<TUser[]>>({
     data: undefined,
     isLoading: false,
     isSuccess: false,
@@ -25,7 +24,7 @@ function AddContactScreen() {
   });
 
   function findUser(q: string) {
-    ContactController.search({ q: q })
+    ContactController().searchUsers({ q: q })
       .then((response) => {
         setState({
           data: response,

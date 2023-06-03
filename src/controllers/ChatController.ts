@@ -92,4 +92,4 @@ const ChatController = (): IChatController => {
   };
 };
 
-export { ChatController };
+export default ChatController ;

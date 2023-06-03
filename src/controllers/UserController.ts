@@ -1,114 +1,96 @@
-import { AxiosInstance } from 'axios';
 import { TUser } from '../types/TSchema';
 import { TLoginResponse, TSignUpResponse } from '../types/TSchema';
-import { AuthHeader } from '../util/helpers/api.helper';
-import { RegularHeader } from '../util/helpers/api.helper';
-import UrlBuilder from '../util/URLBuilder';
 import { useApiContext } from '../context/ApiContext';
+import log from '../util/LoggerUtil';
 
-// https://github.com/ZJav1310/WhatsThat_TS/issues/1
-class UserController {
-  // FIXME: Some of the JSON things dont work and need ot be removed
-  public static async login(email: string, password: string): Promise<TLoginResponse> {
-    const myHeaders = RegularHeader();
-
-    const requestOptions: RequestInit = {
-      method: 'POST',
-      headers: myHeaders,
-      body: JSON.stringify({ email, password }),
-      redirect: 'follow',
-    };
-
-    return fetch(UrlBuilder.login(), requestOptions)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error, status = ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((response) => response as TLoginResponse);
-    // .catch((error) => console.log('Error caught while logging in user: ', error));
-  }
-  public static async logout(): Promise<Response> {
-    const myHeaders = await AuthHeader();
-
-    const requestOptions: RequestInit = {
-      method: 'POST',
-      headers: myHeaders,
-      redirect: 'follow',
-    };
-
-    return fetch(UrlBuilder.logout(), requestOptions)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error, status = ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((response) => response);
-    // .catch((error) => console.log('Error caught while logging out user: ', error));
-  }
-  public static async register(
+interface IUserController {
+  login: (email: string, password: string) => Promise<TLoginResponse | undefined>;
+  logout: () => Promise<Response | undefined>;
+  register: (
     first_name: string,
     last_name: string,
     email: string,
     password: string
-  ): Promise<TSignUpResponse> {
-    const myHeaders = RegularHeader();
+  ) => Promise<TSignUpResponse | undefined>;
+  getUserInfo: (user_id: number) => Promise<TUser | undefined>;
+  updateUserInfo: (user_id: number, payload: Partial<TUser>) => Promise<Response | undefined>;
+}
+const UserController = (): IUserController => {
+  const apiProvider = useApiContext();
+  const { authApi, publicApi } = apiProvider;
 
-    const requestOptions: RequestInit = {
-      method: 'POST',
-      headers: myHeaders,
-      body: JSON.stringify({
-        first_name: first_name,
-        llast_name: last_name,
-        email: email,
-        password: password,
-      }),
-      redirect: 'follow',
-    };
-
-    return fetch(UrlBuilder.createNewUser(), requestOptions)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error, status = ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((response) => response);
-    // .catch((error) => console.log('Error caught while registering user: ', error));
+  if (!apiProvider || !authApi || !publicApi) {
+    throw new Error('Unable to find Auth API...');
   }
 
-  public static async getUserInfo(user_id: number, authApi: AxiosInstance): Promise<TUser> {
-    const user = await authApi.get(`/user/${user_id}`);
-    if (!user) {
-      throw new Error(`Unable to find user`);
+  const login = async (email: string, password: string): Promise<TLoginResponse | undefined> => {
+    try {
+      const response = await publicApi.post('/login', {
+        data: { email: email, password: password },
+      });
+      return response.data as TLoginResponse;
+    } catch (err) {
+      log.error(err);
     }
-    return user.data as TUser;
-  }
+  };
 
-  public static async updateUserInfo(user_id: number, payload: Partial<TUser>): Promise<Response> {
-    const myHeaders = await AuthHeader();
+  const logout = async (): Promise<Response | undefined> => {
+    try {
+      const response = await authApi.post('/logout');
+      return response.data as Response;
+    } catch (err) {
+      log.error(err);
+    }
+  };
 
-    const requestOptions: RequestInit = {
-      method: 'PATCH',
-      headers: myHeaders,
-      body: JSON.stringify(payload),
-      redirect: 'follow',
-    };
+  const register = async (
+    first_name: string,
+    last_name: string,
+    email: string,
+    password: string
+  ): Promise<TSignUpResponse | undefined> => {
+    try {
+      const response = await publicApi.post('/user', {
+        data: {
+          first_name: first_name,
+          llast_name: last_name,
+          email: email,
+          password: password,
+        },
+      });
+      return response.data as TSignUpResponse;
+    } catch (err) {
+      log.error(err);
+    }
+  };
 
-    return fetch(UrlBuilder.fetchUserInformation(user_id), requestOptions).then((response) => {
-      if (!response.ok) {
-        throw new Error(`HTTP error, status = ${response.status}`);
-      }
-      return response;
-    });
-    // .catch((error) => console.log('Error caught while updating user information: ', error));
-  }
+  const getUserInfo = async (user_id: number): Promise<TUser | undefined> => {
+    try {
+      const response = await authApi.post(`/user/${user_id}`);
+      return response.data as TUser;
+    } catch (err) {
+      log.error(err);
+    }
+  };
+
+  const updateUserInfo = async (
+    user_id: number,
+    payload: Partial<TUser>
+  ): Promise<Response | undefined> => {
+    try {
+      const response = await authApi.post(`/user/${user_id}`, { data: payload });
+      return response.data as Response;
+    } catch (err) {
+      log.error(err);
+    }
+  };
+
   // TODO: Below API things
   // public static async getUserPhoto() {}
   // public static async uploadUserPhoto() {}
   // public static async searchForUser() {}
-}
+
+  return {login, logout, register, getUserInfo, updateUserInfo}
+};
 
 export default UserController;

@@ -1,38 +1,49 @@
+import { useApiContext } from '../context/ApiContext';
 import { TSingleMessage } from '../types/TSchema';
-import { AuthHeader } from '../util/helpers/api.helper';
-import UrlBuilder from '../util/URLBuilder';
-import {ChatController} from './ChatController';
+import log from '../util/LoggerUtil';
 
 // https://github.com/ZJav1310/WhatsThat_TS/issues/1
+interface IMessageController {
+  getMessages: (chat_id: number) => Promise<TSingleMessage[] | undefined>;
+  sendMessage: (chat_id: number, message: string) => Promise<Response | undefined>;
+  deleteMessage: (chat_id: number, message_id: number) => Promise<Response | undefined>;
+  updateMessage: (
+    chat_id: number,
+    message_id: number,
+    message: string
+  ) => Promise<Response | undefined>;
+}
+const MessageController = (): IMessageController => {
+  const apiProvider = useApiContext();
+  const { authApi } = apiProvider;
 
-class MessageController {
-  static async getMessage(chat_id: any): Promise<TSingleMessage[]> {
-    const response = await ChatController().fetchChatDetails(chat_id);
-    const messages = response.messages;
-    return messages;
+  if (!apiProvider || !authApi) {
+    throw new Error('Unable to find Auth API...');
   }
+
+  const getMessages = async (chat_id: number): Promise<TSingleMessage[] | undefined> => {
+    try {
+      const response = await authApi.get(`/chat/${chat_id}`);
+      return response.data.messages as TSingleMessage[];
+    } catch (err) {
+      log.error(err);
+    }
+  };
+
   /**
    * Current logged in user sends a message in a chat.
    * @param chat_id
    * @param message
    * @returns
    */
-  static async sendMessage(chat_id: number, message: string): Promise<Response> {
-    // const myHeaders = await AuthHeader();
-    const requestOptions: RequestInit = {
-      method: 'POST',
-      headers: await AuthHeader(),
-      body: JSON.stringify({ message: message }),
-    };
-
-    return fetch(UrlBuilder.sendMessage(chat_id), requestOptions).then((response) => {
-      if (!response.ok) {
-        throw new Error(`HTTP error, status = ${response.status}`);
-      }
-      return response;
-    });
-    // .catch((error) => console.log('Error caught while sending message: ', error));
-  }
+  const sendMessage = async (chat_id: number, message: string): Promise<Response | undefined> => {
+    try {
+      const response = await authApi.post(`/chat/${chat_id}/message`, { data: message });
+      return response.data;
+    } catch (err) {
+      log.error(err);
+    }
+  };
 
   /**
    * Delete message in chat
@@ -40,22 +51,17 @@ class MessageController {
    * @param message_id
    * @returns
    */
-  static async deleteMessage(chat_id: number, message_id: number): Promise<Response> {
-    const myHeaders = await AuthHeader();
-
-    const requestOptions: RequestInit = {
-      method: 'DELETE',
-      headers: myHeaders,
-    };
-
-    return fetch(UrlBuilder.deleteMessage(chat_id, message_id), requestOptions).then((response) => {
-      if (!response.ok) {
-        throw new Error(`HTTP error, status = ${response.status}`);
-      }
-      return response;
-    });
-    // .catch((error) => console.log('Error caught while deleting message: ', error));
-  }
+  const deleteMessage = async (
+    chat_id: number,
+    message_id: number
+  ): Promise<Response | undefined> => {
+    try {
+      const response = await authApi.delete(`/chat/${chat_id}/message/${message_id}`);
+      return response.data;
+    } catch (err) {
+      log.error(err);
+    }
+  };
 
   /**
    * Update message in chat
@@ -64,29 +70,22 @@ class MessageController {
    * @param message
    * @returns
    */
-  static async updateMessage(
+  const updateMessage = async (
     chat_id: number,
     message_id: number,
     message: string
-  ): Promise<Response> {
-    const myHeaders = await AuthHeader();
+  ): Promise<Response | undefined> => {
+    try {
+      const response = await authApi.put(`/chat/${chat_id}/message/${message_id}`, {
+        data: message,
+      });
+      return response.data;
+    } catch (err) {
+      log.error(err);
+    }
+  };
 
-    const requestOptions: RequestInit = {
-      method: 'PATCH',
-      headers: myHeaders,
-      body: JSON.stringify({ message: message }),
-    };
-
-    return fetch(UrlBuilder.updateMessage(chat_id, message_id), requestOptions)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error, status = ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((response) => response);
-    // .catch((error) => console.log('Error caught while updating message: ', error));
-  }
-}
+  return { getMessages, sendMessage, deleteMessage, updateMessage };
+};
 
 export default MessageController;

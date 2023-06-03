@@ -1,10 +1,10 @@
 import config from '../config.json';
-export interface SearchParams {
-  q: string;
-  search_in?: 'all' | 'contacts';
-  limit?: number;
-  offset?: number;
-}
+// export interface SearchParams {
+//   q: string;
+//   search_in?: 'all' | 'contacts';
+//   limit?: number;
+//   offset?: number;
+// }
 
 export default class UrlBuilder {
   static createNewUser = () => config.BASE_URL + '/user';

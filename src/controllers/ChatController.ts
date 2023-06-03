@@ -10,6 +10,7 @@ interface IChatController {
   addUserToConversation: (chat_id: number, user_id: number) => Promise<Response | undefined>;
   removeUserFromConversation: (chat_id: number, user_id: number) => Promise<Response | undefined>;
 }
+
 const ChatController = (): IChatController => {
   const apiProvider = useApiContext();
   const { authApi } = apiProvider;

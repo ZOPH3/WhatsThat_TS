@@ -6,7 +6,7 @@ import IsLoadingIndicator from '../../components/utils/LoadingIndicator';
 import { TChatSummary } from '../../types/TSchema';
 import useQuery from '../../hooks/UseQueryHook';
 import ChatController from '../../controllers/ChatController';
-import ListItemComponent from '../../components/chat/ChatSummaryComponent';
+import ListItemComponent from '../../components/lists/ChatSummaryList';
 import { useApiContext } from '../../context/ApiContext';
 import log from '../../util/LoggerUtil';
 
@@ -48,7 +48,6 @@ function HomeScreen() {
   //         }
   //       );
 
-
   //     if (error) {
   //       throw new Error('Failed to fetch chat list');
   //     }
@@ -62,12 +61,11 @@ function HomeScreen() {
   //   } catch (err) {
   //     log.error(err);
   //   }
-    
+
   // }
   // useEffect(() => {
   //   fetch();
   // },[])
-
 
   function filterChatListByTime(list: TChatSummary[]) {
     return list.filter((c) => c.last_message.timestamp !== undefined);
@@ -85,9 +83,11 @@ function HomeScreen() {
     <>
       <View style={styles.containerMain}>
         <SafeAreaView style={styles.container}>
-          <ScrollView style={styles.scrollView}>{
-          // render()
-          }</ScrollView>
+          <ScrollView style={styles.scrollView}>
+            {
+              // render()
+            }
+          </ScrollView>
         </SafeAreaView>
       </View>
     </>

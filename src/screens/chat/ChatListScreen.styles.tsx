@@ -1,6 +1,13 @@
 import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
+  btnAdd: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 6,
+    marginLeft: 6,
+  },
   container: {
     flex: 1,
     width: '100%',

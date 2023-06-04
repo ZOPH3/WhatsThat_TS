@@ -2,6 +2,7 @@ import { TChat, TCreateChatResponse, TChatSummary } from '../types/TSchema';
 import log from '../util/LoggerUtil';
 import { useApiContext } from '../context/ApiContext';
 
+
 interface IChatController {
   fetchChatList: () => Promise<TChatSummary | undefined>;
   newConversation: (name: string) => Promise<TCreateChatResponse | undefined>;
@@ -10,6 +11,7 @@ interface IChatController {
   addUserToConversation: (chat_id: number, user_id: number) => Promise<Response | undefined>;
   removeUserFromConversation: (chat_id: number, user_id: number) => Promise<Response | undefined>;
 }
+
 
 const ChatController = (): IChatController => {
   const apiProvider = useApiContext();

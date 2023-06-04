@@ -8,8 +8,8 @@ import Icon from '@expo/vector-icons/MaterialCommunityIcons';
 import { useRoute } from '@react-navigation/native';
 
 import IsLoadingIndicator from '../utils/LoadingIndicator';
-import MessageBubbleComponent from './MessageComponent';
-import { UserContext } from '../../context/classes/user.context';
+// import MessageBubbleComponent from '../Messages/MessageBubble';
+// import { UserContext } from '../../context/classes/user.context';
 import { TSingleMessage } from '../../types/TSchema';
 import useQuery from '../../hooks/UseQueryHook';
 import MessageController from '../../controllers/MessageController';

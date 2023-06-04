@@ -6,7 +6,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
  */
 
 import ProfileView from '../views/ProfileView';
-import ChatRoomsView from '../views/ChatRoomsView';
+import ChaSummaryView from '../views/ChaSummaryView';
 import CreateChatView from '../views/CreateChatView';
 import ChatView from '../views/ChatView';
 import EditChatView from '../views/EditChatView';
@@ -24,7 +24,7 @@ const InsideStack = createNativeStackNavigator();
 const ChatStackNavigator = () => {
   return (
     <ChatStack.Navigator>
-      <ChatStack.Screen name="ChatRoomsView" component={ChatRoomsView} />
+      <ChatStack.Screen name="ChaSummaryView" component={ChaSummaryView} />
       <ChatStack.Screen name="CreateChatView" component={CreateChatView} />
       <ChatStack.Screen name="ChatView" component={ChatView} />
       <ChatStack.Screen name="EditChatView" component={EditChatView} />

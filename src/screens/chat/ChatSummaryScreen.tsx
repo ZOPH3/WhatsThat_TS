@@ -6,7 +6,7 @@ import IsLoadingIndicator from '../../components/utils/LoadingIndicator';
 import { TChatSummary } from '../../types/TSchema';
 import useQuery from '../../hooks/UseQueryHook';
 import ChatController from '../../controllers/ChatController';
-import ListItemComponent from '../../components/lists/ChatSummaryList';
+import ListItemComponent from '../../components/list/ChatSummaryList';
 import { useApiContext } from '../../context/ApiContext';
 import log from '../../util/LoggerUtil';
 

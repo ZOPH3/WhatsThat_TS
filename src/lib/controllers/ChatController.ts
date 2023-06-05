@@ -1,5 +1,5 @@
 import { TChat, TCreateChatResponse, TChatSummary } from '../types/TSchema';
-import log from '../../util/LoggerUtil';
+import log from '../../lib/util/LoggerUtil';
 import { useApiContext } from '../context/ApiContext';
 
 interface IChatController {

@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, FlatList, SafeAreaView } from 'react-native';
 
-import { TChatSummary } from '../../types/TSchema';
-import ChatSummaryContainer from './ChatSummaryContainer';
+import { TChatSummary } from '../../../lib/types/TSchema';
+import ChatSummaryContainer from '../components/ChatSummaryContainer';
 
 interface IChatSummaryList {
   chatSummary: TChatSummary[];

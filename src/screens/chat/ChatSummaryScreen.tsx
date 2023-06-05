@@ -2,12 +2,12 @@ import { View, SafeAreaView, ScrollView, Pressable } from 'react-native';
 import React, { useState } from 'react';
 import { Button } from '@react-native-material/core';
 import { styles } from './ChatListScreen.styles';
-import IsLoadingIndicator from '../../components/utils/LoadingIndicator';
-import { TChatSummary } from '../../types/TSchema';
-import useQuery from '../../hooks/UseQueryHook';
-import ChatController from '../../controllers/ChatController';
-import ListItemComponent from '../../components/list/ChatSummaryList';
-import { useApiContext } from '../../context/ApiContext';
+import IsLoadingIndicator from '../../components/LoadingIndicator';
+import { TChatSummary } from '../../lib/types/TSchema';
+import useQuery from '../../lib/hooks/UseQueryHook';
+import ChatController from '../../lib/controllers/ChatController';
+import ListItemComponent from '../../../__PREV__/list/ChatSummaryList';
+import { useApiContext } from '../../lib/context/ApiContext';
 import log from '../../util/LoggerUtil';
 
 //FIXME: This needs to be moved to context which is used to watch if a chat is updated too from user message?

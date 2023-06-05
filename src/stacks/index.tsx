@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 
-import { useAuthContext } from '../context/AuthContext';
+import { useAuthContext } from '../lib/context/AuthContext';
 import MasterStackNavigator from './MasterStack';
 
 //TODO Add the splash screen here and the state such as loading can be dealt with at this level.

@@ -1,6 +1,6 @@
 import { useApiContext } from '../context/ApiContext';
 import { TUser } from '../types/TSchema';
-import log from '../util/LoggerUtil';
+import log from '../../util/LoggerUtil';
 
 interface IContactsController {
   fetchContactList: () => Promise<TUser[] | undefined>;
@@ -17,7 +17,7 @@ export type TSearchParams = {
   search_in?: 'all' | 'contacts';
   limit?: number;
   offset?: number;
-}
+};
 
 // https://github.com/ZJav1310/WhatsThat_TS/issues/1
 const ContactsController = (): IContactsController => {

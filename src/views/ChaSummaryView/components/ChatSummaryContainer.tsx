@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { TChatSummary } from '../../types/TSchema';
+import { TChatSummary } from '../../../lib/types/TSchema';
 import ChatSummary from './ChatSummary';
-import AvatarComponent from '../Avatar';
+import AvatarComponent from '../../../components/Avatar';
 
 interface IChatSummaryContainer {
   chatSummary: TChatSummary;

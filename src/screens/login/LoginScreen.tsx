@@ -1,10 +1,10 @@
 import React, { useContext } from 'react';
 import { Button, View } from 'react-native';
 import log from '../../util/LoggerUtil';
-import { useApiContext } from '../../context/ApiContext';
-import { useAuthContext } from '../../context/AuthContext';
-import UserController from '../../controllers/UserController';
-import { UserContext } from '../../context/classes/user.context';
+import { useApiContext } from '../../lib/context/ApiContext';
+import { useAuthContext } from '../../lib/context/AuthContext';
+import UserController from '../../lib/controllers/UserController';
+import { UserContext } from '../../lib/context/classes/user.context';
 
 //FIXME: THIS BE HARDCODED
 // const user = {
@@ -38,13 +38,13 @@ function UnauthorisedScreen() {
       });
 
       const { id, token } = post.data;
-      
+
       // await ASHelper.setKey(StorageKeys.AuthToken, token);
       // const t = await ASHelper.getItem(StorageKeys.AuthToken);
 
-      log.debug("TOKEN FOUND: " + token);
+      log.debug('TOKEN FOUND: ' + token);
 
-      if(token){
+      if (token) {
         authContext.setAuthState({
           accessToken: token,
           authenticated: true,
@@ -56,9 +56,8 @@ function UnauthorisedScreen() {
       if (!user) {
         throw new Error(`Unable to find user`);
       }
-     
-      setUser(user);
 
+      setUser(user);
     } catch (error) {
       log.error('Unable to login...');
       alert(error);

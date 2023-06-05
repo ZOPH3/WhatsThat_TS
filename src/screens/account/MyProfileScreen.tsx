@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { UserContext } from '../../context/classes/user.context';
+import { UserContext } from '../../lib/context/classes/user.context';
 import { View } from 'react-native';
 import { Button, Stack, Text } from '@react-native-material/core';
 import FileUploader from '../../components/utils/upload.component';

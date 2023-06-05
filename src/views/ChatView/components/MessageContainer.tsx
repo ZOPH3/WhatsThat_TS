@@ -1,5 +1,5 @@
 import React from 'react';
-import { TSingleMessage } from '../../types/TSchema';
+import { TSingleMessage } from '../../../lib/types/TSchema';
 import MessageBubble from './MessageBubble';
 
 interface IMessageContainer {
@@ -12,7 +12,7 @@ interface IMessageActions {
   edit: () => void;
 }
 
-const MessageContainer = ({ message, actions } : IMessageContainer) => {
+const MessageContainer = ({ message, actions }: IMessageContainer) => {
   const currentUser = 16; //FIXME Replace with the context
 
   const isToday = (date: Date) => {

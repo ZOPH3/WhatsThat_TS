@@ -1,6 +1,6 @@
 import { useApiContext } from '../context/ApiContext';
 import { TSingleMessage } from '../types/TSchema';
-import log from '../util/LoggerUtil';
+import log from '../../util/LoggerUtil';
 
 // https://github.com/ZJav1310/WhatsThat_TS/issues/1
 interface IMessageController {

@@ -1,9 +1,9 @@
 import React, { useRef } from 'react';
 import { View, FlatList, SafeAreaView } from 'react-native';
 
-import { styles } from '../../screens/chat/ChatListScreen.styles';
-import { TSingleMessage } from '../../types/TSchema';
-import MessageContainer from './MessageContainer';
+import { styles } from '../../../screens/chat/ChatListScreen.styles';
+import { TSingleMessage } from '../../../lib/types/TSchema';
+import MessageContainer from '../components/MessageContainer';
 
 interface IMessageList {
   messages: TSingleMessage[];

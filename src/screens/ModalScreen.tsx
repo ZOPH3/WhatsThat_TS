@@ -2,8 +2,8 @@ import * as React from 'react';
 import { View, Text } from 'react-native';
 import { Button, TextInput } from '@react-native-material/core';
 import { useNavigation } from '@react-navigation/native';
-import IsLoadingIndicator from '../components/utils/LoadingIndicator';
-import ChatController from '../controllers/ChatController';
+import IsLoadingIndicator from '../components/LoadingIndicator';
+import ChatController from '../lib/controllers/ChatController';
 
 function ModalScreen() {
   const navigation = useNavigation();

@@ -1,12 +1,12 @@
 import React, { useState, Fragment } from 'react';
 import { SafeAreaView, ScrollView, View } from 'react-native';
-import IsLoadingIndicator from '../../components/utils/LoadingIndicator';
-import { TUser } from '../../types/TSchema';
-import { State } from '../../hooks/UseQueryHook';
+import IsLoadingIndicator from '../../components/LoadingIndicator';
+import { TUser } from '../../lib/types/TSchema';
+import { State } from '../../lib/hooks/UseQueryHook';
 import { Avatar, ListItem, TextInput } from '@react-native-material/core';
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
 import { stringToColour } from '../../util/ColorGeneratorUtil';
-import ContactController, { TSearchParams } from '../../controllers/ContactController';
+import ContactController, { TSearchParams } from '../../lib/controllers/ContactController';
 
 function AddContactScreen() {
   const initialParams: TSearchParams = {
@@ -24,7 +24,8 @@ function AddContactScreen() {
   });
 
   function findUser(q: string) {
-    ContactController().searchUsers({ q: q })
+    ContactController()
+      .searchUsers({ q: q })
       .then((response) => {
         setState({
           data: response,

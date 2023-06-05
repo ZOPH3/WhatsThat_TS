@@ -1,7 +1,7 @@
 import { TUser } from '../types/TSchema';
 import { TLoginResponse, TSignUpResponse } from '../types/TSchema';
 import { useApiContext } from '../context/ApiContext';
-import log from '../util/LoggerUtil';
+import log from '../../util/LoggerUtil';
 
 interface IUserController {
   login: (email: string, password: string) => Promise<TLoginResponse | undefined>;

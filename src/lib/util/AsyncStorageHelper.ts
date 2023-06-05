@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { StorageKeys } from '../types/TStorageKeys';
+import { StorageKeys } from '../lib/types/TStorageKeys';
 import log from './LoggerUtil';
 
 export default class ASHelper {

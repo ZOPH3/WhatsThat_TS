@@ -19,7 +19,6 @@ const AvatarComponent = React.memo(
     
     if(!text) return null;
 
-
     return (<Avatar label={text} color={color} />)
   }
 );

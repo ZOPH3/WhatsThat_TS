@@ -1,7 +1,6 @@
 import { TUser } from '../types/TSchema';
 import { TLoginResponse, TSignUpResponse } from '../types/TSchema';
 import { useApiContext } from '../context/ApiContext';
-import log from '../../util/LoggerUtil';
 
 interface IUserController {
   login: (email: string, password: string) => Promise<TLoginResponse | undefined>;
@@ -17,30 +16,23 @@ interface IUserController {
 }
 const UserController = (): IUserController => {
   const apiProvider = useApiContext();
-  const { authApi, publicApi } = apiProvider;
+  const { useApi } = apiProvider;
 
-  if (!apiProvider || !authApi || !publicApi) {
+  if (!apiProvider || !useApi) {
     throw new Error('Unable to find Auth API...');
   }
 
   const login = async (email: string, password: string): Promise<TLoginResponse | undefined> => {
-    try {
-      const response = await publicApi.post('/login', {
-        data: { email: email, password: password },
-      });
-      return response.data as TLoginResponse;
-    } catch (err) {
-      log.error(err);
-    }
+    const response = await useApi(
+      { url: '/login', method: 'POST', data: { email, password } },
+      false
+    );
+    return response.data as TLoginResponse;
   };
 
   const logout = async (): Promise<Response | undefined> => {
-    try {
-      const response = await authApi.post('/logout');
-      return response.data as Response;
-    } catch (err) {
-      log.error(err);
-    }
+    const response = await useApi({ url: '/logout', method: 'POST' }, true);
+    return response.data as Response;
   };
 
   const register = async (
@@ -49,40 +41,24 @@ const UserController = (): IUserController => {
     email: string,
     password: string
   ): Promise<TSignUpResponse | undefined> => {
-    try {
-      const response = await publicApi.post('/user', {
-        data: {
-          first_name: first_name,
-          llast_name: last_name,
-          email: email,
-          password: password,
-        },
-      });
-      return response.data as TSignUpResponse;
-    } catch (err) {
-      log.error(err);
-    }
+    const response = await useApi(
+      { url: '/user', method: 'POST', data: { first_name, last_name, email, password } },
+      false
+    );
+    return response.data as TSignUpResponse;
   };
 
   const getUserInfo = async (user_id: number): Promise<TUser | undefined> => {
-    try {
-      const response = await authApi.post(`/user/${user_id}`);
-      return response.data as TUser;
-    } catch (err) {
-      log.error(err);
-    }
+    const response = await useApi({ url: `/user/${user_id}`, method: 'GET' }, true);
+    return response.data as TUser;
   };
 
   const updateUserInfo = async (
     user_id: number,
     payload: Partial<TUser>
   ): Promise<Response | undefined> => {
-    try {
-      const response = await authApi.post(`/user/${user_id}`, { data: payload });
-      return response.data as Response;
-    } catch (err) {
-      log.error(err);
-    }
+    const response = await useApi({ url: `/user/${user_id}`, method: 'POST', data: payload }, true);
+    return response.data as Response;
   };
 
   // TODO: Below API things

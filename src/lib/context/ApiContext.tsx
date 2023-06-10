@@ -2,11 +2,11 @@ import React, { ReactNode, createContext, useContext } from 'react';
 import { useAuthContext } from './AuthContext';
 import { GlobalContext } from './GlobalContext';
 import log from '../util/LoggerUtil';
-import axios, { AxiosInstance } from 'axios';
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 
 interface IApiContext {
-  authApi?: AxiosInstance;
-  publicApi?: AxiosInstance;
+  // authApi?: AxiosInstance; publicApi?: AxiosInstance;
+  useApi?: (config: AxiosRequestConfig, auth: boolean,) => any;
 }
 
 const ApiContext = createContext<IApiContext>({});
@@ -29,17 +29,39 @@ function setBaseURL() {
 const ApiProvider = ({ children }: Props) => {
   const authContext = useAuthContext();
 
-  const authApi = axios.create({
+  const _authApi = axios.create({
     baseURL: setBaseURL(),
     timeout: 5000,
   });
 
-  const publicApi = axios.create({
+  const _publicApi = axios.create({
     baseURL: setBaseURL(),
     timeout: 5000,
   });
 
-  authApi.interceptors.request.use(
+  const useApi = async (config: AxiosRequestConfig, auth = true ) => {
+    // if (auth) {
+    //   return _authApi.request(config);
+    // } else {
+    //   return _publicApi.request(config);
+    // }
+
+    const _apiInstance = auth ? _authApi : _publicApi;
+
+    try {
+      const response = await _apiInstance.request(config);
+      return response;
+      // if(response.status === 200) {
+      //   return response.data;
+      // } else {
+      //   throw new Error(response.statusText);
+      // }
+    } catch (err) {
+      log.error(err);
+    }
+  };
+
+  _authApi.interceptors.request.use(
     (config) => {
       log.debug('[AUTH API] Intercepting: ' + config.url);
 
@@ -54,7 +76,7 @@ const ApiProvider = ({ children }: Props) => {
     }
   );
 
-  authApi.interceptors.response.use(
+  _authApi.interceptors.response.use(
     (response) => {
       log.debug('response: ', response);
       return response;
@@ -65,7 +87,7 @@ const ApiProvider = ({ children }: Props) => {
     }
   );
 
-  return <Provider value={{ authApi, publicApi }}>{children}</Provider>;
+  return <Provider value={{ useApi }}>{children}</Provider>;
 };
 
 const useApiContext = () => {
@@ -74,7 +96,7 @@ const useApiContext = () => {
 
   // if `undefined`, throw an error
   if (context === undefined) {
-    throw new Error("useAuthContext was used outside of its Provider");
+    throw new Error('useAuthContext was used outside of its Provider');
   }
 
   return context;

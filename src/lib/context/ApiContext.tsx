@@ -6,7 +6,7 @@ import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 
 interface IApiContext {
   // authApi?: AxiosInstance; publicApi?: AxiosInstance;
-  useApi?: (config: AxiosRequestConfig, auth: boolean,) => any;
+  useApi?: (config: AxiosRequestConfig, auth: boolean) => any;
 }
 
 const ApiContext = createContext<IApiContext>({});
@@ -39,23 +39,11 @@ const ApiProvider = ({ children }: Props) => {
     timeout: 5000,
   });
 
-  const useApi = async (config: AxiosRequestConfig, auth = true ) => {
-    // if (auth) {
-    //   return _authApi.request(config);
-    // } else {
-    //   return _publicApi.request(config);
-    // }
-
+  const useApi = async (config: AxiosRequestConfig, auth: boolean) => {
     const _apiInstance = auth ? _authApi : _publicApi;
-
     try {
-      const response = await _apiInstance.request(config);
+      const response = await _apiInstance.request({ ...config, signal: AbortSignal.timeout(5000) });
       return response;
-      // if(response.status === 200) {
-      //   return response.data;
-      // } else {
-      //   throw new Error(response.statusText);
-      // }
     } catch (err) {
       log.error(err);
     }

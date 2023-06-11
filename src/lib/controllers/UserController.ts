@@ -15,10 +15,8 @@ interface IUserController {
   updateUserInfo: (user_id: number, payload: Partial<TUser>) => Promise<Response | undefined>;
 }
 const UserController = (): IUserController => {
-  const apiProvider = useApiContext();
-  const { useApi } = apiProvider;
-
-  if (!apiProvider || !useApi) {
+  const { useApi } = useApiContext();
+  if (!useApi) {
     throw new Error('Unable to find Auth API...');
   }
 
@@ -27,6 +25,7 @@ const UserController = (): IUserController => {
       { url: '/login', method: 'POST', data: { email, password } },
       false
     );
+    console.log(response);
     return response.data as TLoginResponse;
   };
 

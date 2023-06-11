@@ -1,11 +1,11 @@
-import { Button } from '@react-native-material/core';
 import React from 'react';
-import { StyleProp, StyleSheet, Text, TextStyle } from 'react-native';
+import { StyleProp, TextStyle } from 'react-native';
+import { Button } from 'react-native-paper';
 
 interface IButton {
   title: string;
   onPress: () => void;
-  type: string;
+  mode?: "text" | "outlined" | "contained" | "elevated" | "contained-tonal" | undefined;
   backgroundColor?: string;
   color?: string;
   loading?: boolean;
@@ -17,7 +17,7 @@ interface IButton {
 const ButtonComponent = ({
   title,
   onPress,
-  type,
+  mode,
   backgroundColor,
   color,
   loading = false,
@@ -25,7 +25,7 @@ const ButtonComponent = ({
   fontSize,
   styleText,
 }: IButton): React.ReactElement => {
-  return <Button title={title} onPress={onPress} loading={loading} disabled={disabled} />;
+  return <Button onPress={onPress} loading={loading} disabled={disabled} mode={mode}>{title}</Button>;
 };
 
 export default ButtonComponent;

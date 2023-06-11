@@ -1,25 +1,24 @@
-import Avatar from '@react-native-material/core/lib/typescript/Avatar';
 import React from 'react';
 import { ViewStyle } from 'react-native';
+import { Avatar } from 'react-native-paper';
 
 interface IAvatar {
-  text?: string;
+  label?: string;
   color?: string;
   size?: number;
   onPress?: () => void;
   user_id?: number;
   style?: ViewStyle;
-  img?: string;
+  source?: string;
   children?: React.ReactElement | null;
   icon?: React.ReactElement | null;
 }
 
 const AvatarComponent = React.memo(
-  ({ text, color, size = 25, onPress, user_id, style, img, children, icon }: IAvatar) => {
-    
-    if(!text) return null;
+  ({ label, color, size = 25, onPress, user_id, style, source, children, icon }: IAvatar) => {
+    if (!label) return null;
 
-    return (<Avatar label={text} color={color} />)
+    return <Avatar.Text label={label} color={color} />;
   }
 );
 

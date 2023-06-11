@@ -24,7 +24,7 @@ const OutsideTabNavigator = () => {
 const OutsideStackNavigator = () => {
   return (
     <OutsideStack.Navigator>
-      <OutsideStack.Screen name="OutsideStack" component={OutsideTabNavigator} />
+      <OutsideStack.Screen name="OutsideStack" component={OutsideTabNavigator} options={{ headerShown: false }}/>
     </OutsideStack.Navigator>
   );
 };

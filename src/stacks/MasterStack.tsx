@@ -10,9 +10,9 @@ const MasterStackNavigator = ({ auth = false }) => {
   return (
     <MasterStack.Navigator>
       {auth ? (
-        <MasterStack.Screen name="InsideStackNavigator" component={InsideStackNavigator} />
+        <MasterStack.Screen name="InsideStackNavigator" component={InsideStackNavigator} options={{ headerShown: false }}/>
       ) : (
-        <MasterStack.Screen name="OutsideStackNavigator" component={OutsideStackNavigator} />
+        <MasterStack.Screen name="OutsideStackNavigator" component={OutsideStackNavigator} options={{ headerShown: false }}/>
       )}
     </MasterStack.Navigator>
   );

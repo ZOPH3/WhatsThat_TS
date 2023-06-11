@@ -1,4 +1,4 @@
-import React, { ReactNode, createContext } from 'react';
+import React, { ReactNode, createContext, useContext, useState } from 'react';
 import { Platform } from 'react-native';
 
 // Check what the platform is
@@ -14,11 +14,14 @@ function isMobile(): boolean {
 }
 
 interface IGlobalState {
-  isMobile: boolean;
+  isMobile?: boolean;
+  theme?: string;
+  toggleTheme?: () => void;
 }
 
 const GlobalStateDefault = {
-  isMobile: false,
+  isMobile: isMobile(),
+  theme: 'dark',
 };
 
 const GlobalContext = createContext<IGlobalState>(GlobalStateDefault);
@@ -29,7 +32,30 @@ interface Props {
 }
 
 const GlobalProvider = ({ children }: Props) => {
-  return <Provider value={{ isMobile: isMobile() }}>{children}</Provider>;
+  const [GlobalState, setGlobalState] = useState<IGlobalState>(GlobalStateDefault);
+  //{ isMobile: isMobile(), theme: 'dark' } This seemed to update it instantly compared to the below as that only updates when app restarts.
+  const toggleTheme = () => {
+    setGlobalState((prevState) => {
+      return {
+        ...prevState,
+        theme: prevState.theme === 'light' ? 'dark' : 'light',
+      };
+    });
+  };
+
+  return <Provider value={{...GlobalState, toggleTheme}}>{children}</Provider>;
 };
 
-export { GlobalProvider, GlobalContext };
+const useGlobalContext = () => {
+  // get the context
+  const context = useContext(GlobalContext);
+
+  // if `undefined`, throw an error
+  if (context === undefined) {
+    throw new Error('useGlobalContext was used outside of its Provider');
+  }
+
+  return context;
+};
+
+export { GlobalProvider, useGlobalContext };

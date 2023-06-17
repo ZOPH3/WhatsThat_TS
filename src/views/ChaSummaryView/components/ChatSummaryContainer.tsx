@@ -21,7 +21,7 @@ const ChatSummaryContainer = ({ chatSummary, actions }: IChatSummaryContainer) =
       secondary={`${chatSummary.last_message?.message ?? 'No Messages'}`}
       avatar={
         <AvatarComponent
-          text={`${chatSummary.name != '' ? chatSummary.name : chatSummary.creator.first_name}`}
+          label={`${chatSummary.name != '' ? chatSummary.name : chatSummary.creator.first_name}`} size={50}
         />
       }
       actions={actions}

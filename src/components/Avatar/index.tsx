@@ -18,7 +18,7 @@ const AvatarComponent = React.memo(
   ({ label, color, size = 25, onPress, user_id, style, source, children, icon }: IAvatar) => {
     if (!label) return null;
 
-    return <Avatar.Text label={label} color={color} />;
+    return <Avatar.Text label={label} color={color} size={size}/>;
   }
 );
 

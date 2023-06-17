@@ -2,15 +2,12 @@ import React, { ReactNode, createContext, useContext } from 'react';
 import { useAuthContext } from './AuthContext';
 import { useGlobalContext } from './GlobalContext';
 import log from '../util/LoggerUtil';
+
 import axios, { AxiosRequestConfig } from 'axios';
 
 interface IApiContext {
-  useApi?: (
-    config: AxiosRequestConfig,
-    auth: boolean,
-    /*setIsLoading: any, setError: any*/
-    out: QueryConfig
-  ) => any;
+  // useApi?: (config: AxiosRequestConfig, auth: boolean, out: QueryConfig) => any;
+  useFetch?: (config: AxiosRequestConfig, auth: boolean, setIsLoading: any) => any;
 }
 
 interface QueryConfig {
@@ -62,44 +59,20 @@ const ApiProvider = ({ children }: Props) => {
     return abortController.signal;
   }
 
-  const defaultConfig: QueryConfig = {
-    onSuccess: doNothing,
-    onError: doNothing,
-    setIsLoading: doNothing,
-  };
 
-  const useApi = async (
-    config: AxiosRequestConfig,
-    auth: boolean,
-    /*setIsLoading: (arg0: boolean) => void*/
-    out = defaultConfig
-  ) => {
-    const { onSuccess, onError, isLoading } = out;
-    let msg = undefined;
-
+  const useFetch = (config: AxiosRequestConfig<any>, auth: any, setIsLoading: any) => {
     try {
       const _apiInstance = auth ? _authApi : _publicApi;
-
-      const response = await _apiInstance.request({ ...config, signal: newAbortSignal(5000) });
-      if (response.status !== 200) throw new Error(response.statusText);
-      
-      if (isLoading) isLoading(false);
-      if (onSuccess) onSuccess(response.data);
-
+      return _apiInstance
+        .request({ ...config, signal: newAbortSignal(5000), validateStatus: (status) => (status <= 304) })
+        .then((res) => {
+          // if (res.status <= 200 && res.status >= 304) throw new Error(res.statusText);
+          return res.data;
+        })
+        .finally(() => setIsLoading(false));
     } catch (err: any) {
-      if (isLoading) isLoading(false);
-
-      err.name === 'CanceledError'
-        ? log.error(`[${config.url}] Timeout: It took more than 5 seconds to get the result!`)
-        : log.error(`[${config.url}] ` + err.request.response);
-
-      msg = err.request.response;
-      if (err.name === 'CanceledError')
-        msg = 'Timeout: It took more than 5 seconds to get the result!';
-      // const obj = err.request.response;
-      // console.log(JSON.stringify(obj, null, 3));
-
-      if (onError) onError(msg);
+      console.log(err);
+      setIsLoading(false);
     }
   };
 
@@ -140,7 +113,7 @@ const ApiProvider = ({ children }: Props) => {
     }
   );
 
-  return <Provider value={{ useApi }}>{children}</Provider>;
+  return <Provider value={{ useFetch }}>{children}</Provider>;
 };
 
 const useApiContext = () => {

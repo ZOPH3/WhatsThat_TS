@@ -22,4 +22,8 @@ WhatsThat Application is a clone of a popular messaging application. This is wri
 - Check for empty messages and mark those and not send.
 
 
-TODO: useEffect and refetch method for messages and chat list.
+
+-Problem with useEffect being used to fetch data: https://articles.wesionary.team/why-useeffect-is-a-bad-place-to-make-api-calls-98a606735c1c
+- https://www.developerway.com/posts/how-to-fetch-data-in-react
+- Use promise.all() -> improve performance. Probably can use it after logging in and loading everything
+

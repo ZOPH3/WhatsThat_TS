@@ -59,19 +59,22 @@ const ApiProvider = ({ children }: Props) => {
     return abortController.signal;
   }
 
-
   const useFetch = (config: AxiosRequestConfig<any>, auth: any, setIsLoading: any) => {
     try {
       const _apiInstance = auth ? _authApi : _publicApi;
       return _apiInstance
-        .request({ ...config, signal: newAbortSignal(5000), validateStatus: (status) => (status <= 304) })
+        .request({
+          ...config,
+          signal: newAbortSignal(5000),
+          validateStatus: (status) => status <= 304,
+        })
         .then((res) => {
           // if (res.status <= 200 && res.status >= 304) throw new Error(res.statusText);
           return res.data;
         })
         .finally(() => setIsLoading(false));
     } catch (err: any) {
-      console.log(err);
+      log.error(err);
       setIsLoading(false);
     }
   };
@@ -93,11 +96,11 @@ const ApiProvider = ({ children }: Props) => {
 
   _authApi.interceptors.response.use(
     (response) => {
-      log.debug('response: ', response);
+      log.debug(`[AUTH API] Response status: ${response.status}`);
       return response;
     },
     (error) => {
-      log.debug('response error: ', error);
+      log.debug(`[AUTH API] Response error: ${error}`);
       return Promise.reject(error);
     }
   );
@@ -105,7 +108,6 @@ const ApiProvider = ({ children }: Props) => {
   _publicApi.interceptors.request.use(
     (config) => {
       log.debug('[PUBLIC API] Intercepting: ' + config.url);
-
       return config;
     },
     (error) => {

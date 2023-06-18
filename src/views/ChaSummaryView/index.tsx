@@ -9,16 +9,11 @@ import ChatSummaryList from './list/ChatSummaryList';
 import ButtonComponent from '../../components/Button';
 import { useNavigation } from '@react-navigation/native';
 import { styles } from '../../styles/GlobalStyle';
+import SettingsMenu from '../../components/SettingsMenu';
 
-const ChaSummaryView = () => {
+const ChatSummaryView = () => {
   const { useFetch } = useApiContext();
   const navigation = useNavigation();
-
-  navigation.setOptions({
-    headerRight: () => (
-      <ButtonComponent title={'Refetch'} onPress={() => onFetch()} loading={isLoading} />
-    ),
-  });
 
   if (!useFetch) {
     log.error('Unable to find Auth API...');
@@ -52,6 +47,15 @@ const ChaSummaryView = () => {
   };
 
   useEffect(() => {
+    navigation.setOptions({
+      title: 'Chat',
+      headerRight: () => (
+        <>
+          <ButtonComponent title={'Refetch'} onPress={() => onFetch()} loading={isLoading} />
+          <SettingsMenu />
+        </>
+      ),
+    });
     onFetch();
   }, []);
 
@@ -63,7 +67,7 @@ const ChaSummaryView = () => {
     if (chatSummary) {
       return (
         <View>
-          <ChatSummaryList chatSummary={chatSummary} actions={() => console.log('clicked')} />
+          <ChatSummaryList chatSummary={chatSummary} />
         </View>
       );
     }
@@ -80,4 +84,4 @@ const ChaSummaryView = () => {
   );
 };
 
-export default ChaSummaryView;
+export default ChatSummaryView;

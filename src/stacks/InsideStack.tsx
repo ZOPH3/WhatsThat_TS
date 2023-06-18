@@ -6,7 +6,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
  */
 
 import ProfileView from '../views/ProfileView';
-import ChaSummaryView from '../views/ChaSummaryView';
+import ChatSummaryView from '../views/ChaSummaryView';
 import CreateChatView from '../views/CreateChatView';
 import ChatView from '../views/ChatView';
 import EditChatView from '../views/EditChatView';
@@ -15,7 +15,6 @@ import InviteUserView from '../views/InviteUserView';
 import AddedUsersView from '../views/AddedUsersView';
 import SearchUsersView from '../views/SearchUsersView';
 import BlockedUsersView from '../views/BlockedUsersView';
-import SettingsMenu from '../components/SettingsMenu';
 
 const ChatStack = createNativeStackNavigator();
 const ProfileStack = createNativeStackNavigator();
@@ -26,12 +25,8 @@ const ChatStackNavigator = () => {
   return (
     <ChatStack.Navigator>
       <ChatStack.Screen
-        name="ChaSummaryView"
-        component={ChaSummaryView}
-        options={{
-          title: 'Chat',
-          headerRight: () => <SettingsMenu />,
-        }}
+        name="ChatSummaryView"
+        component={ChatSummaryView}
       />
       <ChatStack.Screen
         name="CreateChatView"

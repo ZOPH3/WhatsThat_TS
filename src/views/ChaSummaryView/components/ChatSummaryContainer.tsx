@@ -10,8 +10,9 @@ interface IChatSummaryContainer {
 }
 
 interface IChatSummaryActions {
-  delete: () => void;
-  edit: () => void;
+  delete?: () => void;
+  edit?: () => void;
+  goTo?: () => void;
 }
 
 const ChatSummaryContainer = ({ chatSummary, actions }: IChatSummaryContainer) => {

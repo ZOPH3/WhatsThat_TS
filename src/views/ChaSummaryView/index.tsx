@@ -1,7 +1,7 @@
 import { AxiosError } from 'axios';
 import React, { useEffect } from 'react';
 import { View } from 'react-native';
-import { Snackbar, Text } from 'react-native-paper';
+import { ProgressBar, Snackbar, Text } from 'react-native-paper';
 
 import { useApiContext } from '../../lib/context/ApiContext';
 import log from '../../lib/util/LoggerUtil';
@@ -9,7 +9,7 @@ import ChatSummaryList from './list/ChatSummaryList';
 import ButtonComponent from '../../components/Button';
 import { useNavigation } from '@react-navigation/native';
 import { styles } from '../../styles/GlobalStyle';
-import SettingsMenu from '../../components/SettingsMenu';
+import SettingsMenu, { IMenuItem } from '../../components/SettingsMenu';
 
 const ChatSummaryView = () => {
   const { useFetch } = useApiContext();
@@ -23,6 +23,17 @@ const ChatSummaryView = () => {
   const [chatSummary, setChatSummary] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(false);
   const [onError, setOnError] = React.useState<string | undefined>(undefined);
+
+  const items: IMenuItem[] = [
+    {
+      title: 'Settings',
+      onPress: () => navigation.navigate('Settings'),
+    },
+    {
+      title: 'About',
+      onPress: () => navigation.navigate('About'),
+    },
+  ]
 
   const onFetch = async () => {
     /**
@@ -46,13 +57,14 @@ const ChatSummaryView = () => {
     }
   };
 
+  // TODO: Change where is loading is given to a ref as it does not work in the use effect like this
   useEffect(() => {
     navigation.setOptions({
       title: 'Chat',
       headerRight: () => (
         <>
           <ButtonComponent title={'Refetch'} onPress={() => onFetch()} loading={isLoading} />
-          <SettingsMenu />
+          <SettingsMenu items={items}/>
         </>
       ),
     });
@@ -60,7 +72,7 @@ const ChatSummaryView = () => {
   }, []);
 
   const Result = () => {
-    if (isLoading) return <Text>Loading...</Text>;
+    if (isLoading) return <ProgressBar indeterminate={true} visible={isLoading} />;
     if (onError) return <Text>{onError}</Text>;
     if (!chatSummary) return <Text>No chat summary</Text>;
 

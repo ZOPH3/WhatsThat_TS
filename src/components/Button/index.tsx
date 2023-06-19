@@ -12,6 +12,7 @@ interface IButton {
   disabled?: boolean;
   fontSize?: number;
   styleText?: StyleProp<TextStyle> | StyleProp<TextStyle>[];
+  style?: any;
 }
 
 const ButtonComponent = ({
@@ -24,8 +25,9 @@ const ButtonComponent = ({
   disabled = false,
   fontSize,
   styleText,
+  style,
 }: IButton): React.ReactElement => {
-  return <Button onPress={onPress} loading={loading} disabled={disabled} mode={mode}>{title}</Button>;
+  return <Button onPress={onPress} loading={loading} disabled={disabled} mode={mode} style={style}>{title}</Button>;
 };
 
 export default ButtonComponent;

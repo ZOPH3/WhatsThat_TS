@@ -1,33 +1,39 @@
 import * as React from 'react';
 import { View } from 'react-native';
-import { Menu, Divider, IconButton } from 'react-native-paper';
+import { Menu, IconButton } from 'react-native-paper';
 import { useGlobalContext } from '../lib/context/GlobalContext';
 import { IconSource } from 'react-native-paper/lib/typescript/src/components/Icon';
 
-interface IMenuItem {
+export interface IMenuItem {
   title: React.ReactNode;
   leadingIcon?: IconSource | undefined;
   trailingIcon?: IconSource | undefined;
   disabled?: boolean | undefined;
   dense?: boolean | undefined;
-  onPress?: () => void | undefined;
+  anchor?: React.ReactNode;
+  onPress?: () => any;
 }
 
-const MenuItems = (props : IMenuItem[]) => {
+const MenuItems = (props: { items: IMenuItem[]; }) => {
+  const items = props.items;
   return (
-    props.map((menu: any) => {
-      return <Menu.Item onPress={menu.onPress} title={menu.title} />;
-    })
-  )
+    <>
+      {items.map((menuItem: IMenuItem, key: React.Key) => {
+        return <Menu.Item key={key} onPress={menuItem.onPress} title={menuItem.title} disabled={menuItem.disabled}/>;
+      })}
+    </>
+  );
 };
 
-const SettingsMenu = (items : IMenuItem[]) => {
+const SettingsMenu = (props: { items: any; }) => {
   const { toggleTheme } = useGlobalContext();
   const [visible, setVisible] = React.useState(false);
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
 
+  const items = props.items;
+  
   return (
     <View
       style={{
@@ -44,8 +50,7 @@ const SettingsMenu = (items : IMenuItem[]) => {
           onPress={() => (toggleTheme ? toggleTheme() : console.log('No toggleTheme'))}
           title="Toggle Theme"
         />
-        <Divider />
-        <MenuItems {props} />
+        <MenuItems items={items} />
       </Menu>
     </View>
   );

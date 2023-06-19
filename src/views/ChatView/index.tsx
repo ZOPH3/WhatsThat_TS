@@ -1,15 +1,16 @@
 import React, { useEffect } from 'react';
-import { View } from 'react-native';
-import { Text } from 'react-native-paper';
-
-import { useApiContext } from '../../lib/context/ApiContext';
-import log from '../../lib/util/LoggerUtil';
+import { SafeAreaView, View } from 'react-native';
+import { ProgressBar, Text } from 'react-native-paper';
 import { AxiosError } from 'axios';
 import { Snackbar } from 'react-native-paper';
+
 import ButtonComponent from '../../components/Button';
-import SettingsMenu from '../../components/SettingsMenu';
+import SettingsMenu, { IMenuItem } from '../../components/SettingsMenu';
 import { styles } from '../../styles/GlobalStyle';
 import MessageList from './list/MessageList';
+import MessageInput from './components/MessageInput';
+import { useApiContext } from '../../lib/context/ApiContext';
+import log from '../../lib/util/LoggerUtil';
 
 const ChatView = ({ navigation, route }) => {
   const { useFetch } = useApiContext();
@@ -22,6 +23,21 @@ const ChatView = ({ navigation, route }) => {
   const [messageList, setMessageList] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(false);
   const [onError, setOnError] = React.useState<string | undefined>(undefined);
+
+  const items: IMenuItem[] = [
+    {
+      title: 'Refresh',
+      onPress: () => onFetch(),
+    },
+    {
+      title: 'Settings',
+      onPress: () => navigation.navigate('Settings'),
+    },
+    {
+      title: 'About',
+      onPress: () => navigation.navigate('About'),
+    },
+  ];
 
   const onFetch = async () => {
     /**
@@ -43,7 +59,6 @@ const ChatView = ({ navigation, route }) => {
     });
 
     if (data) {
-        console.log(data.messages)
       setMessageList(data.messages);
     }
   };
@@ -53,8 +68,8 @@ const ChatView = ({ navigation, route }) => {
       title: `${route.params.chat_name}`,
       headerRight: () => (
         <>
-          <ButtonComponent title={'Refetch'} onPress={() => onFetch()} loading={isLoading} />
-          <SettingsMenu />
+          <ButtonComponent title={'Refresh'} onPress={() => onFetch()} loading={isLoading} />
+          <SettingsMenu items={items} />
         </>
       ),
     });
@@ -62,7 +77,7 @@ const ChatView = ({ navigation, route }) => {
   }, []);
 
   const Result = () => {
-    if (isLoading) return <Text>Loading...</Text>;
+    if (isLoading) return <ProgressBar indeterminate={true} visible={isLoading} />;
     if (onError) return <Text>{onError}</Text>;
     if (!messageList) return <Text>No Messages</Text>;
 
@@ -76,10 +91,13 @@ const ChatView = ({ navigation, route }) => {
     return <Text>MessageListView</Text>;
   };
 
+
   return (
     <View style={styles.container}>
-        <Text>ChatView</Text>
-      <Result />
+      <SafeAreaView style={{flex: 10}}>
+        <Result />
+      </SafeAreaView>
+      <MessageInput/>
       <Snackbar visible={onError !== undefined} onDismiss={() => setOnError(undefined)}>
         {onError}
       </Snackbar>

@@ -21,10 +21,10 @@ const LoginView = () => {
   }
 
   const user = {
-    email: 'newwilliams@mmu.ac.uk',
-    password: 'Characters1*',
-    // email: 'ashley.williams@mmu.ac.uk',
-    // password: 'Wr3xh4m!',
+    // email: 'newwilliams@mmu.ac.uk',
+    // password: 'Characters1*',
+    email: 'ashley.williams@mmu.ac.uk',
+    password: 'Wr3xh4m!',
   };
 
   const [isLoading, setIsLoading] = React.useState(false);

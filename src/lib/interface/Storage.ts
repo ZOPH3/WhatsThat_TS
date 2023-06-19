@@ -5,12 +5,6 @@ export interface ICacheManager {
     flush(): void;
 }
 
-export interface IStorageManager<T> {
-    save(payload: T): boolean;
-    load(): T;
-    delete(): boolean;
-}
-
 interface IStoredData {
     data: {key: string, value: any};
     created: Date;

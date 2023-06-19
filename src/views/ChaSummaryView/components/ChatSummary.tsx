@@ -16,7 +16,8 @@ const ChatSummary = ({ avatar, title, secondary, chips, actions }: IChatSummary)
     description={secondary}
     left={props => avatar}
     right={props => chips}
-    onPress={actions.edit}
+    onPress={actions.goTo}
+    onLongPress={actions.edit}
   />
   );
 };

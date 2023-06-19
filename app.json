@@ -33,6 +33,8 @@
           "cameraPermission": "Allow WhatsThat_TS to access your camera."
         }
       ]
-    ]
-  }
+    ],
+    "sdkVersion": "48.0.0"
+  },
+  "name": "whatsthat_ts"
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, Text } from 'react-native';
 
 interface IMessageBubble {
   message: string;
@@ -7,23 +7,16 @@ interface IMessageBubble {
   date: string;
   isSelf: boolean;
   // eslint-disable-next-line @typescript-eslint/ban-types
-  actions: Function; //FIXME change to onPress onLongPress etc
+  actions: any;
 }
 
-const MessageBubble = ({
-  message,
-  author,
-  date,
-  isSelf = false,
-  actions,
-}: IMessageBubble) => {
-
+const MessageBubble = ({ message, author, date, isSelf = false, actions }: IMessageBubble) => {
   return (
     <>
       <View>
         <TouchableOpacity
           style={[isSelf ? styles.self : styles.others]}
-          onLongPress={() => actions()}
+          onLongPress={() => actions.edit()}
         >
           <Text>{author}</Text>
           <View onTouchStart={() => console.log(date)}>

@@ -6,16 +6,12 @@ import AvatarComponent from '../../../components/Avatar';
 
 interface IChatSummaryContainer {
   chatSummary: TChatSummary;
-  actions: IChatSummaryActions;
-}
-
-interface IChatSummaryActions {
-  delete?: () => void;
-  edit?: () => void;
-  goTo?: () => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  actions: any;
 }
 
 const ChatSummaryContainer = ({ chatSummary, actions }: IChatSummaryContainer) => {
+
   return (
     <ChatSummary
       title={`${chatSummary.name != '' ? chatSummary.name : chatSummary.creator.first_name}`}

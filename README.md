@@ -26,4 +26,6 @@ WhatsThat Application is a clone of a popular messaging application. This is wri
 -Problem with useEffect being used to fetch data: https://articles.wesionary.team/why-useeffect-is-a-bad-place-to-make-api-calls-98a606735c1c
 - https://www.developerway.com/posts/how-to-fetch-data-in-react
 - Use promise.all() -> improve performance. Probably can use it after logging in and loading everything
+- https://softwareengineering.stackexchange.com/questions/385521/how-is-caching-used-within-messaging-apps
+- 
 

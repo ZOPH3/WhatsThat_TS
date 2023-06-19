@@ -1,6 +1,7 @@
 import React, { Dispatch, ReactNode, SetStateAction, createContext, useContext, useState } from 'react';
 
 interface IAuthState {
+  user_id: number | undefined;
   accessToken: string | undefined;
   authenticated: boolean | undefined;
 }
@@ -13,6 +14,7 @@ interface IAuthContext {
 }
 
 const AuthStateDefault: IAuthState = {
+  user_id: undefined,
   accessToken: undefined,
   authenticated: undefined,
 };
@@ -33,12 +35,14 @@ const AuthProvider = ({ children }: Props) => {
   const { Provider } = AuthContext;
 
   const [authState, setAuthState] = useState<IAuthState>({
+    user_id: undefined,
     accessToken: undefined,
     authenticated: false,
   });
 
   const logout = async () => {
     setAuthState({
+      user_id: undefined,
       accessToken: undefined,
       authenticated: false,
     });

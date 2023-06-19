@@ -21,10 +21,10 @@ const LoginView = () => {
   }
 
   const user = {
-    // email: 'newwilliams@mmu.ac.uk',
-    // password: 'Characters1*',
-    email: 'ashley.williams@mmu.ac.uk',
-    password: 'Wr3xh4m!',
+    email: 'newwilliams@mmu.ac.uk',
+    password: 'Characters1*',
+    // email: 'ashley.williams@mmu.ac.uk',
+    // password: 'Wr3xh4m!',
   };
 
   const [isLoading, setIsLoading] = React.useState(false);
@@ -49,7 +49,7 @@ const LoginView = () => {
     });
 
     if (data) {
-      setAuthState({ accessToken: data.token, authenticated: true });
+      setAuthState({ user_id: data.user_id, accessToken: data.token, authenticated: true });
     }
   };
 

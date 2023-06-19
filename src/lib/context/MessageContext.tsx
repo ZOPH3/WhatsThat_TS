@@ -41,17 +41,17 @@ const messageReducer = (state: any, action: any) => {
     case 'REMOVE_USER_TO_CHAT':
       console.log('REMOVE_USER', payload);
       return state;
-      default:
-        throw new Error(`No case for type ${type} found in MessageReducer.`);
+    default:
+      throw new Error(`No case for type ${type} found in MessageReducer.`);
   }
 };
 
 const MessageProvider = ({ children }: any) => {
-    const [state, dispatch] = useReducer(messageReducer, {}); // TODO: Add initial state
+  const [state, dispatch] = useReducer(messageReducer, {}); // TODO: Add initial state
 
-    const setChatRooms = (payload: any) => {
-        dispatch({ type: 'SET_CHAT_ROOMS', payload });
-    };
+  const setChatRooms = (payload: any) => {
+    dispatch({ type: 'SET_CHAT_ROOMS', payload });
+  };
 
   return <MessageContext.Provider value={{}}>{children}</MessageContext.Provider>;
 };

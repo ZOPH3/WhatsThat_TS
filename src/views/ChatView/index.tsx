@@ -1,12 +1,90 @@
-import React from 'react';
-import { View, Text } from 'react-native';
+import React, { useEffect } from 'react';
+import { View } from 'react-native';
+import { Text } from 'react-native-paper';
 
-const ChatView = () => {
-    return (
+import { useApiContext } from '../../lib/context/ApiContext';
+import log from '../../lib/util/LoggerUtil';
+import { AxiosError } from 'axios';
+import { Snackbar } from 'react-native-paper';
+import ButtonComponent from '../../components/Button';
+import SettingsMenu from '../../components/SettingsMenu';
+import { styles } from '../../styles/GlobalStyle';
+import MessageList from './list/MessageList';
+
+const ChatView = ({ navigation, route }) => {
+  const { useFetch } = useApiContext();
+
+  if (!useFetch) {
+    log.error('Unable to find Auth API...');
+    throw new Error('Unable to find Auth API...');
+  }
+
+  const [messageList, setMessageList] = React.useState([]);
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [onError, setOnError] = React.useState<string | undefined>(undefined);
+
+  const onFetch = async () => {
+    /**
+     * Fetch
+     */
+    setOnError(undefined);
+    setMessageList([]);
+    setIsLoading(true);
+
+    const data = await useFetch(
+      { url: `/chat/${route.params.chat_id}`, method: 'GET' },
+      true,
+      setIsLoading
+    ).catch((err: AxiosError) => {
+      const msg = err.request?.response
+        ? err.request.response
+        : 'Timeout: It took more than 5 seconds to get the result!!';
+      setOnError(msg);
+    });
+
+    if (data) {
+        console.log(data.messages)
+      setMessageList(data.messages);
+    }
+  };
+
+  useEffect(() => {
+    navigation.setOptions({
+      title: `${route.params.chat_name}`,
+      headerRight: () => (
+        <>
+          <ButtonComponent title={'Refetch'} onPress={() => onFetch()} loading={isLoading} />
+          <SettingsMenu />
+        </>
+      ),
+    });
+    onFetch();
+  }, []);
+
+  const Result = () => {
+    if (isLoading) return <Text>Loading...</Text>;
+    if (onError) return <Text>{onError}</Text>;
+    if (!messageList) return <Text>No Messages</Text>;
+
+    if (messageList) {
+      return (
         <View>
-            <Text>ChatView</Text>
+          <MessageList messages={messageList} />
         </View>
-    )
-}
+      );
+    }
+    return <Text>MessageListView</Text>;
+  };
+
+  return (
+    <View style={styles.container}>
+        <Text>ChatView</Text>
+      <Result />
+      <Snackbar visible={onError !== undefined} onDismiss={() => setOnError(undefined)}>
+        {onError}
+      </Snackbar>
+    </View>
+  );
+};
 
 export default ChatView;

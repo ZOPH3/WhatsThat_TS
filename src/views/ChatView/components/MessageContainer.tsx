@@ -1,20 +1,16 @@
 import React from 'react';
 import { TSingleMessage } from '../../../lib/types/TSchema';
 import MessageBubble from './MessageBubble';
+import { useAuthContext } from '../../../lib/context/AuthContext';
 
 interface IMessageContainer {
   message: TSingleMessage;
-  actions: IMessageActions;
-}
-
-interface IMessageActions {
-  delete: () => void;
-  edit: () => void;
+  actions: any;
 }
 
 const MessageContainer = ({ message, actions }: IMessageContainer) => {
-  const currentUser = 16; //FIXME Replace with the context
-
+  const currentUser = useAuthContext().authState.user_id;
+  
   const isToday = (date: Date) => {
     const now = new Date();
 
@@ -35,7 +31,7 @@ const MessageContainer = ({ message, actions }: IMessageContainer) => {
       author={author}
       date={isToday(date) ? date.toLocaleTimeString() : date.toLocaleString()}
       isSelf={isSelf}
-      actions={() => actions}
+      actions={actions}
     />
   );
 };

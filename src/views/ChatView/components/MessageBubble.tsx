@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, TouchableOpacity, StyleSheet, Text } from 'react-native';
+import DialogComponent from '../../../components/Dialog';
 
 interface IMessageBubble {
   message: string;
@@ -11,12 +12,13 @@ interface IMessageBubble {
 }
 
 const MessageBubble = ({ message, author, date, isSelf = false, actions }: IMessageBubble) => {
+  const { DialogBlock, showDialog } = DialogComponent();
   return (
     <>
       <View>
         <TouchableOpacity
           style={[isSelf ? styles.self : styles.others]}
-          onLongPress={() => actions.edit()}
+          onLongPress={() => showDialog()}
         >
           <Text>{author}</Text>
           <View onTouchStart={() => console.log(date)}>
@@ -24,6 +26,12 @@ const MessageBubble = ({ message, author, date, isSelf = false, actions }: IMess
             <Text style={styles.messageText}>{message}</Text>
           </View>
         </TouchableOpacity>
+        <DialogBlock
+          title={'Actions'}
+          toggleVisible={function (): void {
+            throw new Error('Function not implemented.');
+          }}
+        />
       </View>
     </>
   );

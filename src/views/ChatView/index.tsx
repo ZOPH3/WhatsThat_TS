@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { SafeAreaView, View } from 'react-native';
 import { ProgressBar, Text } from 'react-native-paper';
-import { AxiosError } from 'axios';
 import { Snackbar } from 'react-native-paper';
 
 import ButtonComponent from '../../components/Button';
@@ -11,6 +10,8 @@ import MessageList from './list/MessageList';
 import MessageInput from './components/MessageInput';
 import { useApiContext } from '../../lib/context/ApiContext';
 import log from '../../lib/util/LoggerUtil';
+import useFetchHook from '../../lib/hooks/useFetchHook';
+import { TChat } from '../../lib/types/TSchema';
 
 const ChatView = ({ navigation, route }) => {
   const { useFetch } = useApiContext();
@@ -20,55 +21,44 @@ const ChatView = ({ navigation, route }) => {
     throw new Error('Unable to find Auth API...');
   }
 
-  const [messageList, setMessageList] = React.useState([]);
-  const [isLoading, setIsLoading] = React.useState(false);
-  const [onError, setOnError] = React.useState<string | undefined>(undefined);
-
   const items: IMenuItem[] = [
     {
       title: 'Refresh',
       onPress: () => onFetch(),
     },
     {
-      title: 'Settings',
-      onPress: () => navigation.navigate('Settings'),
+      title: 'Invite user',
+      onPress: () => navigation.navigate('InviteUserView'),
     },
     {
-      title: 'About',
-      onPress: () => navigation.navigate('About'),
+      title: 'Edit Chat',
+      onPress: () => navigation.navigate('EditChatView'),
+      disabled: true,
     },
   ];
 
-  const onFetch = async () => {
-    /**
-     * Fetch
-     */
-    setOnError(undefined);
-    setMessageList([]);
-    setIsLoading(true);
-
-    const data = await useFetch(
-      { url: `/chat/${route.params.chat_id}`, method: 'GET' },
-      true,
-      setIsLoading
-    ).catch((err: AxiosError) => {
-      const msg = err.request?.response
-        ? err.request.response
-        : 'Timeout: It took more than 5 seconds to get the result!!';
-      setOnError(msg);
-    });
-
-    if (data) {
-      setMessageList(data.messages);
-    }
-  };
+  const {
+    data,
+    isLoading,
+    onFetch,
+    onError,
+    setOnError,
+  }: { data: TChat; isLoading: any; onFetch: any; onError: any; setOnError: any } = useFetchHook(
+    { url: `/chat/${route.params.chat_id}`, method: 'GET' },
+    true
+  );
 
   useEffect(() => {
     navigation.setOptions({
       title: `${route.params.chat_name}`,
       headerRight: () => (
         <>
-          <ButtonComponent title={'Refresh'} onPress={() => onFetch()} loading={isLoading} />
+          <ButtonComponent
+            title={'Edit'}
+            onPress={() => onFetch()}
+            loading={isLoading}
+            disabled={true}
+          />
           <SettingsMenu items={items} />
         </>
       ),
@@ -79,12 +69,12 @@ const ChatView = ({ navigation, route }) => {
   const Result = () => {
     if (isLoading) return <ProgressBar indeterminate={true} visible={isLoading} />;
     if (onError) return <Text>{onError}</Text>;
-    if (!messageList) return <Text>No Messages</Text>;
+    if (!data) return <Text>No Messages</Text>;
 
-    if (messageList) {
+    if (data) {
       return (
         <View>
-          <MessageList messages={messageList} />
+          <MessageList messages={data.messages} />
         </View>
       );
     }

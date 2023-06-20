@@ -6,13 +6,6 @@ interface IChatListContext {
   dispatcher?: any;
 }
 
-enum TLoadState {
-  'FETCHING' = 'FETCHING',
-  'SUCCESS' = 'SUCCESS',
-  'ERROR' = 'ERROR',
-  'IDLE' = 'IDLE',
-}
-
 const ChatListContext = createContext<IChatListContext>({});
 const chatListReducer = (state: any, action: any) => {
   const { type, payload } = action;

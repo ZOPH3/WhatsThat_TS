@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { SafeAreaView, View } from 'react-native';
-import { ProgressBar, Text } from 'react-native-paper';
+import { Button, ProgressBar, Text } from 'react-native-paper';
 import { Snackbar } from 'react-native-paper';
 
 import ButtonComponent from '../../components/Button';
@@ -12,6 +12,7 @@ import { useApiContext } from '../../lib/context/ApiContext';
 import log from '../../lib/util/LoggerUtil';
 import useFetchHook from '../../lib/hooks/useFetchHook';
 import { TChat } from '../../lib/types/TSchema';
+import { MessageProvider } from '../../lib/context/MessageContext';
 
 const ChatView = ({ navigation, route }) => {
   const { useFetch } = useApiContext();
@@ -82,15 +83,17 @@ const ChatView = ({ navigation, route }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <SafeAreaView style={{ flex: 10 }}>
-        <Result />
-      </SafeAreaView>
-      <MessageInput />
-      <Snackbar visible={onError !== undefined} onDismiss={() => setOnError(undefined)}>
-        {onError}
-      </Snackbar>
-    </View>
+    <MessageProvider>
+      <View style={styles.container}>
+        <SafeAreaView style={{ flex: 10 }}>
+          <Result />
+        </SafeAreaView>
+        <MessageInput />
+        <Snackbar visible={onError !== undefined} onDismiss={() => setOnError(undefined)}>
+          {onError}
+        </Snackbar>
+      </View>
+    </MessageProvider>
   );
 };
 

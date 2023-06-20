@@ -26,7 +26,6 @@ const DialogComponent = () => {
   const DialogBlock = (props: {
     title: string;
     content?: IDialogContent[];
-    toggleVisible: () => void;
   }) => {
     const { title, content } = props;
     return (

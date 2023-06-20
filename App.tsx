@@ -13,7 +13,7 @@ function App() {
       <AuthProvider>
         <ApiProvider>
           <ChatListProvider>
-          <StackNavigator />
+            <StackNavigator />
           </ChatListProvider>
         </ApiProvider>
       </AuthProvider>

@@ -1,15 +1,9 @@
-/**
- * MessageContext
- * - Draft message queue,
- * - Message queue?,
- * - Current state of the chat list?
- */
-
-import React, { createContext, useReducer } from 'react';
-import { TChatSummary, TChat } from '../types/TSchema';
+import React, { createContext, useContext, useReducer } from 'react';
+import { TChat, TSingleMessage } from '../types/TSchema';
 
 interface IMessageContext {
-  chatRooms?: TChatSummary[] & TChat; // This also contains the messages
+  state?: TSingleMessage[];
+  dispatcher?: any;
 }
 
 const MessageContext = createContext<IMessageContext>({});
@@ -18,40 +12,67 @@ const messageReducer = (state: any, action: any) => {
   const { type, payload } = action;
 
   switch (type) {
-    case 'SET_CHAT_ROOMS':
-      return {
-        ...state,
-        chatRooms: payload,
-      };
-    case 'DELETE_CHAT_ROOM':
-      console.log('DELETE_CHAT_ROOM', payload);
+    case 'SET_MESSAGES':
+      // return { ...state, payload };
+      console.log('SET_MESSAGES', payload);
       return state;
-
     case 'DELETE_MESSAGE':
       return state.filter((item: any) => item.id !== payload);
     case 'SEND_MESSAGE':
-      return [...state, payload];
+      return { ...state, payload };
     case 'UPDATE_MESSAGE':
-      console.log('UPDATE_MESSAGE', payload);
-      return state;
-
-    case 'ADD_USER_TO_CHAT':
-      console.log('ADD_USER', payload);
-      return state;
-    case 'REMOVE_USER_TO_CHAT':
-      console.log('REMOVE_USER', payload);
-      return state;
+      return state.map((message: any) => {
+        if (message.id === payload.id) {
+          return {
+            ...message,
+            ...payload,
+          };
+        }
+        return message;
+      });
     default:
       throw new Error(`No case for type ${type} found in MessageReducer.`);
   }
 };
 
 const MessageProvider = ({ children }: any) => {
-  const [state, dispatch] = useReducer(messageReducer, {}); // TODO: Add initial state
+  const [state, dispatch] = useReducer(messageReducer, {});
 
-  const setChatRooms = (payload: any) => {
-    dispatch({ type: 'SET_CHAT_ROOMS', payload });
+  const deleteMessage = (payload: any) => {
+    dispatch({ type: 'DELETE_MESSAGE', payload });
   };
 
-  return <MessageContext.Provider value={{}}>{children}</MessageContext.Provider>;
+  const sendMessage = (payload: any) => {
+    dispatch({ type: 'SEND_MESSAGE', payload });
+  };
+
+  const updateMessage = (payload: any) => {
+    dispatch({ type: 'UPDATE_MESSAGE', payload });
+  };
+
+  const print = () => {
+    console.log('state', state);
+  };
+
+  return (
+    <MessageContext.Provider
+      value={{ state, dispatcher: { print, deleteMessage, sendMessage, updateMessage } }}
+    >
+      {children}
+    </MessageContext.Provider>
+  );
 };
+
+const useMessageContext = () => {
+  // get the context
+  const context = useContext(MessageContext);
+
+  // if `undefined`, throw an error
+  if (context === undefined) {
+    throw new Error('useMessageContext was used outside of its Provider');
+  }
+
+  return context;
+};
+
+export { useMessageContext, MessageProvider };

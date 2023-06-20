@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, TouchableOpacity, StyleSheet, Text } from 'react-native';
+import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import DialogComponent from '../../../components/Dialog';
+import { List, Text } from 'react-native-paper';
 
 interface IMessageBubble {
   message: string;
@@ -8,11 +9,41 @@ interface IMessageBubble {
   date: string;
   isSelf: boolean;
   // eslint-disable-next-line @typescript-eslint/ban-types
-  actions: any;
 }
 
-const MessageBubble = ({ message, author, date, isSelf = false, actions }: IMessageBubble) => {
+const MessageBubble = ({ message, author, date, isSelf = false }: IMessageBubble) => {
   const { DialogBlock, showDialog } = DialogComponent();
+
+  const content = [
+    {
+      children: (
+        <List.Item
+          title="Edit"
+          description="Edit your message"
+          left={(props) => <List.Icon {...props} icon="folder" />}
+          onPress={() => {
+            console.log('Edit');
+          }}
+        />
+      ),
+    },
+    {
+      children: (
+        <View>
+          <Text>Forward</Text>
+        </View>
+      ),
+    },
+    {
+      children: (
+        <View>
+          <Text>Delete</Text>
+        </View>
+      ),
+    },
+  ];
+
+  //TODO: Add actions for other users
   return (
     <>
       <View>
@@ -26,12 +57,7 @@ const MessageBubble = ({ message, author, date, isSelf = false, actions }: IMess
             <Text style={styles.messageText}>{message}</Text>
           </View>
         </TouchableOpacity>
-        <DialogBlock
-          title={'Actions'}
-          toggleVisible={function (): void {
-            throw new Error('Function not implemented.');
-          }}
-        />
+        {!isSelf ? <DialogBlock title={'Actions'} content={content} /> : null}
       </View>
     </>
   );

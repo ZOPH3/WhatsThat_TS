@@ -24,18 +24,15 @@ const InsideStack = createNativeStackNavigator();
 const ChatStackNavigator = () => {
   return (
     <ChatStack.Navigator>
-      <ChatStack.Screen
-        name="ChatSummaryView"
-        component={ChatSummaryView}
-      />
-      <ChatStack.Screen
-        name="CreateChatView"
-        component={CreateChatView}
-        options={{ title: 'Create new chat' }}
-      />
-      <ChatStack.Screen name="ChatView" component={ChatView} />
-      <ChatStack.Screen name="EditChatView" component={EditChatView} />
-      <ChatStack.Screen name="InviteUserView" component={InviteUserView} />
+        <ChatStack.Screen name="ChatSummaryView" component={ChatSummaryView} />
+        <ChatStack.Screen
+          name="CreateChatView"
+          component={CreateChatView}
+          options={{ title: 'Create new chat' }}
+        />
+        <ChatStack.Screen name="ChatView" component={ChatView} />
+        <ChatStack.Screen name="EditChatView" component={EditChatView} />
+        <ChatStack.Screen name="InviteUserView" component={InviteUserView} />
     </ChatStack.Navigator>
   );
 };

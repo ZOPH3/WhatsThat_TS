@@ -1,7 +1,6 @@
-import { AxiosError } from 'axios';
 import React, { useEffect } from 'react';
 import { View } from 'react-native';
-import { ProgressBar, Snackbar, Text } from 'react-native-paper';
+import { Button, ProgressBar, Snackbar, Text } from 'react-native-paper';
 
 import { useApiContext } from '../../lib/context/ApiContext';
 import log from '../../lib/util/LoggerUtil';
@@ -10,19 +9,20 @@ import ButtonComponent from '../../components/Button';
 import { useNavigation } from '@react-navigation/native';
 import { styles } from '../../styles/GlobalStyle';
 import SettingsMenu, { IMenuItem } from '../../components/SettingsMenu';
+import { useChatListContext } from '../../lib/context/ChatListContext';
+import chatListMutations from './services/fetch';
 
 const ChatSummaryView = () => {
   const { useFetch } = useApiContext();
   const navigation = useNavigation();
 
+  const chatListContext = useChatListContext();
+  const { state, dispatcher } = chatListContext;
+
   if (!useFetch) {
     log.error('Unable to find Auth API...');
     throw new Error('Unable to find Auth API...');
   }
-
-  const [chatSummary, setChatSummary] = React.useState([]);
-  const [isLoading, setIsLoading] = React.useState(false);
-  const [onError, setOnError] = React.useState<string | undefined>(undefined);
 
   const items: IMenuItem[] = [
     {
@@ -35,27 +35,7 @@ const ChatSummaryView = () => {
     },
   ]
 
-  const onFetch = async () => {
-    /**
-     * Fetch
-     */
-    setOnError(undefined);
-    setChatSummary([]);
-    setIsLoading(true);
-
-    const data = await useFetch({ url: '/chat', method: 'GET' }, true, setIsLoading).catch(
-      (err: AxiosError) => {
-        const msg = err.request?.response
-          ? err.request.response
-          : 'Timeout: It took more than 5 seconds to get the result!!';
-        setOnError(msg);
-      }
-    );
-
-    if (data) {
-      setChatSummary(data);
-    }
-  };
+  const {data, isLoading, onFetch, onError, setOnError} = chatListMutations();
 
   // TODO: Change where is loading is given to a ref as it does not work in the use effect like this
   useEffect(() => {
@@ -69,17 +49,18 @@ const ChatSummaryView = () => {
       ),
     });
     onFetch();
+    
   }, []);
 
   const Result = () => {
     if (isLoading) return <ProgressBar indeterminate={true} visible={isLoading} />;
     if (onError) return <Text>{onError}</Text>;
-    if (!chatSummary) return <Text>No chat summary</Text>;
+    if (!data) return <Text>No chat summary</Text>;
 
-    if (chatSummary) {
+    if (data) {
       return (
         <View>
-          <ChatSummaryList chatSummary={chatSummary} />
+          <ChatSummaryList chatSummary={data} />
         </View>
       );
     }
@@ -88,6 +69,8 @@ const ChatSummaryView = () => {
 
   return (
     <View style={styles.container}>
+      <Button onPress={() => dispatcher.print()}>Chat</Button>
+      <Button onPress={() => dispatcher.deleteChatRoom(1)}>set</Button>
       <Result />
       <Snackbar visible={onError !== undefined} onDismiss={() => setOnError(undefined)}>
         {onError}

@@ -91,18 +91,31 @@ const ChatView = ({ navigation, route }) => {
     return <Text>MessageListView</Text>;
   };
 
-
   return (
     <View style={styles.container}>
-      <SafeAreaView style={{flex: 10}}>
+      <SafeAreaView style={{ flex: 10 }}>
         <Result />
       </SafeAreaView>
-      <MessageInput/>
+      <MessageInput />
       <Snackbar visible={onError !== undefined} onDismiss={() => setOnError(undefined)}>
         {onError}
       </Snackbar>
     </View>
   );
+};
+
+const _CRUD = (setMessageList: React.SetStateAction<any>) => {
+  const addMessage = (message: any) => {
+    setMessageList((prev: any) => [...prev, message]);
+  };
+
+  const removeMessage = (message: { id: any }) => {
+    setMessageList((prev: any[]) => prev.filter((m) => m.id !== message.id));
+  };
+
+  const editMessage = (message: { id: any }) => {
+    setMessageList((prev: any[]) => prev.map((m) => (m.id === message.id ? message : m)));
+  };
 };
 
 export default ChatView;

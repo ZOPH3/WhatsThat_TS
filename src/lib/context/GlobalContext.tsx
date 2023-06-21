@@ -33,7 +33,6 @@ interface Props {
 
 const GlobalProvider = ({ children }: Props) => {
   const [GlobalState, setGlobalState] = useState<IGlobalState>(GlobalStateDefault);
-  //{ isMobile: isMobile(), theme: 'dark' } This seemed to update it instantly compared to the below as that only updates when app restarts.
   const toggleTheme = () => {
     setGlobalState((prevState) => {
       return {

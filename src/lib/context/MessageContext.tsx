@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useReducer } from 'react';
-import { TChat, TSingleMessage } from '../types/TSchema';
+import { TSingleMessage } from '../types/TSchema';
 
 interface IMessageContext {
   state?: TSingleMessage[];

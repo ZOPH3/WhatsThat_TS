@@ -1,8 +1,9 @@
 import React, { createContext, useContext, useReducer } from 'react';
-import { TChatSummary } from '../types/TSchema';
+import { TChatSummary, TChat } from '../types/TSchema';
 
+type TChatRoom = TChatSummary & TChat;
 interface IChatListContext {
-  state?: TChatSummary;
+  state?: TChatRoom;
   dispatcher?: any;
 }
 

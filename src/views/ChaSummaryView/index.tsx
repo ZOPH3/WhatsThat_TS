@@ -7,20 +7,26 @@ import { styles } from '../../styles/GlobalStyle';
 import log from '../../lib/util/LoggerUtil';
 
 import ChatSummaryList from './list/ChatSummaryList';
-import ButtonComponent from '../../components/Button';
 import SettingsMenu, { IMenuItem } from '../../components/SettingsMenu';
 
 import { useApiContext } from '../../lib/context/ApiContext';
 import useFetchHook from '../../lib/hooks/useFetchHook';
+import { useAuthContext } from '../../lib/context/AuthContext';
 
 const ChatSummaryView = () => {
   const { useFetch } = useApiContext();
+  const { logout } = useAuthContext();
   const navigation = useNavigation();
 
-  if (!useFetch) {
+  if (!useFetch || !logout) {
     log.error('Unable to find Auth API...');
     throw new Error('Unable to find Auth API...');
   }
+
+  const { data, isLoading, onFetch, onError, setOnError } = useFetchHook(
+    { url: '/chat', method: 'GET' },
+    true
+  );
 
   const items: IMenuItem[] = [
     {
@@ -28,26 +34,22 @@ const ChatSummaryView = () => {
       onPress: () => navigation.navigate('Settings'),
     },
     {
-      title: 'About',
-      onPress: () => navigation.navigate('About'),
+      title: 'Reload',
+      onPress: () => onFetch(),
+    },
+    {
+      title: 'Logout',
+      onPress: () => logout(),
+      disabled: false,
     },
   ];
-
-  const { data, isLoading, onFetch, onError, setOnError } = useFetchHook(
-    { url: '/chat', method: 'GET' },
-    true
-  );
 
   useEffect(() => {
     navigation.setOptions({
       title: 'Chat',
-      headerRight: () => (
-        <>
-          <ButtonComponent title={'Refetch'} onPress={() => onFetch()} loading={isLoading} />
-          <SettingsMenu items={items} />
-        </>
-      ),
+      headerRight: () => <SettingsMenu items={items} />,
     });
+
     onFetch();
   }, []);
 

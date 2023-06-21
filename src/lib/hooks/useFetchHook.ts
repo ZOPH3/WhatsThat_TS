@@ -32,10 +32,11 @@ const useFetchHook = (config: any, auth = false) => {
 
     if (data) {
       setData(data);
+      return data;
     }
   };
 
-  return { onFetch, data, isLoading, onError, setOnError };
+  return { onFetch, data, isLoading, onError, setOnError, setData };
 };
 
 export default useFetchHook;

@@ -23,14 +23,10 @@ const DialogComponent = () => {
     );
   };
 
-  const DialogBlock = (props: {
-    title: string;
-    content?: IDialogContent[];
-  }) => {
+  const DialogBlock = (props: { title: string; content?: IDialogContent[] }) => {
     const { title, content } = props;
     return (
       <View>
-        {/* <Button onPress={showDialog}>Show Dialog</Button> */}
         <Portal>
           <Dialog visible={visible} onDismiss={hideDialog}>
             <Dialog.Title>{title}</Dialog.Title>

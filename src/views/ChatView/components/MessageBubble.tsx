@@ -1,55 +1,38 @@
 import React from 'react';
 import { View, TouchableOpacity, StyleSheet } from 'react-native';
-import DialogComponent from '../../../components/Dialog';
-import { List, Text } from 'react-native-paper';
+import { Text } from 'react-native-paper';
 
 interface IMessageBubble {
   message: string;
   author: string;
   date: string;
   isSelf: boolean;
+  actions?: any;
+  children?: React.ReactNode;
   // eslint-disable-next-line @typescript-eslint/ban-types
 }
 
-const MessageBubble = ({ message, author, date, isSelf = false }: IMessageBubble) => {
-  const { DialogBlock, showDialog } = DialogComponent();
-
-  const content = [
-    {
-      children: (
-        <List.Item
-          title="Edit"
-          description="Edit your message"
-          left={(props) => <List.Icon {...props} icon="folder" />}
-          onPress={() => {
-            console.log('Edit');
-          }}
-        />
-      ),
-    },
-    {
-      children: (
-        <View>
-          <Text>Forward</Text>
-        </View>
-      ),
-    },
-    {
-      children: (
-        <View>
-          <Text>Delete</Text>
-        </View>
-      ),
-    },
-  ];
-
+const MessageBubble = ({
+  message,
+  author,
+  date,
+  isSelf = false,
+  children,
+  actions,
+}: IMessageBubble) => {
   //TODO: Add actions for other users
   return (
     <>
       <View>
         <TouchableOpacity
           style={[isSelf ? styles.self : styles.others]}
-          onLongPress={() => showDialog()}
+          onLongPress={
+            isSelf
+              ? () => actions.onLongPress()
+              : () => {
+                  /** do nothing */
+                }
+          }
         >
           <Text>{author}</Text>
           <View onTouchStart={() => console.log(date)}>
@@ -57,7 +40,7 @@ const MessageBubble = ({ message, author, date, isSelf = false }: IMessageBubble
             <Text style={styles.messageText}>{message}</Text>
           </View>
         </TouchableOpacity>
-        {!isSelf ? <DialogBlock title={'Actions'} content={content} /> : null}
+        {children}
       </View>
     </>
   );

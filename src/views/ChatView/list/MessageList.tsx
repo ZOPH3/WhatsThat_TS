@@ -13,19 +13,18 @@ interface IMessageList {
 export interface IMessageActions {
   delete: () => void;
   edit: () => void;
-  goTo: () => void;
+  goTo?: () => void;
 }
 
 const MessageList = ({ messages }: IMessageList) => {
   const { dispatcher } = useMessageContext();
-
   const flatListRef = useRef<FlatList<TSingleMessage>>(null);
 
-  const actions = (message_id: number): IMessageActions => {
+  //TODO: context is not working
+  const actions = (message_id: number, chat_id: number): IMessageActions => {
     return {
-      edit: () => dispatcher.editMessage(message_id),
-      delete: () => dispatcher.deleteMessage(message_id),
-      goTo: () => null,
+      edit: () => dispatcher.editMessage(chat_id, message_id),
+      delete: () => dispatcher.deleteMessage(chat_id, message_id),
     };
   };
 
@@ -34,11 +33,9 @@ const MessageList = ({ messages }: IMessageList) => {
       <SafeAreaView style={styles.container}>
         <FlatList
           ref={flatListRef}
-          data={messages}
+          data={messages ? messages.sort((a, b) => a.timestamp - b.timestamp) : []}
           keyExtractor={(item) => item.message_id.toString()}
-          renderItem={(_) => (
-            <MessageContainer message={_.item}/>
-          )}
+          renderItem={(_) => <MessageContainer message={_.item} />}
         />
       </SafeAreaView>
     </View>

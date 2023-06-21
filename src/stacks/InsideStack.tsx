@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 /**
@@ -15,6 +15,9 @@ import InviteUserView from '../views/InviteUserView';
 import AddedUsersView from '../views/AddedUsersView';
 import SearchUsersView from '../views/SearchUsersView';
 import BlockedUsersView from '../views/BlockedUsersView';
+import { useApiContext } from '../lib/context/ApiContext';
+import { useAuthContext } from '../lib/context/AuthContext';
+import log from '../lib/util/LoggerUtil';
 
 const ChatStack = createNativeStackNavigator();
 const ProfileStack = createNativeStackNavigator();
@@ -24,15 +27,15 @@ const InsideStack = createNativeStackNavigator();
 const ChatStackNavigator = () => {
   return (
     <ChatStack.Navigator>
-        <ChatStack.Screen name="ChatSummaryView" component={ChatSummaryView} />
-        <ChatStack.Screen
-          name="CreateChatView"
-          component={CreateChatView}
-          options={{ title: 'Create new chat' }}
-        />
-        <ChatStack.Screen name="ChatView" component={ChatView} />
-        <ChatStack.Screen name="EditChatView" component={EditChatView} />
-        <ChatStack.Screen name="InviteUserView" component={InviteUserView} />
+      <ChatStack.Screen name="ChatSummaryView" component={ChatSummaryView} />
+      <ChatStack.Screen
+        name="CreateChatView"
+        component={CreateChatView}
+        options={{ title: 'Create new chat' }}
+      />
+      <ChatStack.Screen name="ChatView" component={ChatView} />
+      <ChatStack.Screen name="EditChatView" component={EditChatView} />
+      <ChatStack.Screen name="InviteUserView" component={InviteUserView} />
     </ChatStack.Navigator>
   );
 };
@@ -56,6 +59,29 @@ const ContactStackNavigator = () => {
 };
 
 const InsideStackNavigator = () => {
+  const { useFetch } = useApiContext();
+  const { authState, setAuthState } = useAuthContext();
+
+  if (!useFetch) {
+    log.error('Unable to find Auth API...');
+    throw new Error('Unable to find Auth API...');
+  }
+
+  //FIXME: Move to a loader component
+  const fetch = async () => {
+    const user = await useFetch({ url: `/user/${authState.user_id}` }, true);
+    if (user) {
+      setAuthState({
+        ...authState,
+        current_user: user,
+      });
+    }
+  };
+
+  useEffect(() => {
+    fetch();
+  }, [authState.authenticated]);
+
   return (
     <InsideStack.Navigator>
       <InsideStack.Screen

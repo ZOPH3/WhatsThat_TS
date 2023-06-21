@@ -6,8 +6,7 @@ import log from '../util/LoggerUtil';
 import axios, { AxiosRequestConfig } from 'axios';
 
 interface IApiContext {
-  // useApi?: (config: AxiosRequestConfig, auth: boolean, out: QueryConfig) => any;
-  useFetch?: (config: AxiosRequestConfig, auth: boolean, setIsLoading: any) => any;
+  useFetch?: (config: AxiosRequestConfig, auth: boolean, setIsLoading?: any) => any;
 }
 
 interface QueryConfig {
@@ -38,7 +37,7 @@ const doNothing = (): void => {
 };
 
 const ApiProvider = ({ children }: Props) => {
-  const authContext = useAuthContext();
+  const { getAccessToken } = useAuthContext();
   const _authApi = axios.create({
     baseURL: setBaseURL(),
     timeout: 5000,
@@ -59,7 +58,7 @@ const ApiProvider = ({ children }: Props) => {
     return abortController.signal;
   }
 
-  const useFetch = (config: AxiosRequestConfig<any>, auth: any, setIsLoading: any) => {
+  const useFetch = (config: AxiosRequestConfig<any>, auth: any, setIsLoading?: any) => {
     try {
       const _apiInstance = auth ? _authApi : _publicApi;
       return _apiInstance
@@ -72,10 +71,12 @@ const ApiProvider = ({ children }: Props) => {
           // if (res.status <= 200 && res.status >= 304) throw new Error(res.statusText);
           return res.data;
         })
-        .finally(() => setIsLoading(false));
+        .finally(() => {
+          if (setIsLoading) setIsLoading(false);
+        });
     } catch (err: any) {
       log.error(err);
-      setIsLoading(false);
+      if (setIsLoading) setIsLoading(false);
     }
   };
 
@@ -83,8 +84,8 @@ const ApiProvider = ({ children }: Props) => {
     (config) => {
       log.debug('[AUTH API] Intercepting: ' + config.url);
 
-      if (!config.headers['X-Authorization'] && authContext.authState.accessToken) {
-        config.headers['X-Authorization'] = `${authContext.authState.accessToken}`;
+      if (!config.headers['X-Authorization'] && getAccessToken) {
+        config.headers['X-Authorization'] = `${getAccessToken()}`;
       }
 
       return config;
@@ -96,7 +97,7 @@ const ApiProvider = ({ children }: Props) => {
 
   _authApi.interceptors.response.use(
     (response) => {
-      log.debug(`[AUTH API] Response status: ${response.status}`);
+      log.debug(`[AUTH API] Response status for ${response.config.url}: ${response.status}`);
       return response;
     },
     (error) => {

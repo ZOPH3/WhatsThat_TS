@@ -49,7 +49,12 @@ const LoginView = () => {
     });
 
     if (data) {
-      setAuthState({ user_id: data.user_id, accessToken: data.token, authenticated: true });
+      setAuthState({
+        user_id: data.id,
+        current_user: undefined,
+        accessToken: data.token,
+        authenticated: true,
+      });
     }
   };
 

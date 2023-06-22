@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { View } from 'react-native';
-import { ProgressBar, Snackbar, Text } from 'react-native-paper';
+import { ProgressBar, Snackbar, Text, TextInput } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 
 import { styles } from '../../styles/GlobalStyle';
@@ -8,10 +8,12 @@ import log from '../../lib/util/LoggerUtil';
 
 import ChatSummaryList from './list/ChatSummaryList';
 import SettingsMenu, { IMenuItem } from '../../components/SettingsMenu';
+import DialogComponent from '../../components/Dialog';
 
 import { useApiContext } from '../../lib/context/ApiContext';
 import useFetchHook from '../../lib/hooks/useFetchHook';
 import { useAuthContext } from '../../lib/context/AuthContext';
+import ButtonComponent from '../../components/Button';
 
 const ChatSummaryView = () => {
   const { useFetch } = useApiContext();
@@ -44,12 +46,23 @@ const ChatSummaryView = () => {
     },
   ];
 
+  const { DialogBlock, showDialog, hideDialog } = DialogComponent();
+  const dialogContent = [
+    {
+      children: <TextInput label="Chat name" />,
+    },
+  ];
+
   useEffect(() => {
     navigation.setOptions({
       title: 'Chat',
-      headerRight: () => <SettingsMenu items={items} />,
+      headerRight: () => (
+        <>
+          <ButtonComponent title={'Create'} onPress={() => showDialog()} />
+          <SettingsMenu items={items} />
+        </>
+      ),
     });
-
     onFetch();
   }, []);
 
@@ -71,6 +84,28 @@ const ChatSummaryView = () => {
   return (
     <View style={styles.container}>
       <Result />
+      <DialogBlock
+        title={'Create Chat'}
+        content={dialogContent}
+        actions={
+          <>
+            <ButtonComponent
+              title={'Cancel'}
+              onPress={() => {
+                hideDialog();
+              }}
+            />
+            <ButtonComponent
+              title={'Create Chat'}
+              mode="contained"
+              onPress={() => {
+                onFetch();
+                hideDialog();
+              }}
+            />
+          </>
+        }
+      />
       <Snackbar visible={onError !== undefined} onDismiss={() => setOnError(undefined)}>
         {onError}
       </Snackbar>

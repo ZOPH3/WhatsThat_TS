@@ -23,8 +23,8 @@ const DialogComponent = () => {
     );
   };
 
-  const DialogBlock = (props: { title: string; content?: IDialogContent[] }) => {
-    const { title, content } = props;
+  const DialogBlock = (props: { title: string; content?: IDialogContent[], actions?: React.ReactNode }) => {
+    const { title, content, actions } = props;
     return (
       <View>
         <Portal>
@@ -32,7 +32,7 @@ const DialogComponent = () => {
             <Dialog.Title>{title}</Dialog.Title>
             {content ? <DialogContent items={content} /> : null}
             <Dialog.Actions>
-              <Button onPress={hideDialog}>Done</Button>
+              {actions? actions : <Button onPress={hideDialog}>Done</Button>}
             </Dialog.Actions>
           </Dialog>
         </Portal>

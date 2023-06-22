@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 /**
  * Navigation responsible for authorised users
@@ -7,7 +9,6 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import ProfileView from '../views/ProfileView';
 import ChatSummaryView from '../views/ChaSummaryView';
-import CreateChatView from '../views/CreateChatView';
 import ChatView from '../views/ChatView';
 import EditChatView from '../views/EditChatView';
 import InviteUserView from '../views/InviteUserView';
@@ -18,21 +19,42 @@ import BlockedUsersView from '../views/BlockedUsersView';
 import { useApiContext } from '../lib/context/ApiContext';
 import { useAuthContext } from '../lib/context/AuthContext';
 import log from '../lib/util/LoggerUtil';
+import Icons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const ChatStack = createNativeStackNavigator();
 const ProfileStack = createNativeStackNavigator();
-const ContactStack = createNativeStackNavigator();
+const ContactTab = createMaterialTopTabNavigator();
+
 const InsideStack = createNativeStackNavigator();
+const InsideTab = createBottomTabNavigator();
+
+const ContactTopTabNavigator = () => {
+  return (
+    <ContactTab.Navigator>
+      <ContactTab.Screen
+        name="SearchUserView"
+        component={SearchUsersView}
+        options={{ title: 'Search' }}
+      />
+      <ContactTab.Screen
+        name="AddedUsersView"
+        component={AddedUsersView}
+        options={{ title: 'Contacts' }}
+      />
+
+      <ContactTab.Screen
+        name="BlockedUsersView"
+        component={BlockedUsersView}
+        options={{ title: 'Blocked' }}
+      />
+    </ContactTab.Navigator>
+  );
+};
 
 const ChatStackNavigator = () => {
   return (
     <ChatStack.Navigator>
       <ChatStack.Screen name="ChatSummaryView" component={ChatSummaryView} />
-      <ChatStack.Screen
-        name="CreateChatView"
-        component={CreateChatView}
-        options={{ title: 'Create new chat' }}
-      />
       <ChatStack.Screen name="ChatView" component={ChatView} />
       <ChatStack.Screen name="EditChatView" component={EditChatView} />
       <ChatStack.Screen name="InviteUserView" component={InviteUserView} />
@@ -48,13 +70,27 @@ const ProfileStackNavigator = () => {
   );
 };
 
-const ContactStackNavigator = () => {
+const InsideTabNavigator = () => {
   return (
-    <ContactStack.Navigator>
-      <ContactStack.Screen name="AddedUsersView" component={AddedUsersView} />
-      <ContactStack.Screen name="SearchUserView" component={SearchUsersView} />
-      <ContactStack.Screen name="BlockedUsersView" component={BlockedUsersView} />
-    </ContactStack.Navigator>
+    <InsideTab.Navigator initialRouteName="ChatStackNavigator">
+      <InsideTab.Screen
+        name="ChatStackNavigator"
+        component={ChatStackNavigator}
+        options={{
+          title: 'Chat',
+          headerShown: false,
+          tabBarIcon: ({ color, size }) => <Icons name={'chat'} size={size} color={color} />,
+        }}
+      />
+      <InsideTab.Screen
+        name="ContactStackNavigator"
+        component={ContactTopTabNavigator}
+        options={{
+          title: 'Contacts',
+          tabBarIcon: ({ color, size }) => <Icons name={'contacts'} size={size} color={color} />,
+        }}
+      />
+    </InsideTab.Navigator>
   );
 };
 
@@ -85,18 +121,13 @@ const InsideStackNavigator = () => {
   return (
     <InsideStack.Navigator>
       <InsideStack.Screen
-        name="ChatStackNavigator"
-        component={ChatStackNavigator}
+        name="InsideTabNavigator"
+        component={InsideTabNavigator}
         options={{ headerShown: false }}
       />
       <InsideStack.Screen
         name="ProfileStackNavigator"
         component={ProfileStackNavigator}
-        options={{ headerShown: false }}
-      />
-      <InsideStack.Screen
-        name="ContactStackNavigator"
-        component={ContactStackNavigator}
         options={{ headerShown: false }}
       />
     </InsideStack.Navigator>

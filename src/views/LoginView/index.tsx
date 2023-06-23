@@ -10,15 +10,16 @@ import { useAuthContext } from '../../lib/context/AuthContext';
 
 import ButtonComponent from '../../components/Button';
 import { styles } from '../../styles/GlobalStyle';
+import useFetchHook from '../../lib/hooks/useFetchHook';
 
 const LoginView = () => {
-  const { useFetch } = useApiContext();
-  const { setAuthState } = useAuthContext();
+  // const { useFetch } = useApiContext();
+  // const { setAuthState } = useAuthContext();
 
-  if (!useFetch) {
-    log.error('Unable to find Auth API...');
-    throw new Error('Unable to find Auth API...');
-  }
+  // if (!useFetch) {
+  //   log.error('Unable to find Auth API...');
+  //   throw new Error('Unable to find Auth API...');
+  // }
 
   const user = {
     // email: 'newwilliams@mmu.ac.uk',
@@ -27,35 +28,52 @@ const LoginView = () => {
     password: 'Wr3xh4m!',
   };
 
-  const [isLoading, setIsLoading] = React.useState(false);
-  const [onError, setOnError] = React.useState<string | undefined>(undefined);
+  // const [isLoading, setIsLoading] = React.useState(false);
+  // const [onError, setOnError] = React.useState<string | undefined>(undefined);
   const [text, setText] = React.useState({ email: '', password: '' });
 
-  const onLogin = async (email: string, password: string) => {
-    /**
-     * Fetch
-     */
-    setIsLoading(true);
+  // const onLogin = async (email: string, password: string) => {
+  //   /**
+  //    * Fetch
+  //    */
+  //   setIsLoading(true);
 
-    const data = await useFetch(
-      { url: '/login', method: 'POST', data: { email: email, password: password } },
-      false,
-      setIsLoading
-    ).catch((err: AxiosError) => {
-      const msg = err.request?.response
-        ? err.request.response
-        : 'Timeout: It took more than 5 seconds to get the result!';
-      setOnError(msg);
-    });
+  //   const data = await useFetch(
+  //     { url: '/login', method: 'POST', data: { email: email, password: password } },
+  //     false,
+  //     setIsLoading
+  //   ).catch((err: AxiosError) => {
+  //     const msg = err.request?.response
+  //       ? err.request.response
+  //       : 'Timeout: It took more than 5 seconds to get the result!';
+  //     setOnError(msg);
+  //   });
 
-    if (data) {
+  //   if (data) {
+  //     setAuthState({
+  //       id: data.id,
+  //       current_user: undefined,
+  //       accessToken: data.token,
+  //       authenticated: true,
+  //     });
+  //   }
+  // };
+  const { setAuthState } = useAuthContext();
+
+  const { isLoading, onFetch, onError, setOnError, getFresh } = useFetchHook(
+    { url: '/login', method: 'POST', data: { ...user } },
+    false
+  );
+
+  const onLogin = async () => {
+    onFetch(async () => await getFresh()).then((data) => {
       setAuthState({
-        user_id: data.id,
+        id: data.id,
         current_user: undefined,
-        accessToken: data.token,
+        token: data.token,
         authenticated: true,
       });
-    }
+    });
   };
 
   return (
@@ -73,7 +91,7 @@ const LoginView = () => {
       <ButtonComponent
         title={'Login'}
         onPress={async () => {
-          await onLogin(user.email, user.password);
+          await onLogin();
         }}
         loading={isLoading}
         mode="contained"

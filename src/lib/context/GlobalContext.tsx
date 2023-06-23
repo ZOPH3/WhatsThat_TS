@@ -16,12 +16,15 @@ function isMobile(): boolean {
 interface IGlobalState {
   isMobile?: boolean;
   theme?: string;
+  init?: boolean;
+  initialise?: () => void;
   toggleTheme?: () => void;
 }
 
 const GlobalStateDefault = {
   isMobile: isMobile(),
   theme: 'dark',
+  init: false,
 };
 
 const GlobalContext = createContext<IGlobalState>(GlobalStateDefault);
@@ -42,7 +45,16 @@ const GlobalProvider = ({ children }: Props) => {
     });
   };
 
-  return <Provider value={{...GlobalState, toggleTheme}}>{children}</Provider>;
+  const initialise = () => {
+    setGlobalState((prevState) => {
+      return {
+        ...prevState,
+        init: true,
+      };
+    });
+  };
+
+  return <Provider value={{ ...GlobalState, toggleTheme, initialise }}>{children}</Provider>;
 };
 
 const useGlobalContext = () => {

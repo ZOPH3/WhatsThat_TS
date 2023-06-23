@@ -14,12 +14,11 @@ import { useApiContext } from '../../lib/context/ApiContext';
 import useFetchHook from '../../lib/hooks/useFetchHook';
 import { useAuthContext } from '../../lib/context/AuthContext';
 import ButtonComponent from '../../components/Button';
-import MessageStateView from '../_TESTVIEW_/MessageStateView';
 import { useChatContext } from '../../lib/context/ChatContext';
 
 const ChatSummaryView = () => {
   const { useFetch } = useApiContext();
-  const { logout } = useAuthContext();
+  const { logout, authState } = useAuthContext();
   const { chatSummaryList, dispatcher } = useChatContext();
   const navigation = useNavigation();
 
@@ -28,7 +27,7 @@ const ChatSummaryView = () => {
     throw new Error('Unable to find Auth API...');
   }
 
-  const { data, isLoading, onFetch, onError, setOnError } = useFetchHook(
+  const { data, isLoading, onFetch, onError, setOnError, getFresh } = useFetchHook(
     { url: '/chat', method: 'GET' },
     true
   );
@@ -40,7 +39,7 @@ const ChatSummaryView = () => {
     },
     {
       title: 'Reload',
-      onPress: () => onFetch(),
+      onPress: () => onFetch(async () => await getFresh()),
     },
     {
       title: 'Logout',
@@ -66,7 +65,7 @@ const ChatSummaryView = () => {
         </>
       ),
     });
-    onFetch().then((data) => {
+    onFetch(async () => await getFresh()).then((data) => {
       dispatcher.setChatSummaryList(data);
     });
   }, []);
@@ -86,6 +85,10 @@ const ChatSummaryView = () => {
 
   return (
     <View style={styles.container}>
+      <ButtonComponent
+        title={'Login thing'}
+        onPress={async () => console.log(authState)}
+      />
       <Result />
       <DialogBlock
         title={'Create Chat'}
@@ -102,7 +105,7 @@ const ChatSummaryView = () => {
               title={'Create Chat'}
               mode="contained"
               onPress={() => {
-                onFetch();
+                onFetch(async () => await getFresh());
                 hideDialog();
               }}
             />

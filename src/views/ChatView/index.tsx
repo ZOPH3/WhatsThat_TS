@@ -51,10 +51,14 @@ const ChatView = ({ navigation, route }) => {
     return { addMessage, removeMessage, editMessage };
   };
 
+
+
+  const { data, isLoading, onFetch, onError, setOnError, setData, getCache, getFresh } = useFetchHook({ url: `/chat/${chat_id}`, method: 'GET' }, true);
+
   const items: IMenuItem[] = [
     {
       title: 'Refresh',
-      onPress: () => onFetch(),
+      onPress: () => onFetch(async () => await getFresh()),
     },
     {
       title: 'Invite user',
@@ -68,14 +72,16 @@ const ChatView = ({ navigation, route }) => {
     },
   ];
 
-  const { data, isLoading, onFetch, onError, setOnError, setData } = useFetchHook({ url: `/chat/${chat_id}`, method: 'GET' }, true);
-
   useEffect(() => {
     navigation.setOptions({
       title: `${route.params.chat_name}`,
       headerRight: () => <SettingsMenu items={items} />,
     });
-    onFetch();
+    onFetch(async () => await getFresh());
+
+    if(data) log.debug(`ChatView ${data}`)
+
+
   }, []);
 
   const Result = () => {

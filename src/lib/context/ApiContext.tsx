@@ -37,7 +37,7 @@ const doNothing = (): void => {
 };
 
 const ApiProvider = ({ children }: Props) => {
-  const { getAccessToken } = useAuthContext();
+  const { getToken } = useAuthContext();
   const _authApi = axios.create({
     baseURL: setBaseURL(),
     timeout: 5000,
@@ -84,8 +84,8 @@ const ApiProvider = ({ children }: Props) => {
     (config) => {
       log.debug('[AUTH API] Intercepting: ' + config.url);
 
-      if (!config.headers['X-Authorization'] && getAccessToken) {
-        config.headers['X-Authorization'] = `${getAccessToken()}`;
+      if (!config.headers['X-Authorization'] && getToken) {
+        config.headers['X-Authorization'] = `${getToken()}`;
       }
 
       return config;

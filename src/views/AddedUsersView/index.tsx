@@ -10,7 +10,7 @@ import log from '../../lib/util/LoggerUtil';
 import { styles } from '../../styles/GlobalStyle';
 import ContactList from './list/ContactList';
 
-const AddedUsersView = () => {
+const AddedUsersView = ({navigation}) => {
   const { useFetch } = useApiContext();
   const { logout } = useAuthContext();
 

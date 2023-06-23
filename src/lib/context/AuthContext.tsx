@@ -7,29 +7,32 @@ import React, {
   useState,
 } from 'react';
 import { TUser } from '../types/TSchema';
+import { clearCachedData } from '../services/CacheService';
 
-interface IAuthState {
-  user_id: number | undefined;
+export interface IAuthState {
+  id: number | undefined;
   current_user: TUser | undefined;
-  accessToken: string | undefined;
+  token: string | undefined;
   authenticated: boolean | undefined;
 }
 
 interface IAuthContext {
   authState: IAuthState;
   setAuthState: Dispatch<SetStateAction<IAuthState>>;
-  setAccessToken?: (token: string) => void;
+  setToken?: (token: string) => void;
   setUserId?: (id: number) => void;
-  getAccessToken?: () => string | undefined;
+  getToken?: () => string | undefined;
   setAuth?: (auth: boolean) => void;
   logout?: () => void;
+  setCachedAuthState?: (authState: IAuthState) => void;
+  getCachedAuthState?: () => Promise<any>;
 }
 
 const AuthStateDefault: IAuthState = {
-  user_id: undefined,
+  id: undefined,
   current_user: undefined,
-  accessToken: undefined,
-  authenticated: undefined,
+  token: undefined,
+  authenticated: false,
 };
 
 const AuthContextDefault: IAuthContext = {
@@ -53,49 +56,76 @@ const AuthProvider = ({ children }: Props) => {
     authenticated: false,
   });
 
+  // const setCachedAuthState = async (authState: IAuthState) => {
+  //   return await setCachedData('/login', authState);
+  // };
 
-  const setAuth = (auth: boolean) => {
-    setAuthState({
-      ...authState,
-      authenticated: auth,
-    });
+  const getCachedAuthState = async () => {
+    // return await getCachedData('/login', AuthStateDefault)
+    //   .then((login) => {
+    //     console.log('getCachedAuthState')
+    //     setAuthState({ authenticated: true, current_user: undefined, ...login });
+    //     return login;
+    //   })
+    //   .catch((err) => {
+    //     return AuthStateDefault;
+    //   });
   };
 
-  const setAccessToken = (token: string) => {
-    setAuthState({
-      ...authState,
-      accessToken: token,
-    });
-  };
+  // const setAuth = (auth: boolean) => {
+  //   setAuthState({
+  //     ...authState,
+  //     authenticated: auth,
+  //   });
+  // };
+
+  // const setToken = (token: string) => {
+  //   setAuthState({
+  //     ...authState,
+  //     token: token,
+  //   });
+  // };
 
   const setUserId = (id: number) => {
     setAuthState({
       ...authState,
-      user_id: id,
+      id: id,
     });
   };
 
   const logout = async () => {
+    clearCachedData('/login');
+
     setAuthState({
       ...AuthStateDefault,
       authenticated: false,
     });
   };
 
-  const getAccessToken = () => {
-    return authState.accessToken;
+  const getToken = () => {
+    return authState.token;
   };
+
+  // const useSetAuthState = () => {
+  //   const setAuthState = async (authState: IAuthState) => {
+  //     await setCachedAuthState(authState);
+  //     setAuthState(authState);
+  //   };
+  //   return setAuthState;
+  // };
 
   return (
     <Provider
       value={{
         authState,
-        getAccessToken,
+        getToken,
+        // setCachedAuthState,
+        getCachedAuthState,
         setUserId,
-        setAccessToken,
+        // setToken,
         setAuthState,
         logout,
-        setAuth,
+        // setAuth,
       }}
     >
       {children}

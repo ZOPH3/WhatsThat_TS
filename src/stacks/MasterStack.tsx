@@ -3,13 +3,17 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import InsideStackNavigator from './InsideStack';
 import OutsideStackNavigator from './OutsideStack';
+import { useAuthContext } from '../lib/context/AuthContext';
 
 const MasterStack = createNativeStackNavigator();
 
-const MasterStackNavigator = ({ auth = false }) => {
+const MasterStackNavigator = () => {
+  const authContext = useAuthContext();
+  const { authState } = authContext;
+  
   return (
     <MasterStack.Navigator>
-      {auth ? (
+      {authState.authenticated ? (
         <MasterStack.Screen
           name="InsideStackNavigator"
           component={InsideStackNavigator}

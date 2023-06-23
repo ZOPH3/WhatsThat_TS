@@ -10,7 +10,7 @@ interface IMessageContainer {
 }
 
 const MessageContainer = ({ message }: IMessageContainer) => {
-  const currentUser = useAuthContext().authState.user_id;
+  const currentUser = useAuthContext().authState.id;
   const { DialogBlock, showDialog } = DialogComponent();
 
   const dialogContent = [

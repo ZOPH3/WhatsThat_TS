@@ -20,6 +20,7 @@ import { useApiContext } from '../lib/context/ApiContext';
 import { useAuthContext } from '../lib/context/AuthContext';
 import log from '../lib/util/LoggerUtil';
 import Icons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { IconButton } from 'react-native-paper';
 
 const ChatStack = createNativeStackNavigator();
 const ProfileStack = createNativeStackNavigator();
@@ -32,11 +33,6 @@ const ContactTopTabNavigator = () => {
   return (
     <ContactTab.Navigator>
       <ContactTab.Screen
-        name="SearchUserView"
-        component={SearchUsersView}
-        options={{ title: 'Search' }}
-      />
-      <ContactTab.Screen
         name="AddedUsersView"
         component={AddedUsersView}
         options={{ title: 'Contacts' }}
@@ -48,6 +44,34 @@ const ContactTopTabNavigator = () => {
         options={{ title: 'Blocked' }}
       />
     </ContactTab.Navigator>
+  );
+};
+
+const ContactStackNavigator = ({ navigation }) => {
+  return (
+    <InsideStack.Navigator>
+      <InsideStack.Screen
+        name="ContactTopTabNavigator"
+        component={ContactTopTabNavigator}
+        options={{
+          title: 'Contacts',
+          headerRight: () => (
+            <IconButton
+              icon="plus"
+              size={20}
+              onPress={() => navigation.navigate('SearchUsersView')}
+            />
+          ),
+        }}
+      />
+      <InsideStack.Screen
+        name="SearchUsersView"
+        component={SearchUsersView}
+        options={{
+          title: 'Search Users',
+        }}
+      />
+    </InsideStack.Navigator>
   );
 };
 
@@ -84,8 +108,9 @@ const InsideTabNavigator = () => {
       />
       <InsideTab.Screen
         name="ContactStackNavigator"
-        component={ContactTopTabNavigator}
+        component={ContactStackNavigator}
         options={{
+          headerShown: false,
           title: 'Contacts',
           tabBarIcon: ({ color, size }) => <Icons name={'contacts'} size={size} color={color} />,
         }}
@@ -105,7 +130,7 @@ const InsideStackNavigator = () => {
 
   //FIXME: Move to a loader component
   const fetch = async () => {
-    const user = await useFetch({ url: `/user/${authState.user_id}` }, true);
+    const user = await useFetch({ url: `/user/${authState.id}` }, true);
     if (user) {
       setAuthState({
         ...authState,

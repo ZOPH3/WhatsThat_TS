@@ -1,9 +1,8 @@
 import React, { createContext, useContext, useReducer } from 'react';
 import { TChatSummary, TChat } from '../types/TSchema';
 
-type TChatRoom = TChatSummary & TChat;
 interface IChatListContext {
-  state?: TChatRoom;
+  state?: TChatSummary[];
   dispatcher?: any;
 }
 
@@ -13,10 +12,9 @@ const chatListReducer = (state: any, action: any) => {
 
   switch (type) {
     case 'SET_CHAT_ROOMS':
-      return {
-        ...state,
-        chatList: payload as TChatSummary[],
-      };
+      console.log('SET_CHAT_ROOMS', payload);
+      state = payload;
+      return state;
     case 'DELETE_CHAT_ROOM':
       console.log('DELETE_CHAT_ROOM', payload);
       return state;
@@ -25,6 +23,9 @@ const chatListReducer = (state: any, action: any) => {
       return state;
     case 'REMOVE_USER_FROM_CHAT':
       console.log('REMOVE_USER', payload);
+      return state;
+    case 'GET_CHAT_ROOMS':
+      console.log('GET_CHAT_ROOMS', payload);
       return state;
     default:
       throw new Error(`No case for type ${type} found in MessageReducer.`);
@@ -50,6 +51,9 @@ const ChatListProvider = ({ children }: any) => {
     dispatch({ type: 'REMOVE_USER_FROM_CHAT', payload });
   };
 
+  const getChatRooms = () => { 
+    dispatch({ type: 'GET_CHAT_ROOMS' });
+  }
   // const editChatRoom = (payload: any) => {
   //   dispatch({ type: 'EDIT_CHAT_ROOM', payload });
   // };
@@ -62,7 +66,7 @@ const ChatListProvider = ({ children }: any) => {
     <ChatListContext.Provider
       value={{
         state,
-        dispatcher: { print, setChatRooms, deleteChatRoom, addUserToChat, removeUserToChat },
+        dispatcher: { print, setChatRooms, deleteChatRoom, addUserToChat, removeUserToChat, getChatRooms },
       }}
     >
       {children}

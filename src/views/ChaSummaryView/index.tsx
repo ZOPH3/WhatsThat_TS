@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { View } from 'react-native';
+import { SafeAreaView, View } from 'react-native';
 import { ProgressBar, Snackbar, Text, TextInput } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 
@@ -14,10 +14,13 @@ import { useApiContext } from '../../lib/context/ApiContext';
 import useFetchHook from '../../lib/hooks/useFetchHook';
 import { useAuthContext } from '../../lib/context/AuthContext';
 import ButtonComponent from '../../components/Button';
+import MessageStateView from '../_TESTVIEW_/MessageStateView';
+import { useChatContext } from '../../lib/context/ChatContext';
 
 const ChatSummaryView = () => {
   const { useFetch } = useApiContext();
   const { logout } = useAuthContext();
+  const { chatSummaryList, dispatcher } = useChatContext();
   const navigation = useNavigation();
 
   if (!useFetch || !logout) {
@@ -63,22 +66,22 @@ const ChatSummaryView = () => {
         </>
       ),
     });
-    onFetch();
+    onFetch().then((data) => {
+      dispatcher.setChatSummaryList(data);
+    });
   }, []);
 
   const Result = () => {
     if (isLoading) return <ProgressBar indeterminate={true} visible={isLoading} />;
     if (onError) return <Text>{onError}</Text>;
-    if (!data) return <Text>No chat summary</Text>;
-
-    if (data) {
+    if (chatSummaryList.length > 0) {
       return (
         <View>
-          <ChatSummaryList chatSummary={data} />
+          <ChatSummaryList chatSummary={chatSummaryList} />
         </View>
       );
     }
-    return <Text>ChaSummaryView</Text>;
+    return <Text>No chats</Text>;
   };
 
   return (

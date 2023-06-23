@@ -12,7 +12,7 @@ const StackNavigator = () => {
   const { authState } = useAuthContext();
   const { theme } = useGlobalContext();
   const { authenticated } = authState;
-
+  
   return (
     <PaperProvider theme={theme === 'light' ? CombinedDefaultTheme : CombinedDarkTheme}>
       <NavigationContainer theme={theme === 'light' ? CombinedDefaultTheme : CombinedDarkTheme}>

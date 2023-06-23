@@ -6,6 +6,7 @@ import { GlobalProvider } from './src/lib/context/GlobalContext';
 import { ApiProvider } from './src/lib/context/ApiContext';
 import { AuthProvider } from './src/lib/context/AuthContext';
 import { ChatListProvider } from './src/lib/context/ChatListContext';
+import { ChatProvider } from './src/lib/context/ChatContext';
 
 function App() {
   return (
@@ -13,7 +14,9 @@ function App() {
       <AuthProvider>
         <ApiProvider>
           <ChatListProvider>
-            <StackNavigator />
+            <ChatProvider>
+              <StackNavigator />
+            </ChatProvider>
           </ChatListProvider>
         </ApiProvider>
       </AuthProvider>

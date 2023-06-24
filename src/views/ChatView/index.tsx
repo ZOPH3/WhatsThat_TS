@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { SafeAreaView, View } from 'react-native';
 import { ProgressBar, Text } from 'react-native-paper';
 import { Snackbar } from 'react-native-paper';
@@ -51,8 +51,6 @@ const ChatView = ({ navigation, route }) => {
     return { addMessage, removeMessage, editMessage };
   };
 
-
-
   const { data, isLoading, onFetch, onError, setOnError, setData, getCache, getFresh } = useFetchHook({ url: `/chat/${chat_id}`, method: 'GET' }, true);
 
   const items: IMenuItem[] = [
@@ -83,6 +81,7 @@ const ChatView = ({ navigation, route }) => {
 
 
   }, []);
+
 
   const Result = () => {
     if (isLoading) return <ProgressBar indeterminate={true} visible={isLoading} />;

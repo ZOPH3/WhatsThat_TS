@@ -19,7 +19,7 @@ const BlockedUsersView = () => {
     throw new Error('Unable to find Auth API...');
   }
 
-  const { data, isLoading, onFetch, onError, setOnError } = useFetchHook(
+  const { data, isLoading, onFetch, onError, setOnError, getFresh } = useFetchHook(
     { url: '/blocked', method: 'GET' },
     true
   );
@@ -32,7 +32,7 @@ const BlockedUsersView = () => {
   ];
 
   useEffect(() => {
-    onFetch();
+    onFetch(async () => await getFresh());
   }, []);
 
   const Result = () => {

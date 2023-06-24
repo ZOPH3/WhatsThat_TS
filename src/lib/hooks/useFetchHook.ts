@@ -28,7 +28,7 @@ const useFetchHook = (config: any, auth = false) => {
     return data.data;
   };
 
-  const getFresh = async () => {
+  const getFresh = async (expiresAt?: number) => {
     /**
      * Fetch
      */
@@ -40,33 +40,12 @@ const useFetchHook = (config: any, auth = false) => {
     });
 
     if (data) {
-      await setCachedData(config.url, { ...data, expiresAt: Date.now() + 1000 * 60 * 60 * 24 * 7 });
+      await setCachedData(config.url, { ...data }, expiresAt);
       return data;
     } else {
       throw new Error(msg);
     }
   };
-
-  // const onFetch = async () => {
-  //   /**
-  //    * Fetch
-  //    */
-  //   setOnError(undefined);
-  //   setData([]);
-  //   setIsLoading(true);
-
-  //   const data = await useFetch(config, auth, setIsLoading).catch((err: AxiosError) => {
-  //     const msg = err.request?.response
-  //       ? err.request.response
-  //       : 'Timeout: It took more than 5 seconds to get the result!!';
-  //     setOnError(msg);
-  //   });
-
-  //   if (data) {
-  //     setData(data);
-  //     return data;
-  //   }
-  // };
 
   const onFetch = async (fn: () => Promise<any>) => {
     /**

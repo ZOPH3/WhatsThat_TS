@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { SafeAreaView, View } from 'react-native';
 import { ProgressBar, Text } from 'react-native-paper';
 import { Snackbar } from 'react-native-paper';

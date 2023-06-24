@@ -26,11 +26,12 @@ const getCachedData = async (url: string, returnType?: unknown) => {
   return cdata.data;
 };
 
-const setCachedData = async (url: string, data: any) => {
+const setCachedData = async (url: string, data: any, expiresAt?: number) => {
+
   log.debug(`Storing in cache: ${url}`);
   const cdata: TCachedData = {
     data: data,
-    expiresAt: Date.now() + 1000 * 60 * 60 * 24 * 7, // 7 days
+    expiresAt: expiresAt? expiresAt : Date.now() + 1000 * 60 * 60 * 24 * 7, // 7 days
   };
   await AsyncStorage.setItem(url, JSON.stringify(cdata));
 };

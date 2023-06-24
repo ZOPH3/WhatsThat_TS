@@ -4,7 +4,6 @@ import { View, FlatList, SafeAreaView } from 'react-native';
 import { TSingleMessage } from '../../../lib/types/TSchema';
 import MessageContainer from '../components/MessageContainer';
 import { styles } from '../../../styles/GlobalStyle';
-import { useMessageContext } from '../../../lib/context/MessageContext';
 
 interface IMessageList {
   messages: TSingleMessage[];
@@ -17,17 +16,7 @@ export interface IMessageActions {
 }
 
 const MessageList = ({ messages }: IMessageList) => {
-  const { dispatcher } = useMessageContext();
   const flatListRef = useRef<FlatList<TSingleMessage>>(null);
-
-  //TODO: context is not working
-  const actions = (message_id: number, chat_id: number): IMessageActions => {
-    return {
-      edit: () => dispatcher.editMessage(chat_id, message_id),
-      delete: () => dispatcher.deleteMessage(chat_id, message_id),
-    };
-  };
-
   return (
     <View style={styles.containerMain}>
       <SafeAreaView style={styles.container}>

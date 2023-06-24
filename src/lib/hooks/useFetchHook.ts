@@ -28,7 +28,7 @@ const useFetchHook = (config: any, auth = false) => {
     return data.data;
   };
 
-  const getFresh = async (expiresAt?: number) => {
+  const getFresh = async () => {
     /**
      * Fetch
      */
@@ -40,7 +40,7 @@ const useFetchHook = (config: any, auth = false) => {
     });
 
     if (data) {
-      await setCachedData(config.url, { ...data }, expiresAt);
+      await setCachedData(config.url, { ...data });
       return data;
     } else {
       throw new Error(msg);

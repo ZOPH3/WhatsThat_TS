@@ -13,7 +13,7 @@ import log from '../../lib/util/LoggerUtil';
 import { useMessageContext } from '../../lib/context/MessageContext';
 import useFetchHook from '../../lib/hooks/useFetchHook';
 import { useAuthContext } from '../../lib/context/AuthContext';
-import { TChat } from '../../lib/types/TSchema';
+import { TSingleMessage } from '../../lib/types/TSchema';
 import { useNavigation } from '@react-navigation/native';
 
 const ChatViewContainer = (props: { chat_id: number; title: string }) => {
@@ -29,33 +29,10 @@ const ChatViewContainer = (props: { chat_id: number; title: string }) => {
     throw new Error('Unable to find Auth API...');
   }
 
-  const _CRUD = (data: TChat, setData: React.SetStateAction<any>) => {
-    const addMessage = (message: string) => {
-      const last_id = getLastMessageId(data.messages);
-
-      const msg = {
-        message_id: last_id ? last_id.message_id + 1 : 1,
-        timestamp: new Date().toISOString(),
-        message: message,
-        author: authState.current_user,
-      };
-
-      setData({ ...data, messages: [...data.messages, msg] });
-    };
-
-    const removeMessage = (message: { id: any }) => {
-      setData((prev: any[]) => prev.filter((m) => m.id !== message.id));
-    };
-
-    const editMessage = (message: { id: any }) => {
-      setData((prev: any[]) => prev.map((m) => (m.id === message.id ? message : m)));
-    };
-
-    return { addMessage, removeMessage, editMessage };
-  };
-
-  const { data, isLoading, onFetch, onError, setOnError, setData, getCache, getFresh } =
-    useFetchHook({ url: `/chat/${chat_id}`, method: 'GET' }, true);
+  const { data, isLoading, onFetch, onError, setOnError, getFresh } = useFetchHook(
+    { url: `/chat/${chat_id}`, method: 'GET' },
+    true
+  );
 
   const items: IMenuItem[] = [
     {
@@ -99,11 +76,31 @@ const ChatViewContainer = (props: { chat_id: number; title: string }) => {
     return <Text>MessageListView</Text>;
   };
 
-  const actions = () => {
+  const messageActions = () => {
+    if (authState.current_user == null) return;
+    if (dispatcher == null) return;
+    const current_user = authState.current_user;
+
     const sendMessage = (message: string) => {
-      _CRUD(data, setData).addMessage(message);
+      const last_id = messageList.length > 0 ? getLastMessageId(messageList) : 0;
+
+      dispatcher.sendMessage({
+        message_id: last_id + 1,
+        timestamp: Date.now(),
+        message: message,
+        author: current_user,
+      });
     };
-    return { sendMessage };
+
+    const deleteMessage = (id: number) => {
+      dispatcher.deleteMessage(id);
+    };
+
+    const updateMessage = (message: TSingleMessage) => {
+      dispatcher.updateMessage(message);
+    };
+
+    return { sendMessage, deleteMessage, updateMessage };
   };
 
   return (
@@ -111,7 +108,7 @@ const ChatViewContainer = (props: { chat_id: number; title: string }) => {
       <SafeAreaView style={{ flex: 10 }}>
         <Result />
       </SafeAreaView>
-      <MessageInput actions={actions} />
+      <MessageInput actions={messageActions} />
       <Snackbar visible={onError !== undefined} onDismiss={() => setOnError(undefined)}>
         {onError}
       </Snackbar>
@@ -121,7 +118,7 @@ const ChatViewContainer = (props: { chat_id: number; title: string }) => {
 
 function getLastMessageId(messageList: any[]) {
   const m = messageList?.sort((a, b) => a.message_id - b.message_id);
-  return m?.findLast((message) => message.message_id != null);
+  return m?.findLast((message) => message.message_id != null).message_id;
 }
 
 export default ChatViewContainer;

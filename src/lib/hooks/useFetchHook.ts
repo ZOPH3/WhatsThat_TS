@@ -16,6 +16,7 @@ const useFetchHook = (config: any, auth = false) => {
   const [isLoading, setIsLoading] = React.useState(false);
   const [onError, setOnError] = React.useState<string | undefined>(undefined);
 
+  //FIXME: Duplicate throw error, getCache does it anyways
   const getCache = async () => {
     const cachedData = await getCachedData(config.url);
     if (!cachedData) {
@@ -77,5 +78,6 @@ const useFetchHook = (config: any, auth = false) => {
     getFresh,
   };
 };
+
 
 export default useFetchHook;

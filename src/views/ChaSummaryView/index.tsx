@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { View } from 'react-native';
-import { ProgressBar, Snackbar, Text, TextInput } from 'react-native-paper';
+import { ProgressBar, Text, TextInput } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 
 import { styles } from '../../styles/GlobalStyle';
@@ -15,12 +15,14 @@ import useFetchHook from '../../lib/hooks/useFetchHook';
 import { useAuthContext } from '../../lib/context/AuthContext';
 import ButtonComponent from '../../components/Button';
 import { useChatContext } from '../../lib/context/ChatContext';
+import { useNotificationContext } from '../../lib/context/NotificationContext';
 
 const ChatSummaryView = () => {
   const { useFetch } = useApiContext();
-  const { logout, authState } = useAuthContext();
+  const { logout } = useAuthContext();
   const { chatSummaryList, dispatcher } = useChatContext();
   const navigation = useNavigation();
+  const notification = useNotificationContext();
 
   if (!useFetch || !logout) {
     log.error('Unable to find Auth API...');
@@ -39,7 +41,13 @@ const ChatSummaryView = () => {
     },
     {
       title: 'Reload',
-      onPress: () => onFetch(async () => await getFresh()),
+      onPress: () => {
+        onFetch(async () => await getFresh());
+        notification.dispatcher.addNotification({
+          message: 'Chat created successfully',
+          type: 'success',
+        });
+      },
     },
     {
       title: 'Logout',
@@ -85,10 +93,6 @@ const ChatSummaryView = () => {
 
   return (
     <View style={styles.container}>
-      <ButtonComponent
-        title={'Login thing'}
-        onPress={async () => console.log(authState)}
-      />
       <Result />
       <DialogBlock
         title={'Create Chat'}
@@ -112,9 +116,6 @@ const ChatSummaryView = () => {
           </>
         }
       />
-      <Snackbar visible={onError !== undefined} onDismiss={() => setOnError(undefined)}>
-        {onError}
-      </Snackbar>
     </View>
   );
 };

@@ -60,6 +60,7 @@ const messageReducer = (state: IMessageContext, action: any) => {
 
 const MessageProvider = ({ children, chat_id }: any) => {
   const [state, dispatch] = useReducer(messageReducer, initialState);
+  
   const { data, isLoading, onFetch, onError, setOnError, getFresh, getCache } = useFetchHook(
     { url: `/chat/${chat_id}`, method: 'GET' },
     true

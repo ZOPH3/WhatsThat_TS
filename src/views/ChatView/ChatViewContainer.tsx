@@ -24,7 +24,7 @@ const ChatViewContainer = (props: { chat_id: number; title: string }) => {
 
   const { chat_id, title } = props;
 
-  if (!useFetch) {
+  if (!useFetch || !dispatcher) {
     log.error('Unable to find Auth API...');
     throw new Error('Unable to find Auth API...');
   }

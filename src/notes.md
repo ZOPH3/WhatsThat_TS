@@ -4,3 +4,7 @@
 
 
 
+- Initial load of data from cache or db.
+- When refresh is done, check if there is a change on the last message of the chat, so I would need to save the prev state temporarily and compare it with the new one.
+- When a new message is received, check if the chat is open, if it is, then update the state, if not, then update the cache.
+- or maybe just update the cache always and then when the chat is open, update the state from the cache.

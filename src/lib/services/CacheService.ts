@@ -3,10 +3,10 @@ import log from '../util/LoggerUtil';
 
 type TCachedData = {
   data: any;
-  expiresAt: number;
+  created: number;
 };
 
-const getCachedData = async (url: string, returnType?: unknown) => {
+const getCachedData = async (url: string, returnType?: unknown, expiresIn?: number) => {
   log.debug(`Fetching from cache: ${url}`);
   const cache = await AsyncStorage.getItem(url);
   if (cache === null) {
@@ -16,22 +16,24 @@ const getCachedData = async (url: string, returnType?: unknown) => {
   // const cdata: TCachedData = JSON.parse(cache);
   const cdata = JSON.parse(cache);
 
-  if (cdata.expiresAt < Date.now()) {
+  //TODO: Check if connection is available, if not, return cached data
+
+
+  expiresIn = expiresIn ? expiresIn : 1000 * 60 * 60 * 24 * 7; // 7 days
+
+  if ((cdata.created + expiresIn) < Date.now()) {
     await clearCachedData(url);
     log.debug('Cache expired...');
     throw new Error('Cache expired...');
   }
-
-  // if (returnType) return cdata.data as typeof returnType;
   return cdata.data;
 };
 
-const setCachedData = async (url: string, data: any, expiresAt?: number) => {
-
+const setCachedData = async (url: string, data: any) => {
   log.debug(`Storing in cache: ${url}`);
   const cdata: TCachedData = {
     data: data,
-    expiresAt: expiresAt? expiresAt : Date.now() + 1000 * 60 * 60 * 24 * 7, // 7 days
+    created: Date.now(),
   };
   await AsyncStorage.setItem(url, JSON.stringify(cdata));
 };

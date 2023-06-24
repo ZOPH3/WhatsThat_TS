@@ -80,6 +80,7 @@ const ChatStackNavigator = () => {
     <ChatStack.Navigator>
       <ChatStack.Screen name="ChatSummaryView" component={ChatSummaryView} />
       <ChatStack.Screen name="ChatView" component={ChatView} />
+
       <ChatStack.Screen name="EditChatView" component={EditChatView} />
       <ChatStack.Screen name="InviteUserView" component={InviteUserView} />
     </ChatStack.Navigator>

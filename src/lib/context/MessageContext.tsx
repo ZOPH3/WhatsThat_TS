@@ -2,51 +2,57 @@ import React, { createContext, useContext, useReducer } from 'react';
 import { TSingleMessage } from '../types/TSchema';
 
 interface IMessageContext {
-  state?: TSingleMessage[];
+  messageList: TSingleMessage[];
   dispatcher?: any;
 }
 
-const MessageContext = createContext<IMessageContext>({});
+const initialState: IMessageContext = {
+  messageList: [],
+};
 
-const messageReducer = (state: any, action: any) => {
+const MessageContext = createContext<IMessageContext>(initialState);
+
+const messageReducer = (state: IMessageContext, action: any) => {
   const { type, payload } = action;
 
   switch (type) {
     case 'SET_MESSAGES':
-      // return { ...state, payload };
-      console.log('SET_MESSAGES', payload);
-      return state;
+      return { ...state, messageList: payload };
     case 'DELETE_MESSAGE':
-      return state.filter((item: any) => item.id !== payload);
+      return {
+        ...state,
+        messageList: state.messageList.filter((item: any) => item.id !== payload),
+      };
     case 'SEND_MESSAGE':
-      return { ...state, payload };
+      return { ...state, messageList: payload };
     case 'UPDATE_MESSAGE':
-      return state.map((message: any) => {
-        if (message.id === payload.id) {
-          return {
-            ...message,
-            ...payload,
-          };
-        }
-        return message;
-      });
+      return {
+        ...state,
+        messageList: state.messageList.map((message: any) => {
+          message.id === payload.id ? payload : message;
+        }),
+      };
     default:
       throw new Error(`No case for type ${type} found in MessageReducer.`);
   }
 };
 
 const MessageProvider = ({ children }: any) => {
-  const [state, dispatch] = useReducer(messageReducer, {});
+  const [state, dispatch] = useReducer(messageReducer, initialState);
 
-  const deleteMessage = (payload: any) => {
+  const setMessages = (payload: TSingleMessage[]) => {
+    dispatch({ type: 'SET_MESSAGES', payload });
+  };
+
+  const deleteMessage = (payload: number) => {
     dispatch({ type: 'DELETE_MESSAGE', payload });
   };
 
-  const sendMessage = (payload: any) => {
+  const sendMessage = (payload: TSingleMessage) => {
     dispatch({ type: 'SEND_MESSAGE', payload });
   };
 
-  const updateMessage = (payload: any) => {
+  const updateMessage = (payload: TSingleMessage) => {
     dispatch({ type: 'UPDATE_MESSAGE', payload });
   };
 
@@ -56,7 +62,10 @@ const MessageProvider = ({ children }: any) => {
 
   return (
     <MessageContext.Provider
-      value={{ state, dispatcher: { print, deleteMessage, sendMessage, updateMessage } }}
+      value={{
+        messageList: state.messageList,
+        dispatcher: { print, deleteMessage, sendMessage, updateMessage, setMessages },
+      }}
     >
       {children}
     </MessageContext.Provider>

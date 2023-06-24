@@ -7,30 +7,26 @@ type TCachedData = {
 };
 
 const getCachedData = async (url: string, returnType?: unknown, expiresIn?: number) => {
-  log.debug(`Fetching from cache: ${url}`);
+  log.debug(`[Cache] Fetching: ${url}`);
   const cache = await AsyncStorage.getItem(url);
   if (cache === null) {
-    log.debug('No cache found...', url);
-    throw new Error(`No cache found... ${url}`);
+    log.debug('[Cache] No cache found:', url);
+    throw new Error(`[Cache] No cache found: ${url}`);
   }
-  // const cdata: TCachedData = JSON.parse(cache);
   const cdata = JSON.parse(cache);
-
-  //TODO: Check if connection is available, if not, return cached data
-
 
   expiresIn = expiresIn ? expiresIn : 1000 * 60 * 60 * 24 * 7; // 7 days
 
   if ((cdata.created + expiresIn) < Date.now()) {
     await clearCachedData(url);
-    log.debug('Cache expired...');
-    throw new Error('Cache expired...');
+    log.debug(`[Cache] Expired: ${url}`);
+    throw new Error(`[Cache] Expired: ${url}`);
   }
   return cdata.data;
 };
 
 const setCachedData = async (url: string, data: any) => {
-  log.debug(`Storing in cache: ${url}`);
+  log.debug(`[Cache] Storing: ${url}`);
   const cdata: TCachedData = {
     data: data,
     created: Date.now(),
@@ -39,7 +35,7 @@ const setCachedData = async (url: string, data: any) => {
 };
 
 const clearCachedData = async (url: string) => {
-  log.debug(`Clearing cache: ${url}`);
+  log.debug(`[Cache] Clearing: ${url}`);
   await AsyncStorage.removeItem(url);
 };
 

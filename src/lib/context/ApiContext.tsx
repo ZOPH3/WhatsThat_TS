@@ -2,11 +2,10 @@ import React, { ReactNode, createContext, useContext } from 'react';
 import { useAuthContext } from './AuthContext';
 import { useGlobalContext } from './GlobalContext';
 import log from '../util/LoggerUtil';
-
 import axios, { AxiosRequestConfig } from 'axios';
 
 interface IApiContext {
-  useFetch?: (config: AxiosRequestConfig, auth: boolean, setIsLoading?: any) => any;
+  useFetch?: (config: AxiosRequestConfig, auth: boolean) => any;
 }
 
 interface QueryConfig {
@@ -58,26 +57,13 @@ const ApiProvider = ({ children }: Props) => {
     return abortController.signal;
   }
 
-  const useFetch = (config: AxiosRequestConfig<any>, auth: any, setIsLoading?: any) => {
-    try {
-      const _apiInstance = auth ? _authApi : _publicApi;
-      return _apiInstance
-        .request({
-          ...config,
-          signal: newAbortSignal(5000),
-          validateStatus: (status) => status <= 304,
-        })
-        .then((res) => {
-          // if (res.status <= 200 && res.status >= 304) throw new Error(res.statusText);
-          return res.data;
-        })
-        .finally(() => {
-          if (setIsLoading) setIsLoading(false);
-        });
-    } catch (err: any) {
-      log.error(err);
-      if (setIsLoading) setIsLoading(false);
-    }
+  const useFetch = async (config: AxiosRequestConfig<any>, auth: any) => {
+    const _apiInstance = auth ? _authApi : _publicApi;
+    return await _apiInstance.request({
+      ...config,
+      signal: newAbortSignal(5000),
+      validateStatus: (status) => status <= 304,
+    });
   };
 
   _authApi.interceptors.request.use(

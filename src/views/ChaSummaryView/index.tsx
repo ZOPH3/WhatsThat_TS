@@ -29,7 +29,7 @@ const ChatSummaryView = () => {
     throw new Error('Unable to find Auth API...');
   }
 
-  const { data, isLoading, onFetch, onError, setOnError, getFresh } = useFetchHook(
+  const { isLoading, onFetch, onError, getFresh } = useFetchHook(
     { url: '/chat', method: 'GET' },
     true
   );
@@ -43,10 +43,6 @@ const ChatSummaryView = () => {
       title: 'Reload',
       onPress: () => {
         onFetch(async () => await getFresh());
-        notification.dispatcher.addNotification({
-          message: 'Chat created successfully',
-          type: 'success',
-        });
       },
     },
     {
@@ -75,13 +71,13 @@ const ChatSummaryView = () => {
     });
     onFetch(async () => await getFresh()).then((data) => {
       dispatcher.setChatSummaryList(data);
-    });
+    }).catch();
   }, []);
 
   const Result = () => {
     if (isLoading) return <ProgressBar indeterminate={true} visible={isLoading} />;
     if (onError) return <Text>{onError}</Text>;
-    if (chatSummaryList.length > 0) {
+    if (chatSummaryList && chatSummaryList.length > 0) {
       return (
         <View>
           <ChatSummaryList chatSummary={chatSummaryList} />

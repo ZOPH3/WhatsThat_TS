@@ -1,20 +1,28 @@
 import { AxiosError } from 'axios';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useApiContext } from '../context/ApiContext';
 import log from '../util/LoggerUtil';
 import { getCachedData, setCachedData } from '../services/CacheService';
+import { useNotificationContext } from '../context/NotificationContext';
 
 const useFetchHook = (config: any, auth = false) => {
   const { useFetch } = useApiContext();
+  const { dispatcher } = useNotificationContext();
 
   if (!useFetch) {
     log.error('Unable to find Auth API...');
     throw new Error('Unable to find Auth API...');
   }
 
-  const [data, setData] = React.useState<any>({});
+  const [data, setData] = React.useState<any>(undefined);
   const [isLoading, setIsLoading] = React.useState(false);
-  const [onError, setOnError] = React.useState<string | undefined>(undefined);
+  const [onError, setOnError] = React.useState<any | undefined>(undefined);
+
+  useEffect(() => {
+    if (onError) {
+      dispatcher.addNotification({ type: 'error', message: onError });
+    }
+  }, [onError]);
 
   //FIXME: Duplicate throw error, getCache does it anyways
   const getCache = async () => {
@@ -34,15 +42,15 @@ const useFetchHook = (config: any, auth = false) => {
      * Fetch
      */
     let msg = '';
-    const data = await useFetch(config, auth, setIsLoading).catch((err: AxiosError) => {
+    const data = await useFetch(config, auth).catch((err: AxiosError) => {
       msg = err.request?.response
         ? err.request.response
         : 'Timeout: It took more than 5 seconds to get the result!!';
     });
 
     if (data) {
-      await setCachedData(config.url, { ...data });
-      return data;
+      await setCachedData(config.url, { ...data.data });
+      return data.data;
     } else {
       throw new Error(msg);
     }
@@ -53,15 +61,14 @@ const useFetchHook = (config: any, auth = false) => {
      * Fetch
      */
     setOnError(undefined);
-    setData([]);
+    setData(undefined);
     setIsLoading(true);
 
     const data = await fn()
-      .catch((err: any) => setOnError(err))
+      .catch((err: any) => setOnError(err.message ? err.message : 'Something went wrong...'))
       .finally(() => setIsLoading(false));
 
     if (data) {
-      // console.log('onFetch Data: ', data)
       setData(data);
       return data;
     }
@@ -71,13 +78,11 @@ const useFetchHook = (config: any, auth = false) => {
     data,
     isLoading,
     onError,
-    setOnError,
     setData,
     onFetch,
     getCache,
     getFresh,
   };
 };
-
 
 export default useFetchHook;

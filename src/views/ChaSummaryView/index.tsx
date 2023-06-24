@@ -15,14 +15,12 @@ import useFetchHook from '../../lib/hooks/useFetchHook';
 import { useAuthContext } from '../../lib/context/AuthContext';
 import ButtonComponent from '../../components/Button';
 import { useChatContext } from '../../lib/context/ChatContext';
-import { useNotificationContext } from '../../lib/context/NotificationContext';
 
 const ChatSummaryView = () => {
   const { useFetch } = useApiContext();
   const { logout } = useAuthContext();
   const { chatSummaryList, dispatcher } = useChatContext();
   const navigation = useNavigation();
-  const notification = useNotificationContext();
 
   if (!useFetch || !logout) {
     log.error('Unable to find Auth API...');
@@ -42,7 +40,7 @@ const ChatSummaryView = () => {
     {
       title: 'Reload',
       onPress: () => {
-        onFetch(async () => await getFresh());
+        onFetch(async () => await getFresh()).catch();
       },
     },
     {
@@ -70,8 +68,9 @@ const ChatSummaryView = () => {
       ),
     });
     onFetch(async () => await getFresh()).then((data) => {
+      if (!data) return;
       dispatcher.setChatSummaryList(data);
-    }).catch();
+    })
   }, []);
 
   const Result = () => {

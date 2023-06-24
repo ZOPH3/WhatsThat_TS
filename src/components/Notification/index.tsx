@@ -22,7 +22,7 @@ const NotificationContainer = () => {
       visible={showSnackbar}
       onDismiss={() => setShowSnackbar(false)}
     >
-      {notification.message ? notification.message : 'Something went wrong...'}
+      {notification && notification.message ? notification.message : 'Something went wrong...'}
     </Snackbar>
   );
 };

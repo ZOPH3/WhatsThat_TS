@@ -19,7 +19,7 @@ const AddedUsersView = ({navigation}) => {
     throw new Error('Unable to find Auth API...');
   }
 
-  const { data, isLoading, onFetch, onError, setOnError, getFresh } = useFetchHook(
+  const {data, isLoading, onFetch, onError, getFresh, getCache } = useFetchHook(
     { url: '/contacts', method: 'GET' },
     true
   );
@@ -32,7 +32,10 @@ const AddedUsersView = ({navigation}) => {
   ];
 
   useEffect(() => {
-    onFetch(async() => await getFresh());
+    onFetch(async() => await getCache()).then((data) => {
+      if (!data) return;
+      console.log("Not implemented", data);
+    }).catch();
   }, []);
 
   const Result = () => {
@@ -75,9 +78,6 @@ const AddedUsersView = ({navigation}) => {
           </>
         }
       />
-      <Snackbar visible={onError !== undefined} onDismiss={() => setOnError(undefined)}>
-        {onError}
-      </Snackbar>
     </View>
   );
 };

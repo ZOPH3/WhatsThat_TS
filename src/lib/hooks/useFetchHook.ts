@@ -51,9 +51,9 @@ const useFetchHook = (config: any, auth = false) => {
     if (data) {
       await setCachedData(config.url, { ...data.data });
       return data.data;
-    } else {
-      throw new Error(msg);
     }
+
+    throw new Error(msg);
   };
 
   const onFetch = async (fn: () => Promise<any>) => {
@@ -64,6 +64,7 @@ const useFetchHook = (config: any, auth = false) => {
     setData(undefined);
     setIsLoading(true);
 
+    // try {
     const data = await fn()
       .catch((err: any) => setOnError(err.message ? err.message : 'Something went wrong...'))
       .finally(() => setIsLoading(false));
@@ -72,6 +73,9 @@ const useFetchHook = (config: any, auth = false) => {
       setData(data);
       return data;
     }
+    // } catch (err) {
+    //   setOnError(err ? err : 'Something went wrong...');
+    // }
   };
 
   return {

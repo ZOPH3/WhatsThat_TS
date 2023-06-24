@@ -63,7 +63,7 @@ const ApiProvider = ({ children }: Props) => {
       ...config,
       signal: newAbortSignal(5000),
       validateStatus: (status) => status <= 304,
-    });
+    }).catch((err) => console.log("Error In here"));
   };
 
   _authApi.interceptors.request.use(

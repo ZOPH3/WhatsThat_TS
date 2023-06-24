@@ -8,21 +8,23 @@ type TCachedData = {
 
 const getCachedData = async (url: string, returnType?: unknown, expiresIn?: number) => {
   log.debug(`[Cache] Fetching: ${url}`);
-  const cache = await AsyncStorage.getItem(url);
-  if (cache === null) {
-    log.debug('[Cache] No cache found:', url);
-    throw new Error(`[Cache] No cache found: ${url}`);
-  }
-  const cdata = JSON.parse(cache);
+  try {
+    const cache = await AsyncStorage.getItem(url);
+    if (!cache) {
+      throw new Error(`[Cache] No cache found: ${url}`);
+    }
+    const cdata = JSON.parse(cache);
+    expiresIn = expiresIn ? expiresIn : 1000 * 60 * 60 * 24 * 7; // 7 days
 
-  expiresIn = expiresIn ? expiresIn : 1000 * 60 * 60 * 24 * 7; // 7 days
-
-  if ((cdata.created + expiresIn) < Date.now()) {
-    await clearCachedData(url);
-    log.debug(`[Cache] Expired: ${url}`);
-    throw new Error(`[Cache] Expired: ${url}`);
+    if (cdata.created + expiresIn < Date.now()) {
+      await clearCachedData(url);
+      log.debug(`[Cache] Expired: ${url}`);
+      throw new Error(`[Cache] Expired: ${url}`);
+    }
+    return cdata.data;
+  } catch (err) {
+    log.error('[Cache] Error fetching cache:', err);
   }
-  return cdata.data;
 };
 
 const setCachedData = async (url: string, data: any) => {

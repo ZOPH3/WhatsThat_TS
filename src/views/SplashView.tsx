@@ -10,30 +10,36 @@ import { ActivityIndicator } from 'react-native-paper';
  * - Render UI from state
  */
 
-const SplashView = ({ navigation }) => {
+const SplashView = () => {
   const authContext = useAuthContext();
   const { setAuthState } = authContext;
   const { initialise } = useGlobalContext();
- 
-  const getState = async () => {
-    const login = await getCachedData('/login');
 
-    if (!login || !login.id || !login.token) {
-      setAuthState({
-        id: undefined,
-        current_user: undefined,
-        token: undefined,
-        authenticated: false,
-      });
-    } else {
-      setAuthState({
-        authenticated: true,
-        current_user: undefined,
-        id: login.id,
-        token: login.token,
-      });
+  const getState = async () => {
+    let state = {
+      id: undefined,
+      current_user: undefined,
+      token: undefined,
+      authenticated: false,
     }
 
+    try {
+      const login = await getCachedData('/login');
+
+      if (login && login.id && login.token) {
+        state = {
+          authenticated: true,
+          current_user: undefined,
+          id: login.id,
+          token: login.token,
+        };
+      }
+
+    } catch (e) {
+      console.log(e);
+    }
+
+    setAuthState(state); 
     if (initialise) initialise();
   };
 

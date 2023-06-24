@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useReducer } from 'react';
 import { TSingleMessage } from '../types/TSchema';
-import useFetchHook from '../hooks/useFetchHook';
 
 interface IMessageDispatcher {
   print: () => void;
@@ -61,10 +60,10 @@ const messageReducer = (state: IMessageContext, action: any) => {
 const MessageProvider = ({ children, chat_id }: any) => {
   const [state, dispatch] = useReducer(messageReducer, initialState);
   
-  const { data, isLoading, onFetch, onError, setOnError, getFresh, getCache } = useFetchHook(
-    { url: `/chat/${chat_id}`, method: 'GET' },
-    true
-  );
+  // const { data, isLoading, onFetch, onError, getFresh, getCache } = useFetchHook(
+  //   { url: `/chat/${chat_id}`, method: 'GET' },
+  //   true
+  // );
 
   const setMessages = (payload: TSingleMessage[]) => {
     dispatch({ type: 'SET_MESSAGES', payload });
@@ -82,17 +81,17 @@ const MessageProvider = ({ children, chat_id }: any) => {
     dispatch({ type: 'UPDATE_MESSAGE', payload });
   };
 
-  const fetchMessages = async () => {
-    await onFetch(async () => await getCache()).then((data) => {
-      setMessages(data.messages);
-    }
+  // const fetchMessages = async () => {
+  //   await onFetch(async () => await getCache()).then((data) => {
+  //     setMessages(data.messages);
+  //   }
 
-    );
-    await onFetch(async () => await getFresh()).then((data) => {
-      setMessages(data.messages);
-    }
-    );
-  };
+  //   );
+  //   await onFetch(async () => await getFresh()).then((data) => {
+  //     setMessages(data.messages);
+  //   }
+  //   );
+  // };
 
   const print = () => {
     console.log('state', state);

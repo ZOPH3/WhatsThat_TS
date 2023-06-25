@@ -78,7 +78,11 @@ const ContactStackNavigator = ({ navigation }) => {
 const ChatStackNavigator = () => {
   return (
     <ChatStack.Navigator>
-      <ChatStack.Screen name="ChatSummaryView" component={ChatSummaryView} />
+      <ChatStack.Screen
+        name="ChatSummaryView"
+        component={ChatSummaryView}
+        options={{ title: 'Chat' }}
+      />
       <ChatStack.Screen name="ChatView" component={ChatView} />
 
       <ChatStack.Screen name="EditChatView" component={EditChatView} />

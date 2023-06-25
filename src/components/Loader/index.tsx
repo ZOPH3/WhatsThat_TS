@@ -2,7 +2,7 @@ import React from 'react';
 import { View } from 'react-native';
 
 export interface IComponentState {
-  state: 'idle' | 'loading' | 'success' | 'empty' | 'error'
+  state: 'loading' | 'success' | 'empty' | 'error' | undefined;
 }
 
 interface IComponents {
@@ -13,12 +13,10 @@ interface IComponents {
 }
 
 // Template to deal with state of component.
-const ComponentContainer = (props: { name: string } & IComponentState & IComponents) => {
+const ComponentContainer = (
+  props: { name: string } & IComponentState & IComponents
+) => {
   const { name, state, onLoading, onSuccess, onEmpty, onError } = props;
-
-  // if (state.idle) {
-  //   return;
-  // }
 
   if (state === 'loading') {
     return onLoading ? onLoading : <View></View>;
@@ -36,7 +34,7 @@ const ComponentContainer = (props: { name: string } & IComponentState & ICompone
     return onError ? onError : <View></View>;
   }
 
-  return <View></View>;
+  if (!state) return;
 };
 
 export default ComponentContainer;

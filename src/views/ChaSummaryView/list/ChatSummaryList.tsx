@@ -2,7 +2,7 @@ import React from 'react';
 import { View, FlatList, SafeAreaView } from 'react-native';
 
 import { TChatSummary } from '../../../lib/types/TSchema';
-import ChatSummaryContainer from '../components/ChatSummaryContainer';
+import ChatSummaryContainer from '../components/Container';
 import { useNavigation } from '@react-navigation/native';
 
 interface IChatSummaryList {

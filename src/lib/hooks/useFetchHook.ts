@@ -1,9 +1,21 @@
 import { AxiosError } from 'axios';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useApiContext } from '../context/ApiContext';
 import log from '../util/LoggerUtil';
 import { getCachedData, setCachedData } from '../services/CacheService';
 import { useNotificationContext } from '../context/NotificationContext';
+import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
+
+export enum EState {
+  success = 'success',
+  error = 'error',
+  empty = 'empty',
+}
+
+export enum EFetch {
+  cache = 'cache',
+  fresh = 'fresh',
+}
 
 const useFetchHook = (config: any, auth = false) => {
   const { useFetch } = useApiContext();
@@ -17,6 +29,7 @@ const useFetchHook = (config: any, auth = false) => {
   const [data, setData] = React.useState<any>(undefined);
   const [isLoading, setIsLoading] = React.useState(false);
   const [onError, setOnError] = React.useState<any | undefined>(undefined);
+  const [dataState, setDataState] = useState<EState | undefined>(undefined); // State of the data
 
   useEffect(() => {
     if (onError) {
@@ -24,8 +37,11 @@ const useFetchHook = (config: any, auth = false) => {
     }
   }, [onError]);
 
-  //FIXME: Duplicate throw error, getCache does it anyways
-  async function getCache(){
+  // useEffect(() => {
+  //   console.log(dataState);
+  // }, [dataState]);
+
+  async function getCache() {
     const cachedData = await getCachedData(config.url);
     if (!cachedData) {
       throw new Error('No cached data found...', config.url);
@@ -58,50 +74,73 @@ const useFetchHook = (config: any, auth = false) => {
      */
     setOnError(undefined);
     setData(undefined);
+    setDataState(undefined);
     setIsLoading(true);
 
     const data = await fn()
-      .catch((err: any) => setOnError(err.message ? err.message : 'Something went wrong...'))
+      .catch((err: any) => {
+        setOnError(err.message ? err.message : 'Something went wrong...');
+        setDataState(EState.error);
+      })
       .finally(() => setIsLoading(false));
 
     if (data) {
       setData(data);
+      setDataState(EState.success);
       return data;
+    }
+
+    if (!data && !onError) {
+      setDataState(EState.empty);
     }
   };
 
-  const init = async () => {
+  const fetchCacheorFresh = async () => {
     /**
      * Fetch
      */
     setOnError(undefined);
     setData(undefined);
+    setDataState(undefined);
     setIsLoading(true);
 
-    const data = await getCache().then((data) => {
-      return data;
-    })
-      .catch(async (err: any) => {
-        return await getFresh();
+    const data = Promise.race([getCache(), getFresh()])
+      .then((data) => data)
+      .catch((err: any) => {
+        setOnError(err.message ? err.message : 'Something went wrong...');
+        setDataState(EState.error);
       })
-      .catch((err: any) => setOnError(err.message ? err.message : 'Something went wrong...'))
       .finally(() => setIsLoading(false));
 
     if (data) {
       setData(data);
+      setDataState(EState.success);
       return data;
     }
+
+    if (!data && !onError) {
+      setDataState(EState.empty);
+    }
+  };
+
+  const doFetch = async () => {
+    let data = await onFetch(async () => await getCache());
+    if (!data) {
+      data = await onFetch(async () => await getFresh());
+    }
+    return data;
   };
 
   return {
     data,
+    dataState,
     isLoading,
     onError,
-    setData,
+    doFetch,
     onFetch,
     getCache,
     getFresh,
-    init,
+    fetchCacheorFresh
   };
 };
 

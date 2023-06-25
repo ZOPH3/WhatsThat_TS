@@ -21,6 +21,7 @@ const ChatReducer = (state: IChatContext, action: any) => {
         chatSummaryList: payload,
       };
     case 'ADD_CHAT_SUMMARY':
+      console.log('ADD_CHAT_SUMMARY: ', payload);
       return {
         ...state,
         chatSummaryList: [...state.chatSummaryList, payload],

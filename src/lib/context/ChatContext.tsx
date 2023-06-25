@@ -50,7 +50,7 @@ const ChatProvider = ({ children }: any) => {
   const setChatSummaryList = (payload: TChatSummary[]) => {
     dispatch({ type: 'SET_CHAT_SUMMARY_LIST', payload });
   };
-  const addChatSummary = (payload: TChatSummary) => {
+  const addChatSummary = (payload: Partial<TChatSummary>) => {
     dispatch({ type: 'ADD_CHAT_SUMMARY', payload });
   };
   const updateChatSummary = (payload: TChatSummary) => {

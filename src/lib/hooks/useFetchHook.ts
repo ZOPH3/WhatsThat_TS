@@ -25,17 +25,13 @@ const useFetchHook = (config: any, auth = false) => {
   }, [onError]);
 
   //FIXME: Duplicate throw error, getCache does it anyways
-  const getCache = async () => {
+  async function getCache(){
     const cachedData = await getCachedData(config.url);
     if (!cachedData) {
       throw new Error('No cached data found...', config.url);
     }
-    const data = JSON.parse(cachedData);
-    if (data.expiresAt < Date.now()) {
-      throw new Error('Cache expired...');
-    }
-    return data.data;
-  };
+    return Object.values(cachedData);
+  }
 
   const getFresh = async () => {
     /**
@@ -64,7 +60,6 @@ const useFetchHook = (config: any, auth = false) => {
     setData(undefined);
     setIsLoading(true);
 
-    // try {
     const data = await fn()
       .catch((err: any) => setOnError(err.message ? err.message : 'Something went wrong...'))
       .finally(() => setIsLoading(false));
@@ -73,9 +68,29 @@ const useFetchHook = (config: any, auth = false) => {
       setData(data);
       return data;
     }
-    // } catch (err) {
-    //   setOnError(err ? err : 'Something went wrong...');
-    // }
+  };
+
+  const init = async () => {
+    /**
+     * Fetch
+     */
+    setOnError(undefined);
+    setData(undefined);
+    setIsLoading(true);
+
+    const data = await getCache().then((data) => {
+      return data;
+    })
+      .catch(async (err: any) => {
+        return await getFresh();
+      })
+      .catch((err: any) => setOnError(err.message ? err.message : 'Something went wrong...'))
+      .finally(() => setIsLoading(false));
+
+    if (data) {
+      setData(data);
+      return data;
+    }
   };
 
   return {
@@ -86,6 +101,7 @@ const useFetchHook = (config: any, auth = false) => {
     onFetch,
     getCache,
     getFresh,
+    init,
   };
 };
 

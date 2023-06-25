@@ -56,10 +56,6 @@ const AuthProvider = ({ children }: Props) => {
     authenticated: false,
   });
 
-  // const setCachedAuthState = async (authState: IAuthState) => {
-  //   return await setCachedData('/login', authState);
-  // };
-
   const getCachedAuthState = async () => {
     // return await getCachedData('/login', AuthStateDefault)
     //   .then((login) => {
@@ -71,20 +67,6 @@ const AuthProvider = ({ children }: Props) => {
     //     return AuthStateDefault;
     //   });
   };
-
-  // const setAuth = (auth: boolean) => {
-  //   setAuthState({
-  //     ...authState,
-  //     authenticated: auth,
-  //   });
-  // };
-
-  // const setToken = (token: string) => {
-  //   setAuthState({
-  //     ...authState,
-  //     token: token,
-  //   });
-  // };
 
   const setUserId = (id: number) => {
     setAuthState({
@@ -105,14 +87,6 @@ const AuthProvider = ({ children }: Props) => {
   const getToken = () => {
     return authState.token;
   };
-
-  // const useSetAuthState = () => {
-  //   const setAuthState = async (authState: IAuthState) => {
-  //     await setCachedAuthState(authState);
-  //     setAuthState(authState);
-  //   };
-  //   return setAuthState;
-  // };
 
   return (
     <Provider

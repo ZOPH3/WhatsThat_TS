@@ -10,7 +10,7 @@ const NotificationContainer = () => {
 
   useEffect(() => {
     if (notificationCount && notificationCount > 0) {
-      log.debug('[Notification] Recieved: ', notifications);
+      log.debug('[NOTIFICATION] Recieved: ', notifications);
       setNotification(dispatcher.getNotification(notificationCount));
       setShowSnackbar(true);
     }

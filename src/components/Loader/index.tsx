@@ -48,6 +48,4 @@ export default ComponentRender;
  *    onEmpty={<View><Text>Empty</Text></View>}
  *    onError={<View><Text>Error</Text></View>}
  * />
- * 
- * 
  */

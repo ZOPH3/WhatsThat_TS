@@ -63,7 +63,7 @@ const ApiProvider = ({ children }: Props) => {
       ...config,
       signal: newAbortSignal(5000),
       validateStatus: (status) => status <= 304,
-    }).catch((err) => console.log("Error In here"));
+    }).catch((err) => null);
   };
 
   _authApi.interceptors.request.use(
@@ -87,7 +87,8 @@ const ApiProvider = ({ children }: Props) => {
       return response;
     },
     (error) => {
-      log.debug(`[AUTH API] Response error: ${error}`);
+      error.message = error.name === "CanceledError" ? "Request timed out" : error.message;
+      log.debug(`[AUTH API] Response error: ${error.message}`);
       return Promise.reject(error);
     }
   );

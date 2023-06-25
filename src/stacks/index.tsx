@@ -1,13 +1,15 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import MasterStackNavigator from './MasterStack';
-import { useGlobalContext } from '../lib/context/GlobalContext';
 import { CombinedDarkTheme, CombinedDefaultTheme } from '../styles/theme';
 import { PaperProvider, Portal } from 'react-native-paper';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import SplashView from '../views/SplashView';
+
 import { useAuthContext } from '../lib/context/AuthContext';
+import { useGlobalContext } from '../lib/context/GlobalContext';
+
+import MasterStackNavigator from './MasterStack';
+import SplashView from '../views/SplashView';
 import NotificationContainer from '../components/Notification';
 
 //TODO Add the splash screen here and the state such as loading can be dealt with at this level.

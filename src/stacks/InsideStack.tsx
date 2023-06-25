@@ -2,6 +2,8 @@ import React, { useEffect } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import Icons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { IconButton } from 'react-native-paper';
 
 /**
  * Navigation responsible for authorised users
@@ -12,15 +14,13 @@ import ChatSummaryView from '../views/ChaSummaryView';
 import ChatView from '../views/ChatView';
 import EditChatView from '../views/EditChatView';
 import InviteUserView from '../views/InviteUserView';
-
 import AddedUsersView from '../views/AddedUsersView';
 import SearchUsersView from '../views/SearchUsersView';
 import BlockedUsersView from '../views/BlockedUsersView';
+
 import { useApiContext } from '../lib/context/ApiContext';
 import { useAuthContext } from '../lib/context/AuthContext';
 import log from '../lib/util/LoggerUtil';
-import Icons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { IconButton } from 'react-native-paper';
 
 const ChatStack = createNativeStackNavigator();
 const ProfileStack = createNativeStackNavigator();

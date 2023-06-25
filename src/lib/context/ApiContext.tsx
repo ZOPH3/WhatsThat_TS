@@ -1,8 +1,10 @@
 import React, { ReactNode, createContext, useContext } from 'react';
+import axios, { AxiosRequestConfig } from 'axios';
+
+import log from '../util/LoggerUtil';
+
 import { useAuthContext } from './AuthContext';
 import { useGlobalContext } from './GlobalContext';
-import log from '../util/LoggerUtil';
-import axios, { AxiosRequestConfig } from 'axios';
 
 interface IApiContext {
   useFetch?: (config: AxiosRequestConfig, auth: boolean) => any;

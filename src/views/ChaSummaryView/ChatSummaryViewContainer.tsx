@@ -13,7 +13,7 @@ import ChatSummaryList from './list/ChatSummaryList';
 import SettingsMenu, { IMenuItem } from '../../components/SettingsMenu';
 import CreateChatDialog from './components/Dialog';
 
-import useFetchHook, { EFetch } from '../../lib/hooks/useFetchHook';
+import useFetchHook from '../../lib/hooks/useFetchHook';
 import { useAuthContext } from '../../lib/context/AuthContext';
 import { useChatContext } from '../../lib/context/ChatContext';
 

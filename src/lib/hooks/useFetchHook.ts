@@ -1,10 +1,11 @@
 import { AxiosError } from 'axios';
 import React, { useEffect, useState } from 'react';
-import { useApiContext } from '../context/ApiContext';
+
 import log from '../util/LoggerUtil';
 import { getCachedData, setCachedData } from '../services/CacheService';
+
 import { useNotificationContext } from '../context/NotificationContext';
-import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
+import { useApiContext } from '../context/ApiContext';
 
 export enum EState {
   success = 'success',
@@ -36,10 +37,6 @@ const useFetchHook = (config: any, auth = false) => {
       dispatcher.addNotification({ type: 'error', message: onError });
     }
   }, [onError]);
-
-  // useEffect(() => {
-  //   console.log(dataState);
-  // }, [dataState]);
 
   async function getCache() {
     const cachedData = await getCachedData(config.url);
@@ -140,7 +137,7 @@ const useFetchHook = (config: any, auth = false) => {
     onFetch,
     getCache,
     getFresh,
-    fetchCacheorFresh
+    fetchCacheorFresh,
   };
 };
 

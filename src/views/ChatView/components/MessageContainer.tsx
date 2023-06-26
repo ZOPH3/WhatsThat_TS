@@ -4,6 +4,9 @@ import { useAuthContext } from '../../../lib/context/AuthContext';
 import { List } from 'react-native-paper';
 import DialogComponent from '../../../components/Dialog';
 import MessageBubble from './MessageBubble';
+import { useMessageContext } from '../../../lib/context/MessageContext';
+import { useApiContext } from '../../../lib/context/ApiContext';
+import MessageServices from '../../../lib/services/MessageServices';
 
 interface IMessageContainer {
   message: TSingleMessage;
@@ -12,7 +15,8 @@ interface IMessageContainer {
 const MessageContainer = ({ message }: IMessageContainer) => {
   const currentUser = useAuthContext().authState.id;
   const { DialogBlock, showDialog } = DialogComponent();
-
+  const { messageList, dispatcher } = useMessageContext();
+  const { useFetch } = useApiContext();
   const dialogContent = [
     {
       children: (
@@ -21,7 +25,7 @@ const MessageContainer = ({ message }: IMessageContainer) => {
           description="Edit your message"
           left={(props) => <List.Icon {...props} icon="folder" />}
           onPress={() => {
-            console.log('Edit');
+            console.log('Edit', message.message_id);
           }}
         />
       ),
@@ -33,7 +37,7 @@ const MessageContainer = ({ message }: IMessageContainer) => {
           description="Delete your message"
           left={(props) => <List.Icon {...props} icon="folder" />}
           onPress={() => {
-            console.log('Edit');
+            console.log('Edit', message.message_id);
           }}
         />
       ),

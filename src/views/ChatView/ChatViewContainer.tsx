@@ -15,24 +15,39 @@ import useFetchHook from '../../lib/hooks/useFetchHook';
 
 import { TSingleMessage } from '../../lib/types/TSchema';
 import { useApiContext } from '../../lib/context/ApiContext';
+import MessageServices from '../../lib/services/MessageServices';
+
+//FIXME: Loading from cache for messages is malformed, it loses the .messages property and needs [3] to access the messages
 
 const ChatViewContainer = (props: { chat_id: number; title: string }) => {
   const { chat_id, title } = props;
   const navigation = useNavigation();
   const { authState } = useAuthContext();
   const { messageList, dispatcher } = useMessageContext();
-  const {useFetch} = useApiContext();
-  const { isLoading, onFetch, onError, getFresh } = useFetchHook(
+  const { useFetch } = useApiContext();
+  const { isLoading, onFetch, onError, getFresh, fetchCacheorFresh } = useFetchHook(
     { url: `/chat/${chat_id}`, method: 'GET' },
     true
   );
 
-  if (!dispatcher) return <Text>ChatViewContainer</Text>;
+  if (!dispatcher) return <Text>ChatViewContainer</Text>; //FIXME: This is a hack to stop the app crashing when the dispatcher is not set
 
   const items: IMenuItem[] = [
     {
       title: 'Refresh',
-      onPress: () => onFetch(async () => await getFresh()),
+      onPress: () => {
+        onFetch(async () => await getFresh()).then((res) => {
+          if (res) {
+            dispatcher.setMessages(res.messages);
+          } else {
+            fetchCacheorFresh().then((res) => {
+              if (res) {
+                dispatcher.setMessages(res.messages);
+              }
+            });
+          }
+        });
+      },
     },
     {
       title: 'Invite user',
@@ -51,7 +66,8 @@ const ChatViewContainer = (props: { chat_id: number; title: string }) => {
       title: `${title}`,
       headerRight: () => <SettingsMenu items={items} />,
     });
-    onFetch(async () => await getFresh()).then((data) => {
+    fetchCacheorFresh().then((data) => {
+      if (!data) return;
       dispatcher.setMessages(data.messages);
     });
   }, []);
@@ -61,35 +77,46 @@ const ChatViewContainer = (props: { chat_id: number; title: string }) => {
     if (onError) return <Text>{onError}</Text>;
     if (!messageList) return <Text>No Messages</Text>;
 
-    if (messageList.length > 0) {
+    if (messageList && messageList.length > 0) {
       return (
         <View>
           <MessageList messages={messageList} />
         </View>
       );
     }
-    return <Text>MessageListView</Text>;
+    return <Text>No Messages</Text>;
   };
 
   const sendMessage = (message: string) => {
+    const current_user = authState.current_user;
 
-    if (authState.current_user == null) {
-      console.log('no user logged in')
+    if (current_user == null) {
+      console.log('no user logged in');
       return;
     }
     const last_id = messageList.length > 0 ? getLastMessageId(messageList) : 0;
-    dispatcher.sendMessage({
-      message_id: last_id + 1,
-      timestamp: Date.now(),
-      message: message,
-      author: authState.current_user,
-    });
+
+    MessageServices(useFetch)
+      .sendMessage(chat_id, message)
+      .then((data) => {
+        dispatcher.sendMessage({
+          message_id: last_id + 1,
+          timestamp: Date.now(),
+          message: message,
+          author: current_user,
+        });
+      });
   };
 
-  const deleteMessage = (id: number) => {
-    dispatcher.deleteMessage(id);
+  const deleteMessage = (id: number, m_id: number) => {
+    MessageServices(useFetch)
+      .deleteMessage(chat_id, m_id)
+      .then((data) => {
+        dispatcher.deleteMessage(m_id);
+      });
   };
 
+  //TODO: update message
   const updateMessage = (message: TSingleMessage) => {
     dispatcher.updateMessage(message);
   };

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { TextInput } from 'react-native-paper';
 import { View } from 'react-native';
 import { useAuthContext } from '../../lib/context/AuthContext';
@@ -16,27 +16,67 @@ const LoginView = () => {
   };
 
   const [text, setText] = React.useState({ email: '', password: '' });
-  const { setAuthState } = useAuthContext();
+  const { authState, setAuthState } = useAuthContext();
 
   const { isLoading, onFetch, getFresh } = useFetchHook(
     { url: '/login', method: 'POST', data: { ...user } },
     false
   );
 
+  const getUser = useFetchHook({ url: `/user/${authState.id}` }, true);
+
   const onLogin = async () => {
     onFetch(async () => await getFresh())
       .then((data) => {
         if (!data) return;
-        if (data && data.id && data.token)
+        if (data && data.id && data.token) {
           setAuthState({
             id: data.id,
             current_user: undefined,
             token: data.token,
+            authenticated: false,
+          });
+          return data;
+        }
+      })
+      // .then((res) => {
+      //   if (authState.id && authState.token) {
+      //     getUser.getFresh().then((data) => {
+      //       if (data) {
+      //         setAuthState({
+      //           ...authState,
+      //           current_user: data.data,
+      //           authenticated: true,
+      //         });
+      //       }
+      //     });
+      //   }
+      // })
+      .catch((err) => {
+        console.log('err', err);
+        setAuthState({
+          id: undefined,
+          current_user: undefined,
+          token: undefined,
+          authenticated: false,
+        });
+      });
+  };
+
+  useEffect(() => {
+    if (authState.id && authState.token) {
+      getUser.getFresh().then((data) => {
+        if (data) {
+          console.log('data', data);
+          setAuthState({
+            ...authState,
+            current_user: data,
             authenticated: true,
           });
-      })
-      .catch();
-  };
+        }
+      });
+    }
+  }, [authState]);
 
   return (
     <View style={styles.container}>

@@ -156,7 +156,7 @@ const InsideStackNavigator = () => {
     //     });
     //   }
     // });
-    fetch();
+    // fetch();
   }, [authState.authenticated]);
 
   return (

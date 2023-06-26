@@ -15,7 +15,7 @@ export interface IMessageActions {
   goTo?: () => void;
 }
 
-const MessageList = ({ messages }: IMessageList) => {
+const MessageList = ({messages} : IMessageList) => {
   const flatListRef = useRef<FlatList<TSingleMessage>>(null);
   return (
     <View style={styles.containerMain}>

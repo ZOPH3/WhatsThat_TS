@@ -1,38 +1,33 @@
 import React, { useEffect } from 'react';
 import { SafeAreaView, View } from 'react-native';
 import { ProgressBar, Text } from 'react-native-paper';
-import { Snackbar } from 'react-native-paper';
-
-import SettingsMenu, { IMenuItem } from '../../components/SettingsMenu';
-import { styles } from '../../styles/GlobalStyle';
-import MessageList from './list/MessageList';
-import MessageInput from './components/MessageInput';
-import { useApiContext } from '../../lib/context/ApiContext';
-import log from '../../lib/util/LoggerUtil';
-
-import { useMessageContext } from '../../lib/context/MessageContext';
-import useFetchHook from '../../lib/hooks/useFetchHook';
-import { useAuthContext } from '../../lib/context/AuthContext';
-import { TSingleMessage } from '../../lib/types/TSchema';
 import { useNavigation } from '@react-navigation/native';
 
+import { styles } from '../../styles/GlobalStyle';
+
+import SettingsMenu, { IMenuItem } from '../../components/SettingsMenu';
+import MessageList from './list/MessageList';
+import MessageInput from './components/MessageInput';
+
+import { useMessageContext } from '../../lib/context/MessageContext';
+import { useAuthContext } from '../../lib/context/AuthContext';
+import useFetchHook from '../../lib/hooks/useFetchHook';
+
+import { TSingleMessage } from '../../lib/types/TSchema';
+import { useApiContext } from '../../lib/context/ApiContext';
+
 const ChatViewContainer = (props: { chat_id: number; title: string }) => {
+  const { chat_id, title } = props;
   const navigation = useNavigation();
-  const { useFetch } = useApiContext();
   const { authState } = useAuthContext();
   const { messageList, dispatcher } = useMessageContext();
-
-  const { chat_id, title } = props;
-
-  if (!useFetch || !dispatcher) {
-    log.error('Unable to find Auth API...');
-    throw new Error('Unable to find Auth API...');
-  }
-
-  const { data, isLoading, onFetch, onError, setOnError, getFresh } = useFetchHook(
+  const {useFetch} = useApiContext();
+  const { isLoading, onFetch, onError, getFresh } = useFetchHook(
     { url: `/chat/${chat_id}`, method: 'GET' },
     true
   );
+
+  if (!dispatcher) return <Text>ChatViewContainer</Text>;
 
   const items: IMenuItem[] = [
     {
@@ -64,7 +59,7 @@ const ChatViewContainer = (props: { chat_id: number; title: string }) => {
   const Result = () => {
     if (isLoading) return <ProgressBar indeterminate={true} visible={isLoading} />;
     if (onError) return <Text>{onError}</Text>;
-    if (!data) return <Text>No Messages</Text>;
+    if (!messageList) return <Text>No Messages</Text>;
 
     if (messageList.length > 0) {
       return (
@@ -76,31 +71,27 @@ const ChatViewContainer = (props: { chat_id: number; title: string }) => {
     return <Text>MessageListView</Text>;
   };
 
-  const messageActions = () => {
-    if (authState.current_user == null) return;
-    if (dispatcher == null) return;
-    const current_user = authState.current_user;
+  const sendMessage = (message: string) => {
 
-    const sendMessage = (message: string) => {
-      const last_id = messageList.length > 0 ? getLastMessageId(messageList) : 0;
+    if (authState.current_user == null) {
+      console.log('no user logged in')
+      return;
+    }
+    const last_id = messageList.length > 0 ? getLastMessageId(messageList) : 0;
+    dispatcher.sendMessage({
+      message_id: last_id + 1,
+      timestamp: Date.now(),
+      message: message,
+      author: authState.current_user,
+    });
+  };
 
-      dispatcher.sendMessage({
-        message_id: last_id + 1,
-        timestamp: Date.now(),
-        message: message,
-        author: current_user,
-      });
-    };
+  const deleteMessage = (id: number) => {
+    dispatcher.deleteMessage(id);
+  };
 
-    const deleteMessage = (id: number) => {
-      dispatcher.deleteMessage(id);
-    };
-
-    const updateMessage = (message: TSingleMessage) => {
-      dispatcher.updateMessage(message);
-    };
-
-    return { sendMessage, deleteMessage, updateMessage };
+  const updateMessage = (message: TSingleMessage) => {
+    dispatcher.updateMessage(message);
   };
 
   return (
@@ -108,10 +99,7 @@ const ChatViewContainer = (props: { chat_id: number; title: string }) => {
       <SafeAreaView style={{ flex: 10 }}>
         <Result />
       </SafeAreaView>
-      <MessageInput actions={messageActions} />
-      <Snackbar visible={onError !== undefined} onDismiss={() => setOnError(undefined)}>
-        {onError}
-      </Snackbar>
+      <MessageInput send={sendMessage} />
     </View>
   );
 };

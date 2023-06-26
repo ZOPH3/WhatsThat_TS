@@ -34,7 +34,7 @@ const ComponentContainer = (
     return onError ? onError : <View></View>;
   }
 
-  if (!state) return;
+  return;
 };
 
 export default ComponentContainer;

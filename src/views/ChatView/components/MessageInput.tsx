@@ -4,8 +4,9 @@ import { styles } from '../../../styles/GlobalStyle';
 import { TextInput } from 'react-native-paper';
 import ButtonComponent from '../../../components/Button';
 
-const MessageInput = (props: { actions: any }) => {
-  const { actions } = props;
+const MessageInput = (props: { send: (input: string) => void }) => {
+  const { send } = props;
+
   const [userInput, setUserInput] = useState('');
   return (
     <View style={styles.bottomView}>
@@ -26,7 +27,7 @@ const MessageInput = (props: { actions: any }) => {
         title="Send"
         onPress={() => {
           if (userInput) {
-            actions().sendMessage(userInput);
+            send(userInput);
             setUserInput('');
           }
         }}

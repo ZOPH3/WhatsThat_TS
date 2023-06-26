@@ -21,6 +21,7 @@ import BlockedUsersView from '../views/BlockedUsersView';
 import { useApiContext } from '../lib/context/ApiContext';
 import { useAuthContext } from '../lib/context/AuthContext';
 import log from '../lib/util/LoggerUtil';
+import useFetchHook from '../lib/hooks/useFetchHook';
 
 const ChatStack = createNativeStackNavigator();
 const ProfileStack = createNativeStackNavigator();
@@ -133,18 +134,28 @@ const InsideStackNavigator = () => {
     throw new Error('Unable to find Auth API...');
   }
 
-  //FIXME: Move to a loader component
+  // const { fetchCacheorFresh } = useFetchHook({ url: `/user/${authState.id}` }, true);
+
+  //FIXME: This is hacky, but it works for now
   const fetch = async () => {
     const user = await useFetch({ url: `/user/${authState.id}` }, true);
     if (user) {
       setAuthState({
         ...authState,
-        current_user: user,
+        current_user: user.data,
       });
     }
   };
 
   useEffect(() => {
+    // fetchCacheorFresh().then((data) => {
+    //   if (data) {
+    //     setAuthState({
+    //       ...authState,
+    //       current_user: data.data,
+    //     });
+    //   }
+    // });
     fetch();
   }, [authState.authenticated]);
 

@@ -83,12 +83,14 @@ const useFetchHook = (config: any, auth = false) => {
 
     if (data) {
       setData(data);
+      setOnError(undefined);
       setDataState(EState.success);
       return data;
     }
 
     if (!data && !onError) {
       setDataState(EState.empty);
+      setOnError(undefined);
     }
   };
 
@@ -111,12 +113,14 @@ const useFetchHook = (config: any, auth = false) => {
 
     if (data) {
       setData(data);
+      setOnError(undefined);
       setDataState(EState.success);
       return data;
     }
 
     if (!data && !onError) {
       setDataState(EState.empty);
+      setOnError(undefined);
     }
   };
 

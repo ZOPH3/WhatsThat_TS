@@ -4,7 +4,6 @@ import { ProgressBar, Text } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 
 import { styles } from '../../styles/GlobalStyle';
-import { clearCachedData } from '../../lib/services/CacheService';
 
 import ButtonComponent from '../../components/Button';
 import ComponentContainer from '../../components/Loader';
@@ -82,7 +81,6 @@ const ChatSummaryViewContainer = () => {
   return (
     <View style={styles.container}>
       <ProgressBar indeterminate={true} visible={isLoading} />
-      <ButtonComponent title={'clear'} onPress={() => clearCachedData('/chat')} />
       <ComponentContainer
         name={'ChatSummaryList'}
         state={dataState}

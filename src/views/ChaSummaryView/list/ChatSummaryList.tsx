@@ -4,6 +4,7 @@ import { View, FlatList, SafeAreaView } from 'react-native';
 import { TChatSummary } from '../../../lib/types/TSchema';
 import ChatSummaryContainer from '../components/Container';
 import { useNavigation } from '@react-navigation/native';
+import { useChatContext } from '../../../lib/context/ChatContext';
 
 interface IChatSummaryList {
   chatSummary: TChatSummary[];
@@ -15,8 +16,9 @@ interface IChatSummaryActions {
   goTo?: () => void;
 }
 
-const ChatSummaryList = ({ chatSummary }: IChatSummaryList) => {
+const ChatSummaryList = ({chatSummaryList}) => {
   const navigation = useNavigation();
+
   const actions = (chat_id: number, name: string): IChatSummaryActions => {
     return {
       edit: () => console.log('clicked edit', chat_id),
@@ -46,7 +48,7 @@ const ChatSummaryList = ({ chatSummary }: IChatSummaryList) => {
     <View>
       <SafeAreaView>
         <FlatList
-          data={chatSummary}
+          data={chatSummaryList}
           keyExtractor={(item) => item.chat_id.toString()}
           renderItem={(_) => (
             <ChatSummaryContainer

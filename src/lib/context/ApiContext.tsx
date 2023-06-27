@@ -66,7 +66,7 @@ const ApiProvider = ({ children }: Props) => {
 
   _authApi.interceptors.request.use(
     (config) => {
-      log.debug('[AUTH API] Intercepting: ' + config.url);
+      // log.debug('[AUTH API] Intercepting: ' + config.url);
 
       if (!config.headers['X-Authorization'] && getToken) {
         config.headers['X-Authorization'] = `${getToken()}`;

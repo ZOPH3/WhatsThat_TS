@@ -9,10 +9,10 @@ import useFetchHook from '../../lib/hooks/useFetchHook';
 
 const LoginView = () => {
   const user = {
-    // email: 'newwilliams@mmu.ac.uk',
-    // password: 'Characters1*',
-    email: 'ashley.williams@mmu.ac.uk',
-    password: 'Wr3xh4m!',
+    email: 'newwilliams@mmu.ac.uk',
+    password: 'Characters1*',
+    // email: 'ashley.williams@mmu.ac.uk',
+    // password: 'Wr3xh4m!',
   };
 
   const [text, setText] = React.useState({ email: '', password: '' });

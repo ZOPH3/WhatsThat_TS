@@ -1,12 +1,11 @@
 import React, { useEffect, useRef } from 'react';
-import { View } from 'react-native';
+import { SafeAreaView, View } from 'react-native';
 import { ProgressBar, Text } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 
 import { styles } from '../../styles/GlobalStyle';
 
 import ButtonComponent from '../../components/Button';
-import ComponentContainer from '../../components/Loader';
 
 import ChatSummaryList from './list/ChatSummaryList';
 import SettingsMenu, { IMenuItem } from '../../components/SettingsMenu';
@@ -23,7 +22,7 @@ const ChatSummaryViewContainer = () => {
 
   const dialogRef = useRef<{ show: () => void }>();
 
-  const { dataState, isLoading, onError, onFetch, getFresh, fetchCacheorFresh } = useFetchHook(
+  const { isLoading, onError, onFetch, getFresh, fetchCacheorFresh } = useFetchHook(
     { url: '/chat', method: 'GET' },
     true
   );
@@ -81,14 +80,17 @@ const ChatSummaryViewContainer = () => {
   return (
     <View style={styles.container}>
       <ProgressBar indeterminate={true} visible={isLoading} />
-      <ComponentContainer
-        name={'ChatSummaryList'}
-        state={dataState}
-        onEmpty={<Text>No chats</Text>}
-        onError={<Text>{onError}</Text>}
-        onSuccess={<ChatSummaryList chatSummary={chatSummaryList} />}
-      />
       <CreateChatDialog ref={dialogRef} />
+
+      <SafeAreaView style={{ flex: 10 }}>
+        {onError ? (
+          <Text>{onError}</Text>
+        ) : chatSummaryList.length > 0 ? (
+          <ChatSummaryList chatSummaryList={chatSummaryList} />
+        ) : (
+          <Text>No Chat</Text>
+        )}
+      </SafeAreaView>
     </View>
   );
 };

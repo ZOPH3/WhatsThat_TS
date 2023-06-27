@@ -60,7 +60,7 @@ const ChatViewContainer = (props: { chat_id: number; title: string }) => {
       title: `${title}`,
       headerRight: () => <SettingsMenu items={items} />,
     });
-    fetchCacheorFresh().then((data) => {
+    onFetch(async () => await getFresh()).then((data) => {
       if (!data) return;
       dispatchMessages(data.messages);
     });

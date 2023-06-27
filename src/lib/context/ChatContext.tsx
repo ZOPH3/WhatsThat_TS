@@ -3,7 +3,7 @@ import { TChat, TChatSummary } from '../types/TSchema';
 import log from '../util/LoggerUtil';
 
 interface IChatContext {
-  chatSummaryList: TChatSummary[] & Partial<TChat>;
+  chatSummaryList: TChatSummary[];
   dispatcher?: any;
 }
 
@@ -49,8 +49,11 @@ const ChatReducer = (state: IChatContext, action: any) => {
 const ChatProvider = ({ children }: any) => {
   const [state, dispatch] = useReducer(ChatReducer, initialState);
 
+  const getState = () => {
+    return state;
+  }
+
   const setChatSummaryList = (payload: TChatSummary[]) => {
-    // log.info('setChatSummaryList: ', payload);
     dispatch({ type: 'SET_CHAT_SUMMARY_LIST', payload });
   };
   const addChatSummary = (payload: Partial<TChatSummary>) => {
@@ -66,6 +69,7 @@ const ChatProvider = ({ children }: any) => {
   const value = {
     chatSummaryList: state.chatSummaryList,
     dispatcher: {
+      getState,
       setChatSummaryList,
       addChatSummary,
       updateChatSummary,
@@ -73,7 +77,11 @@ const ChatProvider = ({ children }: any) => {
     },
   };
 
-  return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>
+  React.useEffect(() => {
+    console.log('HELLO', state.chatSummaryList.length);
+  }, [state.chatSummaryList]);
+
+  return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>;
 };
 
 const useChatContext = () => {

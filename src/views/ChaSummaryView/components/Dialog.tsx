@@ -6,13 +6,18 @@ import ButtonComponent from '../../../components/Button';
 
 const CreateChatDialog = forwardRef((props, ref) => {
   const { DialogBlock, showDialog, hideDialog } = DialogComponent();
+  const [text, setText] = React.useState('');
+
   const dialogContent = [
     {
-      children: <TextInput label="Chat name" onChangeText={(e) => (createTextRef.current = e)} />,
+      children: (
+        <TextInput
+          label="Chat name"
+          onChangeText={(e) => setText(e)}
+        />
+      ),
     },
   ];
-
-  const createTextRef = React.useRef('');
 
   useImperativeHandle(ref, () => ({
     show() {
@@ -36,12 +41,12 @@ const CreateChatDialog = forwardRef((props, ref) => {
             title={'Create Chat'}
             mode="contained"
             onPress={() => {
-              if (createTextRef.current && createTextRef.current !== '') {
+              if (text && text !== '') {
                 // dispatcher.addChatSummary({
                 //   name: createTextRef.current,
                 //   creator: auth,
                 // });
-                console.log(createTextRef.current);
+                console.log(text);
                 hideDialog();
               }
             }}

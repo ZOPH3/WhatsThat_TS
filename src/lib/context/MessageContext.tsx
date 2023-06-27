@@ -11,6 +11,7 @@ interface IMessageDispatcher {
 
 interface IMessageContext {
   messageList: TSingleMessage[];
+  chat_id?: number;
   dispatcher?: IMessageDispatcher;
 }
 
@@ -59,6 +60,8 @@ const messageReducer = (state: IMessageContext, action: any) => {
 
 const MessageProvider = ({ children, chat_id }: any) => {
   const [state, dispatch] = useReducer(messageReducer, initialState);
+
+  state.chat_id = chat_id;
 
   const setMessages = (payload: TSingleMessage[]) => {
     dispatch({ type: 'SET_MESSAGES', payload });

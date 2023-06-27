@@ -6,7 +6,6 @@ import DialogComponent from '../../../components/Dialog';
 import MessageBubble from './MessageBubble';
 import { useMessageContext } from '../../../lib/context/MessageContext';
 import { useApiContext } from '../../../lib/context/ApiContext';
-import MessageServices from '../../../lib/services/MessageServices';
 
 interface IMessageContainer {
   message: TSingleMessage;

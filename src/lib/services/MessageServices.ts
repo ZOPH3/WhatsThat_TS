@@ -12,7 +12,6 @@ interface IMessageServices {
 }
 
 const MessageServices = (useFetch: any): IMessageServices => {
-
   const getMessages = async (chat_id: number): Promise<TSingleMessage[] | undefined> => {
     const response = await useFetch({ url: `/chat/${chat_id}`, method: 'GET' }, true);
     return response.data.messages as TSingleMessage[];
@@ -24,7 +23,7 @@ const MessageServices = (useFetch: any): IMessageServices => {
    * @param message
    * @returns
    */
-  const sendMessage = async (chat_id: number, message: string): Promise<Response | undefined> => {
+  const sendMessage = async (chat_id: number, message: string) => {
     const response = await useFetch(
       { url: `/chat/${chat_id}/message`, method: 'POST', data: { message: message } },
       true

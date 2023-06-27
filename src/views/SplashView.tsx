@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { useAuthContext } from '../lib/context/AuthContext';
+import { IAuthState, useAuthContext } from '../lib/context/AuthContext';
 import { useGlobalContext } from '../lib/context/GlobalContext';
 import { getCachedData } from '../lib/services/CacheService';
 import { ActivityIndicator } from 'react-native-paper';
+import { TLoginResponse, TUser } from '../lib/types/TSchema';
 
 /**
  * - Read state from context
@@ -16,30 +17,33 @@ const SplashView = () => {
   const { initialise } = useGlobalContext();
 
   const getState = async () => {
-    let state = {
+    let state: IAuthState = {
       id: undefined,
       current_user: undefined,
       token: undefined,
       authenticated: false,
-    }
+    };
 
     try {
-      const login = await getCachedData('/login');
+      const login = (await getCachedData('/login')) as TLoginResponse;
 
       if (login && login.id && login.token) {
-        state = {
-          authenticated: true,
-          current_user: undefined,
-          id: login.id,
-          token: login.token,
-        };
-      }
+        const user = (await getCachedData('/user/' + login.id)) as TUser;
 
+        if (user) {
+          state = {
+            authenticated: true,
+            current_user: user,
+            id: login.id,
+            token: login.token,
+          };
+        }
+      }
     } catch (e) {
       console.log(e);
     }
 
-    setAuthState(state); 
+    setAuthState(state);
     if (initialise) initialise();
   };
 

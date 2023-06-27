@@ -1,8 +1,9 @@
 import React, { createContext, useReducer } from 'react';
-import { TChatSummary } from '../types/TSchema';
+import { TChat, TChatSummary } from '../types/TSchema';
+import log from '../util/LoggerUtil';
 
 interface IChatContext {
-  chatSummaryList: TChatSummary[];
+  chatSummaryList: TChatSummary[] & Partial<TChat>;
   dispatcher?: any;
 }
 
@@ -21,7 +22,7 @@ const ChatReducer = (state: IChatContext, action: any) => {
         chatSummaryList: payload,
       };
     case 'ADD_CHAT_SUMMARY':
-      console.log('ADD_CHAT_SUMMARY: ', payload);
+      // console.log('ADD_CHAT_SUMMARY: ', payload);
       return {
         ...state,
         chatSummaryList: [...state.chatSummaryList, payload],
@@ -49,6 +50,7 @@ const ChatProvider = ({ children }: any) => {
   const [state, dispatch] = useReducer(ChatReducer, initialState);
 
   const setChatSummaryList = (payload: TChatSummary[]) => {
+    // log.info('setChatSummaryList: ', payload);
     dispatch({ type: 'SET_CHAT_SUMMARY_LIST', payload });
   };
   const addChatSummary = (payload: Partial<TChatSummary>) => {

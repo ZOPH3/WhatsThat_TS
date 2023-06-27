@@ -10,12 +10,6 @@ interface IApiContext {
   useFetch?: (config: AxiosRequestConfig, auth: boolean) => any;
 }
 
-interface QueryConfig {
-  onSuccess?: (data: any) => void;
-  onError?: (error: any) => void;
-  isLoading?: (arg0: boolean) => void;
-}
-
 const ApiContext = createContext<IApiContext>({});
 const { Provider } = ApiContext;
 
@@ -61,11 +55,13 @@ const ApiProvider = ({ children }: Props) => {
 
   const useFetch = async (config: AxiosRequestConfig<any>, auth: any) => {
     const _apiInstance = auth ? _authApi : _publicApi;
-    return await _apiInstance.request({
-      ...config,
-      signal: newAbortSignal(5000),
-      validateStatus: (status) => status <= 304,
-    }).catch((err) => null);
+    return await _apiInstance
+      .request({
+        ...config,
+        signal: newAbortSignal(5000),
+        validateStatus: (status) => status <= 304,
+      })
+      .catch((err) => null); // Had to add catch here to catch the abort error
   };
 
   _authApi.interceptors.request.use(
@@ -89,8 +85,8 @@ const ApiProvider = ({ children }: Props) => {
       return response;
     },
     (error) => {
-      error.message = error.name === "CanceledError" ? "Request timed out" : error.message;
-      log.debug(`[AUTH API] Response error: ${error.message}`);
+      error.message = error.name === 'CanceledError' ? 'Request timed out' : error.message;
+      log.error(`[AUTH API] Response error: ${error.message}`);
       return Promise.reject(error);
     }
   );

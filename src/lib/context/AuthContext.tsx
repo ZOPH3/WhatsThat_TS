@@ -77,7 +77,8 @@ const AuthProvider = ({ children }: Props) => {
 
   const logout = async () => {
     clearCachedData('/login');
-    clearCachedData('/user/1')
+    clearCachedData(`/user/${authState.id}`);
+    clearCachedData('/chat');
     setAuthState({
       ...AuthStateDefault,
       authenticated: false,

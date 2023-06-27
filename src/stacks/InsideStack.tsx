@@ -20,9 +20,9 @@ import BlockedUsersView from '../views/BlockedUsersView';
 
 import { useApiContext } from '../lib/context/ApiContext';
 import { useAuthContext } from '../lib/context/AuthContext';
-import log from '../lib/util/LoggerUtil';
-import useFetchHook from '../lib/hooks/useFetchHook';
-import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
+import log, { apiLog, pollingLog, rootLog } from '../lib/util/LoggerUtil';
+import { TChatSummary } from '../lib/types/TSchema';
+import { useChatContext } from '../lib/context/ChatContext';
 
 const ChatStack = createNativeStackNavigator();
 const ProfileStack = createNativeStackNavigator();
@@ -129,6 +129,9 @@ const InsideTabNavigator = () => {
 const InsideStackNavigator = () => {
   const { useFetch } = useApiContext();
   const { authState } = useAuthContext();
+  const { dispatcher } = useChatContext();
+
+  let pollId: string | number | NodeJS.Timer | undefined;
 
   if (!useFetch) {
     log.error('Unable to find Auth API...');
@@ -138,20 +141,64 @@ const InsideStackNavigator = () => {
   const fetch = async () => {
     try {
       const response = await useFetch({ url: `/chat`, method: 'GET' }, true);
-      log.debug(`[POLLING] Fetched ChatList: ${response.data.length}`);
+      if (!response || !response.data) return;
+      pollingLog.debug(`Fetched ChatList: ${response.data.length}`);
+      return response.data as TChatSummary[];
     } catch (err) {
-      log.error(err);
+      log.error(`Error: ${err}`);
+    }
+  };
+
+  //FIXME: Poll continues even after logout
+  const fetchChatMessages = async (chatSummaryList: TChatSummary[]) => {
+    const promises = [] as any[];
+    try {
+      for (let i = 0; i < chatSummaryList.length; i++) {
+        promises.push(
+          useFetch(
+            {
+              url: `/chat/${chatSummaryList[i].chat_id}`,
+              method: 'GET',
+              headers: { polling: true },
+            },
+            true
+          )
+        );
+
+        if (i === chatSummaryList.length - 1) {
+          Promise.allSettled(promises).then((results) =>
+            results.forEach((result) => {
+              // console.log(result.value.data)
+            })
+          );
+        }
+      }
+    } catch (err) {
+      log.error(`Error: ${err}`);
     }
   };
 
   const pollTest = () => {
-    setInterval(() => {
-      fetch();
-    }, 10000);
+    if (!pollId) {
+      pollId = setInterval(() => {
+        fetch().then((data) => {
+          if (data) {
+            dispatcher.setChatSummaryList(data);
+            if (data.length > 0) fetchChatMessages(data);
+          }
+        });
+      }, 10000);
+    }
+  };
+
+  const clearPoll = () => {
+    pollingLog.debug('Clearing Interval...');
+    clearInterval(pollId);
   };
 
   useEffect(() => {
     if (authState.authenticated === true) pollTest();
+    if (authState.authenticated === false) clearPoll();
   }, [authState.authenticated]);
 
   return (

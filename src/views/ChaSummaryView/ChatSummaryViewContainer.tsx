@@ -16,59 +16,59 @@ import { useAuthContext } from '../../lib/context/AuthContext';
 import { useChatContext } from '../../lib/context/ChatContext';
 
 const ChatSummaryViewContainer = () => {
-  const navigation = useNavigation();
-  const { logout } = useAuthContext();
+  // const navigation = useNavigation();
+  // const { logout } = useAuthContext();
   const { chatSummaryList, dispatcher } = useChatContext();
 
-  const dialogRef = useRef<{ show: () => void }>();
+  // const dialogRef = useRef<{ show: () => void }>();
 
   const { isLoading, onError, onFetch, getFresh, fetchCacheorFresh } = useFetchHook(
     { url: '/chat', method: 'GET' },
     true
   );
 
-  const items: IMenuItem[] = [
-    {
-      title: 'Settings',
-      onPress: () => navigation.navigate('Settings'),
-    },
-    {
-      title: 'Reload',
-      onPress: () => {
-        onFetch(async () => await getFresh()).then((res) => {
-          if (res) {
-            dispatcher.setChatSummaryList(res);
-          } else {
-            fetchCacheorFresh().then((res) => {
-              if (res) {
-                dispatcher.setChatSummaryList(res);
-              }
-            });
-          }
-        });
-      },
-    },
-    {
-      title: 'Logout',
-      onPress: () => (logout ? logout() : () => console.log('Unable to find Auth API...')),
-      disabled: false,
-    },
-  ];
+  // const items: IMenuItem[] = [
+  //   {
+  //     title: 'Settings',
+  //     onPress: () => navigation.navigate('Settings'),
+  //   },
+  //   {
+  //     title: 'Reload',
+  //     onPress: () => {
+  //       onFetch(async () => await getFresh()).then((res) => {
+  //         if (res) {
+  //           dispatcher.setChatSummaryList(res);
+  //         } else {
+  //           fetchCacheorFresh().then((res) => {
+  //             if (res) {
+  //               dispatcher.setChatSummaryList(res);
+  //             }
+  //           });
+  //         }
+  //       });
+  //     },
+  //   },
+  //   {
+  //     title: 'Logout',
+  //     onPress: () => (logout ? logout() : () => console.log('Unable to find Auth API...')),
+  //     disabled: false,
+  //   },
+  // ];
 
   useEffect(() => {
-    navigation.setOptions({
-      headerRight: () => (
-        <>
-          <ButtonComponent
-            title={'Create'}
-            onPress={() => {
-              if (dialogRef && dialogRef.current) dialogRef.current.show();
-            }}
-          />
-          <SettingsMenu items={items} />
-        </>
-      ),
-    });
+    // navigation.setOptions({
+    //   headerRight: () => (
+    //     <>
+    //       <ButtonComponent
+    //         title={'Create'}
+    //         onPress={() => {
+    //           if (dialogRef && dialogRef.current) dialogRef.current.show();
+    //         }}
+    //       />
+    //       <SettingsMenu items={items} />
+    //     </>
+    //   ),
+    // });
 
     fetchCacheorFresh().then((res) => {
       if (res) {
@@ -80,7 +80,7 @@ const ChatSummaryViewContainer = () => {
   return (
     <View style={styles.container}>
       <ProgressBar indeterminate={true} visible={isLoading} />
-      <CreateChatDialog ref={dialogRef} />
+      {/* <CreateChatDialog ref={dialogRef} /> */}
 
       <SafeAreaView style={{ flex: 10 }}>
         {onError ? (

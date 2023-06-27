@@ -1,4 +1,4 @@
-import React, { createContext, useReducer } from 'react';
+import React, { createContext, useCallback, useReducer } from 'react';
 import { TChat, TChatSummary } from '../types/TSchema';
 import log from '../util/LoggerUtil';
 
@@ -51,20 +51,34 @@ const ChatProvider = ({ children }: any) => {
 
   const getState = () => {
     return state;
-  }
+  };
 
-  const setChatSummaryList = (payload: TChatSummary[]) => {
-    dispatch({ type: 'SET_CHAT_SUMMARY_LIST', payload });
-  };
-  const addChatSummary = (payload: Partial<TChatSummary>) => {
-    dispatch({ type: 'ADD_CHAT_SUMMARY', payload });
-  };
-  const updateChatSummary = (payload: TChatSummary) => {
-    dispatch({ type: 'UPDATE_CHAT_SUMMARY', payload });
-  };
-  const deleteChatSummary = (payload: number) => {
-    dispatch({ type: 'DELETE_CHAT_SUMMARY', payload });
-  };
+  const setChatSummaryList = useCallback(
+    (payload: TChatSummary[]) => {
+      dispatch({ type: 'SET_CHAT_SUMMARY_LIST', payload });
+    },
+    [dispatch]
+  );
+  const addChatSummary = useCallback(
+    (payload: Partial<TChatSummary>) => {
+      dispatch({ type: 'ADD_CHAT_SUMMARY', payload });
+    },
+    [dispatch]
+  );
+
+  const updateChatSummary = useCallback(
+    (payload: TChatSummary) => {
+      dispatch({ type: 'UPDATE_CHAT_SUMMARY', payload });
+    },
+    [dispatch]
+  );
+
+  const deleteChatSummary = useCallback(
+    (payload: number) => {
+      dispatch({ type: 'DELETE_CHAT_SUMMARY', payload });
+    },
+    [dispatch]
+  );
 
   const value = {
     chatSummaryList: state.chatSummaryList,
@@ -77,9 +91,9 @@ const ChatProvider = ({ children }: any) => {
     },
   };
 
-  React.useEffect(() => {
-    console.log('HELLO', state.chatSummaryList.length);
-  }, [state.chatSummaryList]);
+  // React.useEffect(() => {
+  //   console.log('HELLO', state.chatSummaryList.length);
+  // }, [state.chatSummaryList]);
 
   return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>;
 };

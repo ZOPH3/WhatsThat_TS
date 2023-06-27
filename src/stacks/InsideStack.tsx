@@ -22,6 +22,7 @@ import { useApiContext } from '../lib/context/ApiContext';
 import { useAuthContext } from '../lib/context/AuthContext';
 import log from '../lib/util/LoggerUtil';
 import useFetchHook from '../lib/hooks/useFetchHook';
+import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
 const ChatStack = createNativeStackNavigator();
 const ProfileStack = createNativeStackNavigator();
@@ -127,36 +128,30 @@ const InsideTabNavigator = () => {
 
 const InsideStackNavigator = () => {
   const { useFetch } = useApiContext();
-  const { authState, setAuthState } = useAuthContext();
+  const { authState } = useAuthContext();
 
   if (!useFetch) {
     log.error('Unable to find Auth API...');
     throw new Error('Unable to find Auth API...');
   }
 
-  // const { fetchCacheorFresh } = useFetchHook({ url: `/user/${authState.id}` }, true);
-
-  //FIXME: This is hacky, but it works for now
   const fetch = async () => {
-    const user = await useFetch({ url: `/user/${authState.id}` }, true);
-    if (user) {
-      setAuthState({
-        ...authState,
-        current_user: user.data,
-      });
+    try {
+      const response = await useFetch({ url: `/chat`, method: 'GET' }, true);
+      log.debug(`[POLLING] Fetched ChatList: ${response.data.length}`);
+    } catch (err) {
+      log.error(err);
     }
   };
 
+  const pollTest = () => {
+    setInterval(() => {
+      fetch();
+    }, 10000);
+  };
+
   useEffect(() => {
-    // fetchCacheorFresh().then((data) => {
-    //   if (data) {
-    //     setAuthState({
-    //       ...authState,
-    //       current_user: data.data,
-    //     });
-    //   }
-    // });
-    // fetch();
+    if (authState.authenticated === true) pollTest();
   }, [authState.authenticated]);
 
   return (

@@ -1,16 +1,16 @@
-import React, { createContext, useContext, useReducer } from 'react';
+import React, { createContext, useContext, useEffect, useReducer } from 'react';
 import { TSingleMessage } from '../types/TSchema';
 
 interface IMessageDispatcher {
   print: () => void;
-  setMessages: (payload: TSingleMessage[]) => void;
+  setMessages: (payload: Partial<TSingleMessage>[]) => void;
   deleteMessage: (payload: number) => void;
-  sendMessage: (payload: TSingleMessage) => void;
-  updateMessage: (payload: TSingleMessage) => void;
+  sendMessage: (payload: Partial<TSingleMessage>) => void;
+  updateMessage: (payload: Partial<TSingleMessage>) => void;
 }
 
 interface IMessageContext {
-  messageList: TSingleMessage[];
+  messageList: Partial<TSingleMessage>[];
   chat_id?: number;
   dispatcher?: IMessageDispatcher;
 }
@@ -53,17 +53,18 @@ const messageReducer = (state: IMessageContext, action: any) => {
           message.id === payload.id ? payload : message;
         }),
       };
+    case 'SET_CHAT_ID':
+      return { ...state, chat_id: payload };
     default:
       throw new Error(`No case for type ${type} found in MessageReducer.`);
   }
 };
 
 const MessageProvider = ({ children, chat_id }: any) => {
+
   const [state, dispatch] = useReducer(messageReducer, initialState);
 
-  state.chat_id = chat_id;
-
-  const setMessages = (payload: TSingleMessage[]) => {
+  const setMessages = (payload: Partial<TSingleMessage>[]) => {
     dispatch({ type: 'SET_MESSAGES', payload });
   };
 
@@ -71,11 +72,11 @@ const MessageProvider = ({ children, chat_id }: any) => {
     dispatch({ type: 'DELETE_MESSAGE', payload });
   };
 
-  const sendMessage = (payload: TSingleMessage) => {
+  const sendMessage = (payload: Partial<TSingleMessage>) => {
     dispatch({ type: 'SEND_MESSAGE', payload });
   };
 
-  const updateMessage = (payload: TSingleMessage) => {
+  const updateMessage = (payload: Partial<TSingleMessage>) => {
     dispatch({ type: 'UPDATE_MESSAGE', payload });
   };
 
@@ -87,6 +88,7 @@ const MessageProvider = ({ children, chat_id }: any) => {
     <MessageContext.Provider
       value={{
         messageList: state.messageList,
+        chat_id: chat_id,
         dispatcher: { print, deleteMessage, sendMessage, updateMessage, setMessages },
       }}
     >

@@ -1,4 +1,4 @@
-import { TChatSummary, TCreateChatResponse, TChat } from "../types/TSchema";
+import { TChatSummary, TCreateChatResponse, TChat } from '../types/TSchema';
 
 interface IChatServices {
   fetchChatList: () => Promise<TChatSummary | undefined>;
@@ -10,10 +10,9 @@ interface IChatServices {
 }
 
 const ChatServices = (useFetch: any): IChatServices => {
-    
   const fetchChatList = async (): Promise<TChatSummary | undefined> => {
-    const response = await useFetch({ url: '/chat', method: 'GET' }, false);
-    return response.data as TChatSummary;
+    const response = await useFetch({ url: '/chat', method: 'GET' }, true);
+    return response ? (response.data as TChatSummary) : undefined;
   };
 
   const newConversation = async (name: string): Promise<TCreateChatResponse | undefined> => {

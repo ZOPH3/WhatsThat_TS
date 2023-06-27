@@ -9,14 +9,16 @@ interface IMessageList {
   messages: TSingleMessage[];
 }
 
-export interface IMessageActions {
-  delete: () => void;
-  edit: () => void;
-  goTo?: () => void;
-}
+// export interface IMessageActions {
+//   delete: () => void;
+//   edit: () => void;
+//   goTo?: () => void;
+// }
 
 const MessageList = ({messages} : IMessageList) => {
   const flatListRef = useRef<FlatList<TSingleMessage>>(null);
+  if(!messages || messages.length == 0) return null;
+
   return (
     <View style={styles.containerMain}>
       <SafeAreaView style={styles.container}>

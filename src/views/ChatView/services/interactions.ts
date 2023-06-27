@@ -31,9 +31,9 @@ const MessageInteractions = (chat_id: number) => {
   };
 
   const sendMessage = async (message: string) => {
+    // console.log('sending message', messageList);
     return m.sendMessage(chat_id, message).then((response) =>
       dispatcher.sendMessage({
-        message_id: getLatestMessageId(messageList) + 1,
         timestamp: Date.now(),
         message: message,
         author: current_user,
@@ -54,7 +54,7 @@ const MessageInteractions = (chat_id: number) => {
   };
 
   function getLatestMessageId(messages: TSingleMessage[]): number {
-    if (!messages) return 0;
+    if (!messages || messages.length === 0) return 0;
     const filteredMessages = messages.filter((message) => message.message_id);
     return filteredMessages[filteredMessages.length - 1].message_id;
   }

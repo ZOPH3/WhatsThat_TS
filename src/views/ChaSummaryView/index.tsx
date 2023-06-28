@@ -11,16 +11,17 @@ import { useChatContext } from '../../lib/context/ChatContext';
 const ChatSummaryView = () => {
   const navigation = useNavigation();
   const { logout } = useAuthContext();
-  const dialogRef = useRef<{ show: () => void }>();
   const { dispatcher } = useChatContext();
+
+  const dialogRef = useRef<{ show: () => void }>();
+
   const { onFetch, getFresh, fetchCacheorFresh } = useFetchHook(
     { url: '/chat', method: 'GET' },
     true
   );
-  
+
   // Issue with re rendering closing the keyboard -> dispatcher function seems to be the issue as context is updated, forcing a re render
 
-  
   const items: IMenuItem[] = [
     {
       title: 'Settings',

@@ -32,6 +32,7 @@ const useFetchHook = (config: any, auth = false) => {
   const [onError, setOnError] = React.useState<any | undefined>(undefined);
   const [dataState, setDataState] = useState<EState | undefined>(undefined); // State of the data
 
+  //TODO: Do i need a useeffect for this?
   useEffect(() => {
     if (onError) {
       dispatcher.addNotification({ type: 'error', message: onError });

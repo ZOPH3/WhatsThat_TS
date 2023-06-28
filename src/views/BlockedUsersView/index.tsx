@@ -11,75 +11,77 @@ import { styles } from '../../styles/GlobalStyle';
 import ContactList from '../AddedUsersView/list/ContactList';
 
 const BlockedUsersView = () => {
-  // const { useFetch } = useApiContext();
-  // const { logout } = useAuthContext();
+  const { useFetch } = useApiContext();
+  const { logout } = useAuthContext();
 
-  // if (!useFetch || !logout) {
-  //   log.error('Unable to find Auth API...');
-  //   throw new Error('Unable to find Auth API...');
-  // }
+  if (!useFetch || !logout) {
+    log.error('Unable to find Auth API...');
+    throw new Error('Unable to find Auth API...');
+  }
 
-  // const { data, isLoading, onFetch, onError, setOnError, getFresh } = useFetchHook(
-  //   { url: '/blocked', method: 'GET' },
-  //   true
-  // );
+  const { data, isLoading, onFetch, onError, getFresh, getCache } = useFetchHook(
+    { url: '/blocked', method: 'GET' },
+    true
+  );
 
-  // const { DialogBlock, showDialog, hideDialog } = DialogComponent();
-  // const dialogContent = [
-  //   {
-  //     children: <TextInput label="Chat name" />,
-  //   },
-  // ];
+  const { DialogBlock, showDialog, hideDialog } = DialogComponent();
+  const dialogContent = [
+    {
+      children: <TextInput label="Chat name" />,
+    },
+  ];
 
-  // useEffect(() => {
-  //   onFetch(async () => await getFresh());
-  // }, []);
+  useEffect(() => {
+    onFetch(async () => await getCache())
+      .then((data) => {
+        if (!data) return;
+        // console.log('Not implemented', data);
+      })
+      .catch();
+  }, []);
 
-  // const Result = () => {
-  //   if (isLoading) return <ProgressBar indeterminate={true} visible={isLoading} />;
-  //   if (onError) return <Text>{onError}</Text>;
-  //   if (!data) return <Text>No contacts</Text>;
+  const Result = () => {
+    if (isLoading) return <ProgressBar indeterminate={true} visible={isLoading} />;
+    if (onError) return <Text>{onError}</Text>;
+    if (!data) return <Text>No contacts</Text>;
 
-  //   if (data) {
-  //     return (
-  //       <View>
-  //         <ContactList contacts={data} />
-  //       </View>
-  //     );
-  //   }
-  //   return <Text>Contacts</Text>;
-  // };
+    if (data) {
+      return (
+        <View>
+          <ContactList contacts={data} />
+        </View>
+      );
+    }
+    return <Text>Blocked</Text>;
+  };
 
-  // return (
-  //   <View style={styles.container}>
-  //     <Result />
-  //     <DialogBlock
-  //       title={'Create Chat'}
-  //       content={dialogContent}
-  //       actions={
-  //         <>
-  //           <ButtonComponent
-  //             title={'Cancel'}
-  //             onPress={() => {
-  //               hideDialog();
-  //             }}
-  //           />
-  //           <ButtonComponent
-  //             title={'Create Chat'}
-  //             mode="contained"
-  //             onPress={() => {
-  //               onFetch();
-  //               hideDialog();
-  //             }}
-  //           />
-  //         </>
-  //       }
-  //     />
-  //     <Snackbar visible={onError !== undefined} onDismiss={() => setOnError(undefined)}>
-  //       {onError}
-  //     </Snackbar>
-  //   </View>
-  // );
+  return (
+    <View style={styles.container}>
+      <Result />
+      <DialogBlock
+        title={'Create Chat'}
+        content={dialogContent}
+        actions={
+          <>
+            <ButtonComponent
+              title={'Cancel'}
+              onPress={() => {
+                hideDialog();
+              }}
+            />
+            <ButtonComponent
+              title={'Create Chat'}
+              mode="contained"
+              onPress={() => {
+                onFetch(async () => await getFresh());
+                hideDialog();
+              }}
+            />
+          </>
+        }
+      />
+    </View>
+  );
 };
 
 export default BlockedUsersView;

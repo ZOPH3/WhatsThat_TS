@@ -15,12 +15,16 @@ interface IChatSummaryActions {
   goTo?: () => void;
 }
 
-const ChatSummaryList = ({chatSummaryList}) => {
+const ChatSummaryList = ({ chatSummaryList }) => {
   const navigation = useNavigation();
 
   const actions = (chat_id: number, name: string): IChatSummaryActions => {
     return {
-      edit: () => console.log('clicked edit', chat_id),
+      edit: () =>
+        navigation.navigate('EditChatView', {
+          chat_id: chat_id,
+          chat_name: name,
+        }),
       delete: () => console.log('delete'),
       goTo: () =>
         navigation.navigate('ChatView', {

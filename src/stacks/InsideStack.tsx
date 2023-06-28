@@ -197,7 +197,7 @@ const InsideStackNavigator = () => {
   };
 
   useEffect(() => {
-    if (authState.authenticated === true) pollTest();
+    // if (authState.authenticated === true) pollTest();
     if (authState.authenticated === false) clearPoll();
   }, [authState.authenticated]);
 

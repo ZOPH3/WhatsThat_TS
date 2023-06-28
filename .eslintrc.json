@@ -1,14 +1,17 @@
 {
     "plugins": [
-        "react-native"
+        "react-native",
+        "@typescript-eslint"
     ],
     "extends": [
         "eslint:recommended",
         "plugin:react-native/all",
         "prettier",
-        "prettier/react"
+        "prettier/react",
+        "airbnb",
+        "airbnb-typescript"
     ],
-    "parser": "babel-eslint",
+    "parser": "@typescript-eslint/parser",
     "env": {
         "react-native/react-native": true
     },
@@ -22,6 +25,15 @@
         "react-native/split-platform-components": 2,
         "react-native/no-inline-styles": 2,
         "react-native/no-color-literals": 2,
-        "react-native/no-raw-text": 2
+        "react-native/no-raw-text": 2,
+        "react/jsx-filename-extension": [
+            1,
+            {
+                "extensions": [
+                    ".jsx",
+                    ".tsx"
+                ]
+            }
+        ]
     }
 }

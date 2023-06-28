@@ -10,7 +10,7 @@ import log from '../../lib/util/LoggerUtil';
 import { styles } from '../../styles/GlobalStyle';
 import ContactList from './list/ContactList';
 
-const AddedUsersView = ({navigation}) => {
+const AddedUsersView = ({ navigation }) => {
   const { useFetch } = useApiContext();
   const { logout } = useAuthContext();
 
@@ -19,7 +19,7 @@ const AddedUsersView = ({navigation}) => {
     throw new Error('Unable to find Auth API...');
   }
 
-  const {data, isLoading, onFetch, onError, getFresh, getCache } = useFetchHook(
+  const { data, isLoading, onFetch, onError, getFresh, getCache } = useFetchHook(
     { url: '/contacts', method: 'GET' },
     true
   );
@@ -32,10 +32,12 @@ const AddedUsersView = ({navigation}) => {
   ];
 
   useEffect(() => {
-    onFetch(async() => await getCache()).then((data) => {
-      if (!data) return;
-      console.log("Not implemented", data);
-    }).catch();
+    onFetch(async () => await getCache())
+      .then((data) => {
+        if (!data) return;
+        // console.log("Not implemented", data);
+      })
+      .catch();
   }, []);
 
   const Result = () => {
@@ -71,7 +73,7 @@ const AddedUsersView = ({navigation}) => {
               title={'Create Chat'}
               mode="contained"
               onPress={() => {
-                onFetch();
+                onFetch(async () => await getFresh());
                 hideDialog();
               }}
             />

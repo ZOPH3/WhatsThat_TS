@@ -2,7 +2,7 @@ import { TChatSummary, TCreateChatResponse, TChat } from '../types/TSchema';
 
 interface IChatServices {
   fetchChatList: () => Promise<TChatSummary | undefined>;
-  newConversation: (name: string) => Promise<TCreateChatResponse | undefined>;
+  createChat: (name: string) => Promise<TCreateChatResponse | undefined>;
   fetchChatDetails: (chat_id: number) => Promise<TChat | undefined>;
   updateChatDetails: (chat_id: number, name: string) => Promise<Response | undefined>;
   addUserToConversation: (chat_id: number, user_id: number) => Promise<Response | undefined>;
@@ -15,8 +15,8 @@ const ChatServices = (useFetch: any): IChatServices => {
     return response ? (response.data as TChatSummary) : undefined;
   };
 
-  const newConversation = async (name: string): Promise<TCreateChatResponse | undefined> => {
-    const response = await useFetch({ url: '/chat', method: 'POST', data: name }, true);
+  const createChat = async (name: string): Promise<TCreateChatResponse | undefined> => {
+    const response = await useFetch({ url: '/chat', method: 'POST', data: { name: name } }, true);
     return response.data as TCreateChatResponse;
   };
 
@@ -57,7 +57,7 @@ const ChatServices = (useFetch: any): IChatServices => {
 
   return {
     fetchChatDetails,
-    newConversation,
+    createChat,
     fetchChatList,
     updateChatDetails,
     addUserToConversation,

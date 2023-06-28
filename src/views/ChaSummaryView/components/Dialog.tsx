@@ -3,19 +3,20 @@ import { TextInput } from 'react-native-paper';
 
 import DialogComponent from '../../../components/Dialog';
 import ButtonComponent from '../../../components/Button';
+import { useChatContext } from '../../../lib/context/ChatContext';
+import { useApiContext } from '../../../lib/context/ApiContext';
+import ChatServices from '../../../lib/services/ChatServices';
 
 const CreateChatDialog = forwardRef((props, ref) => {
   const { DialogBlock, showDialog, hideDialog } = DialogComponent();
-  const [text, setText] = React.useState('');
+  const createTextRef = React.useRef('');
+  const { useFetch } = useApiContext();
+  const { dispatcher } = useChatContext();
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const dialogContent = [
     {
-      children: (
-        <TextInput
-          label="Chat name"
-          onChangeText={(e) => setText(e)}
-        />
-      ),
+      children: <TextInput label="Chat name" onChangeText={(e) => (createTextRef.current = e)} />,
     },
   ];
 
@@ -40,13 +41,22 @@ const CreateChatDialog = forwardRef((props, ref) => {
           <ButtonComponent
             title={'Create Chat'}
             mode="contained"
-            onPress={() => {
-              if (text && text !== '') {
-                // dispatcher.addChatSummary({
-                //   name: createTextRef.current,
-                //   creator: auth,
-                // });
-                console.log(text);
+            loading={isLoading}
+            onPress={async () => {
+              setIsLoading(true);
+              if (createTextRef && createTextRef.current !== '') {
+                const response = await ChatServices(useFetch)
+                  .createChat(createTextRef.current)
+                  .finally(() => setIsLoading(false));
+
+                if (!response) return;
+
+                dispatcher.addChatSummary({
+                  name: createTextRef.current,
+                  chat_id: response.chat_id,
+                });
+                
+                createTextRef.current = '';
                 hideDialog();
               }
             }}

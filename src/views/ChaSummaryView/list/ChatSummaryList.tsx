@@ -2,9 +2,8 @@ import React from 'react';
 import { View, FlatList, SafeAreaView } from 'react-native';
 
 import { TChatSummary } from '../../../lib/types/TSchema';
-import ChatSummaryContainer from '../components/Container';
 import { useNavigation } from '@react-navigation/native';
-import { useChatContext } from '../../../lib/context/ChatContext';
+import ChatSummaryItemWrapper from '../components/ListItemWrapper';
 
 interface IChatSummaryList {
   chatSummary: TChatSummary[];
@@ -51,7 +50,7 @@ const ChatSummaryList = ({chatSummaryList}) => {
           data={chatSummaryList}
           keyExtractor={(item) => item.chat_id.toString()}
           renderItem={(_) => (
-            <ChatSummaryContainer
+            <ChatSummaryItemWrapper
               chatSummary={_.item}
               actions={actions(_.item.chat_id, _.item.name)}
             />

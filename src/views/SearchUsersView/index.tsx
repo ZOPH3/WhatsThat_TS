@@ -35,6 +35,10 @@ const styles = StyleSheet.create({
   },
 });
 
+/**
+ * TODO: Check the size of the screen to dynamically change the number of items to show
+ * TODO: Load from cache for contacts?
+ */
 function SearchUsersView({ navigation }) {
   const { useFetch } = useApiContext();
 
@@ -85,7 +89,7 @@ function SearchUsersView({ navigation }) {
             navigation.goBack();
           }}
         />
-        <Appbar.Content title="Search" />
+        <Appbar.Content title={`Search ${contactOnly ? 'Contacts' : 'All Users'}`} />
         <Tooltip title="Show Contacts">
           <IconButton
             icon="contacts"
@@ -96,6 +100,7 @@ function SearchUsersView({ navigation }) {
         </Tooltip>
         <Appbar.Action icon="dots-vertical" onPress={_handleMore} />
       </Appbar.Header>
+      <ProgressBar indeterminate visible={isLoading} />
       <Searchbar
         placeholder="Search"
         onChangeText={onChangeSearch}
@@ -104,8 +109,7 @@ function SearchUsersView({ navigation }) {
         style={{ margin: 10 }}
       />
       <View style={styles.contentContainer}>
-        <Text>Users here {searchQuery}</Text>
-        <ProgressBar indeterminate visible={isLoading} />
+        {/* <Text>{contactOnly ? 'Contacts' : 'All Users'}</Text> */}
         {/* {!!onError && <Text>{onError}</Text>} */}
         {(data?.length === 0 || data === null) && (
           <Text>

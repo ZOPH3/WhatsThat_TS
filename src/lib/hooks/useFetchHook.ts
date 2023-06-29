@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-shadow */
 import { AxiosError } from 'axios';
 import React, { useEffect, useState } from 'react';
 
@@ -32,7 +33,7 @@ const useFetchHook = (config: any, auth = false) => {
   const [onError, setOnError] = React.useState<any | undefined>(undefined);
   const [dataState, setDataState] = useState<EState | undefined>(undefined); // State of the data
 
-  //TODO: Do i need a useeffect for this?
+  //TODO: Do i need a useeffect for this? 
   useEffect(() => {
     if (onError) {
       dispatcher.addNotification({ type: 'error', message: onError });
@@ -104,11 +105,13 @@ const useFetchHook = (config: any, auth = false) => {
     setDataState(undefined);
     setIsLoading(true);
 
+    let error;
+    // eslint-disable-next-line @typescript-eslint/no-shadow
     const data = Promise.race([getCache(), getFresh()])
-      .then((data) => data)
+      .then(data => data)
       .catch((err: any) => {
-        setOnError(err.message ? err.message : 'Something went wrong...');
-        setDataState(EState.error);
+        // setOnError(err.message ? err.message : 'Something went wrong...');
+        error = err.message ? err.message : 'Something went wrong...';
       })
       .finally(() => setIsLoading(false));
 
@@ -119,10 +122,18 @@ const useFetchHook = (config: any, auth = false) => {
       return data;
     }
 
-    if (!data && !onError) {
+    if (!data && !error) {
       setDataState(EState.empty);
       setOnError(undefined);
+      return null;
     }
+
+    if (error) {
+      setOnError(error);
+      setDataState(EState.error);
+      return null;
+    }
+    return null;
   };
 
   const doFetch = async () => {

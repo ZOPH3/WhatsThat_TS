@@ -2,17 +2,17 @@ import React, { useEffect } from 'react';
 import { SafeAreaView, View } from 'react-native';
 import { ProgressBar, Text } from 'react-native-paper';
 
-import { styles } from '../../styles/GlobalStyle';
+import styles from '../../styles/GlobalStyle';
 
 import ChatSummaryList from './list/ChatSummaryList';
 
 import useFetchHook from '../../lib/hooks/useFetchHook';
 import { useChatContext } from '../../lib/context/ChatContext';
 
-const ChatSummaryViewContainer = () => {
+function ChatSummaryViewContainer() {
   const { chatSummaryList, dispatcher } = useChatContext();
 
-  const { isLoading, onError, fetchCacheorFresh } = useFetchHook(
+  const { data, isLoading, onError, fetchCacheorFresh } = useFetchHook(
     { url: '/chat', method: 'GET' },
     true
   );
@@ -27,18 +27,14 @@ const ChatSummaryViewContainer = () => {
 
   return (
     <View style={styles.container}>
-      <ProgressBar indeterminate={true} visible={isLoading} />
+      <ProgressBar indeterminate visible={isLoading} />
       <SafeAreaView style={{ flex: 10 }}>
-        {onError ? (
-          <Text>{onError}</Text>
-        ) : chatSummaryList.length > 0 ? (
-          <ChatSummaryList chatSummaryList={chatSummaryList} />
-        ) : (
-          <Text>No Chat</Text>
-        )}
+        {!!onError && <Text>{onError}</Text>}
+        {!chatSummaryList && <Text>No Chats</Text>}
+        {!!chatSummaryList && <ChatSummaryList chatSummaryList={chatSummaryList} />}
       </SafeAreaView>
     </View>
   );
-};
+}
 
 export default ChatSummaryViewContainer;

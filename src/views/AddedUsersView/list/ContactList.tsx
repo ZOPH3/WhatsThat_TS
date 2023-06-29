@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, FlatList, SafeAreaView } from 'react-native';
-import { List, Text } from 'react-native-paper';
+import { List } from 'react-native-paper';
 
 import { TUser } from '../../../lib/types/TSchema';
 import AvatarComponent from '../../../components/Avatar';
@@ -15,19 +15,19 @@ const actions = {
   goTo: () => console.log('goTo'),
 };
 
-const ContactList = ({ contacts }: IContactList) => {
-  //FIXME: For some reason, sorting the array here causes undefined function error
+function ContactList({ contacts }: IContactList) {
+  // FIXME: For some reason, sorting the array here causes undefined function error
   return (
     <View>
       <SafeAreaView>
         <FlatList
           data={contacts}
-          keyExtractor={(item) => item.user_id.toString()}
-          renderItem={(_) => (
+          keyExtractor={item => item.user_id.toString()}
+          renderItem={_ => (
             <List.Item
               title={`${_.item.first_name}`}
-              left={(props) => <AvatarComponent label={`${_.item.first_name}`} size={50} />}
-              right={(props) => null}
+              left={() => <AvatarComponent label={`${_.item.first_name}`} size={50} />}
+              right={() => null}
               onPress={actions.goTo}
               onLongPress={actions.edit}
             />
@@ -36,5 +36,5 @@ const ContactList = ({ contacts }: IContactList) => {
       </SafeAreaView>
     </View>
   );
-};
+}
 export default ContactList;

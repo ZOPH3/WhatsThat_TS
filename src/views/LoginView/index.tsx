@@ -4,7 +4,7 @@ import { View } from 'react-native';
 import { useAuthContext } from '../../lib/context/AuthContext';
 
 import ButtonComponent from '../../components/Button';
-import { styles } from '../../styles/GlobalStyle';
+import styles from '../../styles/GlobalStyle';
 import useFetchHook from '../../lib/hooks/useFetchHook';
 
 const LoginView = () => {

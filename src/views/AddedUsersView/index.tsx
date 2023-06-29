@@ -1,16 +1,16 @@
 import React, { useEffect } from 'react';
-import { View } from 'react-native';
-import { ProgressBar, Snackbar, Text, TextInput } from 'react-native-paper';
+import { SafeAreaView, View } from 'react-native';
+import { ProgressBar, Text, TextInput } from 'react-native-paper';
 import ButtonComponent from '../../components/Button';
 import DialogComponent from '../../components/Dialog';
 import { useApiContext } from '../../lib/context/ApiContext';
 import { useAuthContext } from '../../lib/context/AuthContext';
 import useFetchHook from '../../lib/hooks/useFetchHook';
 import log from '../../lib/util/LoggerUtil';
-import { styles } from '../../styles/GlobalStyle';
+import styles from '../../styles/GlobalStyle';
 import ContactList from './list/ContactList';
 
-const AddedUsersView = ({ navigation }) => {
+function AddedUsersView() {
   const { useFetch } = useApiContext();
   const { logout } = useAuthContext();
 
@@ -32,48 +32,39 @@ const AddedUsersView = ({ navigation }) => {
   ];
 
   useEffect(() => {
-    onFetch(async () => await getCache())
+    onFetch(() => getCache())
+      // eslint-disable-next-line @typescript-eslint/no-shadow
       .then((data) => {
         if (!data) return;
-        // console.log("Not implemented", data);
+        console.log('Not implemented', data);
       })
       .catch();
   }, []);
 
-  const Result = () => {
-    if (isLoading) return <ProgressBar indeterminate={true} visible={isLoading} />;
-    if (onError) return <Text>{onError}</Text>;
-    if (!data) return <Text>No contacts</Text>;
-
-    if (data) {
-      return (
-        <View>
-          <ContactList contacts={data} />
-        </View>
-      );
-    }
-    return <Text>Contacts</Text>;
-  };
-
   return (
     <View style={styles.container}>
-      <Result />
+      <ProgressBar indeterminate visible={isLoading} />
+      <SafeAreaView style={{ flex: 10 }}>
+        {!!onError && <Text>{onError}</Text>}
+        {!data && <Text>No contacts</Text>}
+        {!!data && <ContactList contacts={data} />}
+      </SafeAreaView>
       <DialogBlock
-        title={'Create Chat'}
+        title="Create Chat"
         content={dialogContent}
         actions={
           <>
             <ButtonComponent
-              title={'Cancel'}
+              title="Cancel"
               onPress={() => {
                 hideDialog();
               }}
             />
             <ButtonComponent
-              title={'Create Chat'}
+              title="Create Chat"
               mode="contained"
               onPress={() => {
-                onFetch(async () => await getFresh());
+                onFetch(async () => getFresh());
                 hideDialog();
               }}
             />
@@ -82,6 +73,6 @@ const AddedUsersView = ({ navigation }) => {
       />
     </View>
   );
-};
+}
 
 export default AddedUsersView;

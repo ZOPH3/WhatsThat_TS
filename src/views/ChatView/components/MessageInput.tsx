@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { TextInput } from 'react-native-paper';
 import { View } from 'react-native';
 
-import { styles } from '../../../styles/GlobalStyle';
+import styles from '../../../styles/GlobalStyle';
 
 import ButtonComponent from '../../../components/Button';
 
-const MessageInput = ({ onSend }) => {
+function MessageInput({ onSend }) {
   const [inputValue, setInputValue] = useState('');
 
   const handleInputChange = (text) => {
@@ -39,6 +39,6 @@ const MessageInput = ({ onSend }) => {
       />
     </View>
   );
-};
+}
 
 export default MessageInput;

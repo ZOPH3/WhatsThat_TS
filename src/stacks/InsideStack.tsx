@@ -31,7 +31,7 @@ const ContactTab = createMaterialTopTabNavigator();
 const InsideStack = createNativeStackNavigator();
 const InsideTab = createBottomTabNavigator();
 
-const ContactTopTabNavigator = () => {
+function ContactTopTabNavigator() {
   return (
     <ContactTab.Navigator>
       <ContactTab.Screen
@@ -47,9 +47,9 @@ const ContactTopTabNavigator = () => {
       />
     </ContactTab.Navigator>
   );
-};
+}
 
-const ContactStackNavigator = ({ navigation }) => {
+function ContactStackNavigator({ navigation }) {
   return (
     <InsideStack.Navigator>
       <InsideStack.Screen
@@ -71,13 +71,14 @@ const ContactStackNavigator = ({ navigation }) => {
         component={SearchUsersView}
         options={{
           title: 'Search Users',
+          headerShown: false,
         }}
       />
     </InsideStack.Navigator>
   );
-};
+}
 
-const ChatStackNavigator = () => {
+function ChatStackNavigator() {
   return (
     <ChatStack.Navigator>
       <ChatStack.Screen
@@ -91,17 +92,17 @@ const ChatStackNavigator = () => {
       <ChatStack.Screen name="InviteUserView" component={InviteUserView} />
     </ChatStack.Navigator>
   );
-};
+}
 
-const ProfileStackNavigator = () => {
+function ProfileStackNavigator() {
   return (
     <ProfileStack.Navigator>
       <ProfileStack.Screen name="ProfileView" component={ProfileView} />
     </ProfileStack.Navigator>
   );
-};
+}
 
-const InsideTabNavigator = () => {
+function InsideTabNavigator() {
   return (
     <InsideTab.Navigator initialRouteName="ChatStackNavigator">
       <InsideTab.Screen
@@ -110,7 +111,7 @@ const InsideTabNavigator = () => {
         options={{
           title: 'Chat',
           headerShown: false,
-          tabBarIcon: ({ color, size }) => <Icons name={'chat'} size={size} color={color} />,
+          tabBarIcon: ({ color, size }) => <Icons name="chat" size={size} color={color} />,
         }}
       />
       <InsideTab.Screen
@@ -119,14 +120,14 @@ const InsideTabNavigator = () => {
         options={{
           headerShown: false,
           title: 'Contacts',
-          tabBarIcon: ({ color, size }) => <Icons name={'contacts'} size={size} color={color} />,
+          tabBarIcon: ({ color, size }) => <Icons name="contacts" size={size} color={color} />,
         }}
       />
     </InsideTab.Navigator>
   );
-};
+}
 
-const InsideStackNavigator = () => {
+function InsideStackNavigator() {
   const { useFetch } = useApiContext();
   const { authState } = useAuthContext();
   const { dispatcher } = useChatContext();
@@ -149,7 +150,7 @@ const InsideStackNavigator = () => {
     }
   };
 
-  //FIXME: Poll continues even after logout
+  // FIXME: Poll continues even after logout
   const fetchChatMessages = async (chatSummaryList: TChatSummary[]) => {
     const promises = [] as any[];
     try {
@@ -161,15 +162,15 @@ const InsideStackNavigator = () => {
               method: 'GET',
               headers: { polling: true },
             },
-            true
-          )
+            true,
+          ),
         );
 
         if (i === chatSummaryList.length - 1) {
-          Promise.allSettled(promises).then((results) =>
-            results.forEach((result) => {
+          Promise.allSettled(promises).then(results =>
+            results.forEach(result => {
               // console.log(result.value.data)
-            })
+            }),
           );
         }
       }
@@ -181,7 +182,7 @@ const InsideStackNavigator = () => {
   const pollTest = () => {
     if (!pollId) {
       pollId = setInterval(() => {
-        fetch().then((data) => {
+        fetch().then(data => {
           if (data) {
             dispatcher.setChatSummaryList(data);
             if (data.length > 0) fetchChatMessages(data);
@@ -215,6 +216,6 @@ const InsideStackNavigator = () => {
       />
     </InsideStack.Navigator>
   );
-};
+}
 
 export default InsideStackNavigator;

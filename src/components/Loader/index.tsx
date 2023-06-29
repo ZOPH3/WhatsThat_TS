@@ -6,36 +6,32 @@ export interface IComponentState {
 }
 
 interface IComponents {
-  onLoading?: any;
-  onSuccess?: any;
-  onEmpty?: any;
-  onError?: any;
+  onLoading?: unknown;
+  onSuccess?: unknown;
+  onEmpty?: unknown;
+  onError?: unknown;
 }
 
 // Template to deal with state of component.
-const ComponentContainer = (
-  props: { name: string } & IComponentState & IComponents
-) => {
+function ComponentContainer(props: { name: string } & IComponentState & IComponents) {
   const { name, state, onLoading, onSuccess, onEmpty, onError } = props;
 
   if (state === 'loading') {
-    return onLoading ? onLoading : <View></View>;
+    return onLoading || <View />;
   }
 
   if (state === 'success') {
-    return onSuccess ? onSuccess : <View></View>;
+    return onSuccess || <View />;
   }
 
   if (state === 'empty') {
-    return onEmpty ? onEmpty : <View></View>;
+    return onEmpty || <View />;
   }
 
   if (state === 'error') {
-    return onError ? onError : <View></View>;
+    return onError || <View />;
   }
-
-  return;
-};
+}
 
 export default ComponentContainer;
 

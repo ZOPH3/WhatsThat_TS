@@ -1,9 +1,10 @@
+/* eslint-disable camelcase */
 import React, { useEffect } from 'react';
 import { SafeAreaView, View } from 'react-native';
 import { ProgressBar, Text } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 
-import { styles } from '../../styles/GlobalStyle';
+import styles from '../../styles/GlobalStyle';
 
 import SettingsMenu, { IMenuItem } from '../../components/SettingsMenu';
 import MessageList from './list/MessageList';
@@ -11,30 +12,30 @@ import MessageInput from './components/MessageInput';
 import useFetchHook from '../../lib/hooks/useFetchHook';
 import MessageInteractions from './services/interactions';
 
-//FIXME: Loading from cache for messages is malformed, it loses the .messages property and needs [3] to access the messages
+// FIXME: Loading from cache for messages is malformed, it loses the .messages property and needs [3] to access the messages
 
 /**
  * TODO: Need to set the state of the messages
  */
-const ChatViewContainer = (props: { chat_id: number; title: string }) => {
+function ChatViewContainer(props: { chat_id: number; title: string }) {
   const { chat_id, title } = props;
   const navigation = useNavigation();
   const { messageList, dispatchMessages, sendMessage } = MessageInteractions(chat_id);
 
   const { isLoading, onFetch, onError, getFresh, fetchCacheorFresh } = useFetchHook(
     { url: `/chat/${chat_id}`, method: 'GET' },
-    true
+    true,
   );
 
   const items: IMenuItem[] = [
     {
       title: 'Refresh',
       onPress: () => {
-        onFetch(async () => await getFresh()).then((res) => {
+        onFetch(async () => getFresh()).then(res => {
           if (res) {
             dispatchMessages(res.messages);
           } else {
-            fetchCacheorFresh().then((res) => {
+            fetchCacheorFresh().then(res => {
               if (res) {
                 dispatchMessages(res.messages);
               }
@@ -60,7 +61,7 @@ const ChatViewContainer = (props: { chat_id: number; title: string }) => {
       title: `${title}`,
       headerRight: () => <SettingsMenu items={items} />,
     });
-    onFetch(async () => await getFresh()).then((data) => {
+    onFetch(async () => await getFresh()).then(data => {
       if (!data) return;
       dispatchMessages(data.messages);
     });
@@ -73,7 +74,7 @@ const ChatViewContainer = (props: { chat_id: number; title: string }) => {
 
   return (
     <View style={styles.container}>
-      <ProgressBar indeterminate={true} visible={isLoading} />
+      <ProgressBar indeterminate visible={isLoading} />
       <SafeAreaView style={{ flex: 10 }}>
         {onError ? (
           <Text>{onError}</Text>
@@ -86,6 +87,6 @@ const ChatViewContainer = (props: { chat_id: number; title: string }) => {
       <MessageInput onSend={handleSend} />
     </View>
   );
-};
+}
 
 export default ChatViewContainer;

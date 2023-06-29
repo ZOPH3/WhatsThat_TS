@@ -7,10 +7,10 @@ import { useApiContext } from '../../lib/context/ApiContext';
 import { useAuthContext } from '../../lib/context/AuthContext';
 import useFetchHook from '../../lib/hooks/useFetchHook';
 import log from '../../lib/util/LoggerUtil';
-import { styles } from '../../styles/GlobalStyle';
+import styles from '../../styles/GlobalStyle';
 import ContactList from '../AddedUsersView/list/ContactList';
 
-const BlockedUsersView = () => {
+function BlockedUsersView() {
   const { useFetch } = useApiContext();
   const { logout } = useAuthContext();
 
@@ -32,7 +32,7 @@ const BlockedUsersView = () => {
   ];
 
   useEffect(() => {
-    onFetch(async () => await getCache())
+    onFetch(async () => getCache())
       .then((data) => {
         if (!data) return;
         // console.log('Not implemented', data);
@@ -40,40 +40,29 @@ const BlockedUsersView = () => {
       .catch();
   }, []);
 
-  const Result = () => {
-    if (isLoading) return <ProgressBar indeterminate={true} visible={isLoading} />;
-    if (onError) return <Text>{onError}</Text>;
-    if (!data) return <Text>No contacts</Text>;
-
-    if (data) {
-      return (
-        <View>
-          <ContactList contacts={data} />
-        </View>
-      );
-    }
-    return <Text>Blocked</Text>;
-  };
-
   return (
     <View style={styles.container}>
-      <Result />
+      <ProgressBar indeterminate visible={isLoading} />
+      {!!onError && <Text>{onError}</Text>}
+      {!data && <Text>No contacts</Text>}
+      {!!data && <ContactList contacts={data} />}
+      {/* <Result /> */}
       <DialogBlock
-        title={'Create Chat'}
+        title="Create Chat"
         content={dialogContent}
         actions={
           <>
             <ButtonComponent
-              title={'Cancel'}
+              title="Cancel"
               onPress={() => {
                 hideDialog();
               }}
             />
             <ButtonComponent
-              title={'Create Chat'}
+              title="Create Chat"
               mode="contained"
               onPress={() => {
-                onFetch(async () => await getFresh());
+                onFetch(async () => getFresh());
                 hideDialog();
               }}
             />
@@ -82,6 +71,6 @@ const BlockedUsersView = () => {
       />
     </View>
   );
-};
+}
 
 export default BlockedUsersView;

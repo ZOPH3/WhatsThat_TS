@@ -8,57 +8,6 @@ import useFetchHook from '../../lib/hooks/useFetchHook';
 import { useChatContext } from '../../lib/context/ChatContext';
 import ChatSummaryViewContainer from './ChatSummaryViewContainer';
 
-function ChatNavInteraction({ dialogRef }) {
-  const navigation = useNavigation();
-  const { logout } = useAuthContext();
-  const { dispatcher } = useChatContext();
-  const { onFetch, getFresh, fetchCacheorFresh } = useFetchHook(
-    { url: '/chat', method: 'GET' },
-    true
-  );
-  const items: IMenuItem[] = [
-    {
-      title: 'Settings',
-      onPress: () => navigation.navigate('Settings'),
-    },
-    {
-      title: 'Reload',
-      onPress: () => {
-        onFetch(async () => getFresh()).then((res) => {
-          if (res) {
-            dispatcher.setChatSummaryList(res);
-          } else {
-            fetchCacheorFresh().then((res) => {
-              if (res) {
-                dispatcher.setChatSummaryList(res);
-              }
-            });
-          }
-        });
-      },
-    },
-    {
-      title: 'Logout',
-      onPress: () => (logout ? logout() : () => console.log('Unable to find Auth API...')),
-      disabled: false,
-    },
-  ];
-
-  return navigation.setOptions({
-    headerRight: () => (
-      <>
-        <ButtonComponent
-          title="Create"
-          onPress={() => {
-            if (dialogRef && dialogRef.current) dialogRef.current.show();
-          }}
-        />
-        <SettingsMenu items={items} />
-      </>
-    ),
-  });
-}
-
 function ChatSummaryView() {
   const navigation = useNavigation();
   const { logout } = useAuthContext();
@@ -66,7 +15,7 @@ function ChatSummaryView() {
   const dialogRef = useRef<{ show: () => void }>();
   const { onFetch, getFresh, fetchCacheorFresh } = useFetchHook(
     { url: '/chat', method: 'GET' },
-    true
+    true,
   );
 
   // Issue with re rendering closing the keyboard -> dispatcher function seems to be the issue as context is updated, forcing a re render
@@ -79,11 +28,11 @@ function ChatSummaryView() {
     {
       title: 'Reload',
       onPress: () => {
-        onFetch(async () => getFresh()).then((res) => {
+        onFetch(async () => getFresh()).then(res => {
           if (res) {
             dispatcher.setChatSummaryList(res);
           } else {
-            fetchCacheorFresh().then((res) => {
+            fetchCacheorFresh().then(res => {
               if (res) {
                 dispatcher.setChatSummaryList(res);
               }

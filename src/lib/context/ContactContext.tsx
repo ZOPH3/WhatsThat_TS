@@ -13,7 +13,7 @@ const initialState: IContactsContext = {
   blocked: [],
 };
 
-const actionTypes = {
+export const actionTypes = {
   ADD_CONTACT: 'ADD_CONTACT',
   REMOVE_CONTACT: 'REMOVE_CONTACT',
   BLOCK_USER: 'BLOCK_USER',
@@ -60,6 +60,7 @@ function ContactsProvider({ children }: any) {
   };
 
   // TODO: Move the functions outside of the provider because when the state is changed the functions are re-created (this is causing the re-render of the component)
+  // Used Memo in order to avoid the re-render of the component - Havent checked if it works
   // eslint-disable-next-line react/jsx-no-constructed-context-values
   const value = useMemo(
     () => ({

@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { View } from 'react-native';
-import { Menu, IconButton } from 'react-native-paper';
-import { useGlobalContext } from '../lib/context/GlobalContext';
+import { Menu, IconButton, Avatar, TouchableRipple } from 'react-native-paper';
 import { IconSource } from 'react-native-paper/lib/typescript/src/components/Icon';
+import { useGlobalContext } from '../lib/context/GlobalContext';
 
 export interface IMenuItem {
   title: React.ReactNode;
@@ -14,26 +14,33 @@ export interface IMenuItem {
   onPress?: () => any;
 }
 
-const MenuItems = (props: { items: IMenuItem[]; }) => {
-  const items = props.items;
+function MenuItems(props: { items: IMenuItem[] }) {
+  const { items } = props;
   return (
     <>
       {items.map((menuItem: IMenuItem, key: React.Key) => {
-        return <Menu.Item key={key} onPress={menuItem.onPress} title={menuItem.title} disabled={menuItem.disabled}/>;
+        return (
+          <Menu.Item
+            key={key}
+            onPress={menuItem.onPress}
+            title={menuItem.title}
+            disabled={menuItem.disabled}
+          />
+        );
       })}
     </>
   );
-};
+}
 
-const SettingsMenu = (props: { items: any; }) => {
+function SettingsMenu(props: { items: any }) {
   const { toggleTheme } = useGlobalContext();
   const [visible, setVisible] = React.useState(false);
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
 
-  const items = props.items;
-  
+  const { items } = props;
+
   return (
     <View
       style={{
@@ -44,7 +51,13 @@ const SettingsMenu = (props: { items: any; }) => {
       <Menu
         visible={visible}
         onDismiss={closeMenu}
-        anchor={<IconButton icon="dots-horizontal" size={20} onPress={openMenu} />}
+        anchor={
+          // <IconButton icon="dots-horizontal" size={20} onPress={openMenu} />
+
+          <TouchableRipple onPress={openMenu} rippleColor="rgba(0, 0, 0, .32)">
+            <Avatar.Icon size={35} icon="account" style={{ margin: 10 }} />
+          </TouchableRipple>
+        }
       >
         <Menu.Item
           onPress={() => (toggleTheme ? toggleTheme() : console.log('No toggleTheme'))}
@@ -54,6 +67,6 @@ const SettingsMenu = (props: { items: any; }) => {
       </Menu>
     </View>
   );
-};
+}
 
 export default SettingsMenu;

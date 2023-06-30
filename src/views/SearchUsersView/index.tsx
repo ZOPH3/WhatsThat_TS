@@ -134,7 +134,7 @@ function SearchUsersView({ navigation }) {
               value: 'next',
               label: 'Next',
               onPress: () => setCurrentPage(currentPage + 1),
-              disabled: !data || data?.length < 6,
+              disabled: !data || data?.length <= 6,
             },
           ]}
         />

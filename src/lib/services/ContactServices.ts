@@ -21,9 +21,6 @@ export type TSearchParams = {
 };
 
 const ContactServices = (useFetch: any): IContactServices => {
-  // const { useFetch } = useApiContext();
-  // if (!useFetch) throw new Error('Unable to find Auth API...');
-
   const fetchContactList = async (): Promise<TUser[] | undefined> => {
     const response = await useFetch({ url: '/contacts', method: 'GET' }, true);
     return response.data as TUser[];
@@ -78,7 +75,7 @@ const ContactServices = (useFetch: any): IContactServices => {
           last_name: user.last_name ?? user.family_name,
           email: user.email,
         });
-      },
+      }
     );
     return userList as TUser[];
   };

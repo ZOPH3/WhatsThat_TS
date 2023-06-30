@@ -12,6 +12,7 @@ import { intLog } from '../../../lib/util/LoggerUtil';
 
 interface IContactList {
   contacts: TUser[];
+  listType: 'all' | 'blocked' | 'contacts';
 }
 
 function ContactListActions() {
@@ -42,6 +43,21 @@ function ContactListActions() {
       });
   };
 
+  const handleUnblock = (user_id: number | undefined) => {
+    if (!user_id) return;
+    ContactServices(useFetch)
+      .unblockUser(user_id)
+      .then(
+        (res) => {
+          if (res) intLog.success('[Unblock User]', res);
+        },
+        (err) => intLog.error('[Unblock User]', err)
+      )
+      .catch((err) => {
+        intLog.error('[Unblock User]', err);
+      });
+  };
+
   const handleAdd = (user_id: number | undefined) => {
     if (!user_id) return;
     ContactServices(useFetch)
@@ -57,7 +73,7 @@ function ContactListActions() {
       });
   };
 
-  return { handleAdd, handleRemove, handleBlock };
+  return { handleAdd, handleRemove, handleBlock, handleUnblock };
 }
 
 function RemoveContactDialog(props: {
@@ -106,12 +122,17 @@ function RemoveContactDialog(props: {
   );
 }
 
-function ContactList({ contacts }: IContactList) {
+function ContactList({ contacts, listType }: IContactList) {
   const [visible, setVisible] = React.useState(false);
   const [user, setUser] = React.useState<TUser | null>(null);
   const hideDialog = () => setVisible(false);
 
-  const { handleAdd } = ContactListActions();
+  const { handleAdd, handleUnblock } = ContactListActions();
+
+  const _handleUnblock = (user_id: number) => {
+    handleUnblock(user_id);
+    hideDialog();
+  };
 
   const _handleAdd = (user_id: number) => {
     handleAdd(user_id);
@@ -131,12 +152,15 @@ function ContactList({ contacts }: IContactList) {
               left={() => <AvatarComponent label={`${_.item.first_name}`} size={50} />}
               right={() => null}
               onPress={() => {
-                // setUser(_.item);
-                _handleAdd(_.item.user_id);
+                if (listType === 'blocked') {
+                  _handleUnblock(_.item.user_id);
+                } else {
+                  _handleAdd(_.item.user_id);
+                }
               }}
               onLongPress={() => {
                 setUser(_.item);
-                console.log('USER', _.item);
+                // console.log('USER', _.item);
                 setVisible(true);
               }}
             />

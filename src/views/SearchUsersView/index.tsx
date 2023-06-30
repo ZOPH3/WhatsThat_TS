@@ -45,7 +45,7 @@ function SearchUsersView({ navigation }) {
   const [value, setValue] = React.useState('');
   const [searchQuery, setSearchQuery] = React.useState('');
   const onChangeSearch = (query) => setSearchQuery(query);
-  const [contactOnly, setContactOnly] = React.useState(true);
+  const [listType, setListType] = React.useState<'all' | 'blocked' | 'contacts'>('all');
   const [currentPage, setCurrentPage] = React.useState(0);
   const [isLoading, setIsLoading] = React.useState(false);
   const [data, setData] = React.useState<TUser[] | null>(null);
@@ -53,9 +53,12 @@ function SearchUsersView({ navigation }) {
 
   const _handleSearch = () => {
     setIsLoading(true);
+
+    if (listType === 'blocked') return;
+
     const params: TSearchParams = {
       q: searchQuery,
-      search_in: contactOnly ? 'contacts' : 'all',
+      search_in: listType,
       limit: 6,
       offset: currentPage * 6,
     };
@@ -63,7 +66,34 @@ function SearchUsersView({ navigation }) {
       .searchUsers(params)
       .then((res) => {
         console.log(res);
-        if (res !== null || res.length > 0) {
+        if (res && res.length > 0) {
+          setData(res as TUser[]);
+        } else {
+          setData(null);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
+
+  const _handleBlocked = () => {
+    console.log('Blocked');
+    setIsLoading(true);
+    // const params: TSearchParams = {
+    //   q: searchQuery,
+    //   search_in: contactOnly ? 'contacts' : 'all',
+    //   limit: 6,
+    //   offset: currentPage * 6,
+    // };
+    ContactServices(useFetch)
+      .fetchBlockedList()
+      .then((res) => {
+        console.log(res);
+        if (res !== undefined && res.length > 0) {
           setData(res as TUser[]);
         } else {
           setData(null);
@@ -78,8 +108,9 @@ function SearchUsersView({ navigation }) {
   };
 
   useEffect(() => {
-    _handleSearch();
-  }, [searchQuery, contactOnly, currentPage]);
+    if (listType === 'all' || listType === 'contacts') _handleSearch();
+    if (listType === 'blocked') _handleBlocked();
+  }, [searchQuery, listType, currentPage]);
 
   return (
     <View style={styles.container}>
@@ -89,13 +120,21 @@ function SearchUsersView({ navigation }) {
             navigation.goBack();
           }}
         />
-        <Appbar.Content title={`Search ${contactOnly ? 'Contacts' : 'All Users'}`} />
+        <Appbar.Content title={`Search ${listType}`} />
         <Tooltip title="Show Contacts">
           <IconButton
-            icon="contacts"
-            selected={contactOnly}
+            icon="account"
+            selected={listType === 'contacts'}
             size={24}
-            onPress={() => setContactOnly(!contactOnly)}
+            onPress={() => setListType(listType === 'contacts' ? 'all' : 'contacts')}
+          />
+        </Tooltip>
+        <Tooltip title="Show Blocked">
+          <IconButton
+            icon="account-cancel"
+            selected={listType === 'blocked'}
+            size={24}
+            onPress={() => setListType(listType === 'blocked' ? 'all' : 'blocked')}
           />
         </Tooltip>
         <Appbar.Action icon="dots-vertical" onPress={_handleMore} />
@@ -113,10 +152,10 @@ function SearchUsersView({ navigation }) {
         {/* {!!onError && <Text>{onError}</Text>} */}
         {(data?.length === 0 || data === null) && (
           <Text>
-            No {contactOnly ? 'Contacts' : 'Users'} with the name {searchQuery}
+            No {searchQuery !== '' ? searchQuery : 'user'} in {listType}.
           </Text>
         )}
-        {!!data && <ContactList contacts={data} />}
+        {!!data && <ContactList contacts={data} listType={listType} />}
       </View>
       <View style={styles.footer}>
         <SegmentedButtons

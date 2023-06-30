@@ -6,8 +6,6 @@ import { Button, Checkbox, Dialog, List, Portal, Text } from 'react-native-paper
 
 import { TUser } from '../../../lib/types/TSchema';
 import AvatarComponent from '../../../components/Avatar';
-import styles from '../../../styles/GlobalStyle';
-import UserServices from '../../../lib/services/UserServices';
 import ContactServices from '../../../lib/services/ContactServices';
 import { useApiContext } from '../../../lib/context/ApiContext';
 import { intLog } from '../../../lib/util/LoggerUtil';
@@ -15,12 +13,6 @@ import { intLog } from '../../../lib/util/LoggerUtil';
 interface IContactList {
   contacts: TUser[];
 }
-
-// const actions = {
-//   delete: () => console.log('delete'),
-//   edit: () => console.log('edit'),
-//   goTo: () => console.log('goTo'),
-// };
 
 function ContactListActions() {
   const { useFetch } = useApiContext();
@@ -46,13 +38,24 @@ function ContactListActions() {
         if (res) intLog.success('[Block User]', res);
       })
       .catch((err) => {
-        intLog.error('[Block User]', err.statusText);
+        intLog.error('[Block User]', err);
       });
   };
 
-  function handleAdd() {
-    console.log('Add');
-  }
+  const handleAdd = (user_id: number | undefined) => {
+    if (!user_id) return;
+    ContactServices(useFetch)
+      .addContact(user_id)
+      .then(
+        (res) => {
+          if (res) intLog.success('[Add User]', res);
+        },
+        (err) => intLog.error('[Add User]', err)
+      )
+      .catch((err) => {
+        intLog.error('[Add User]', err);
+      });
+  };
 
   return { handleAdd, handleRemove, handleBlock };
 }
@@ -66,41 +69,12 @@ function RemoveContactDialog(props: {
   const { first_name, last_name, user_id } = user;
   const [checked, setChecked] = React.useState(false);
 
-  // const { useFetch } = useApiContext();
-  // if (!useFetch) throw new Error('useFetch is null');
-
-  // const _handleRemove = () => {
-  //   if (!user_id) return;
-  //   const response = ContactServices(useFetch)
-  //     .deleteContact(user_id)
-  //     .then((res) => {
-  //       intLog.success('[Remove User]', res);
-  //     })
-  //     .catch((err) => {
-  //       intLog.error('[Remove User]', err);
-  //     });
-  // };
-
-  // const _handleBlock = () => {
-  //   if (!user_id) return;
-  //   ContactServices(useFetch)
-  //     .blockUser(user_id)
-  //     .then((res) => {
-  //       if (res) intLog.success('[Block User]', res);
-  //     })
-  //     .catch((err) => {
-  //       intLog.error('[Block User]', err.statusText);
-  //     });
-  // };
-
-  const { handleAdd, handleRemove, handleBlock } = ContactListActions();
+  const { handleRemove, handleBlock } = ContactListActions();
 
   const _handleOK = () => {
     if (checked) {
-      // _handleBlock();
       handleBlock(user_id);
     } else {
-      // _handleRemove();
       handleRemove(user_id);
     }
     hideDialog();
@@ -137,8 +111,10 @@ function ContactList({ contacts }: IContactList) {
   const [user, setUser] = React.useState<TUser | null>(null);
   const hideDialog = () => setVisible(false);
 
-  const _handleAdd = () => {
-    console.log('Add');
+  const { handleAdd } = ContactListActions();
+
+  const _handleAdd = (user_id: number) => {
+    handleAdd(user_id);
     hideDialog();
   };
 
@@ -154,9 +130,13 @@ function ContactList({ contacts }: IContactList) {
               title={`${_.item.first_name}`}
               left={() => <AvatarComponent label={`${_.item.first_name}`} size={50} />}
               right={() => null}
-              onPress={_handleAdd}
+              onPress={() => {
+                // setUser(_.item);
+                _handleAdd(_.item.user_id);
+              }}
               onLongPress={() => {
                 setUser(_.item);
+                console.log('USER', _.item);
                 setVisible(true);
               }}
             />

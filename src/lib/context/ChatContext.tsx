@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useReducer } from 'react';
+import React, { createContext, useCallback, useMemo, useReducer } from 'react';
 import { TChat, TChatSummary } from '../types/TSchema';
 import log from '../util/LoggerUtil';
 
@@ -30,15 +30,15 @@ const ChatReducer = (state: IChatContext, action: any) => {
     case 'UPDATE_CHAT_SUMMARY':
       return {
         ...state,
-        chatSummaryList: state.chatSummaryList.map((chatSummary) =>
-          chatSummary.chat_id === payload.chat_id ? payload : chatSummary
+        chatSummaryList: state.chatSummaryList.map(chatSummary =>
+          chatSummary.chat_id === payload.chat_id ? payload : chatSummary,
         ),
       };
     case 'DELETE_CHAT_SUMMARY':
       return {
         ...state,
         chatSummaryList: state.chatSummaryList.filter(
-          (chatSummary) => chatSummary.chat_id !== payload
+          chatSummary => chatSummary.chat_id !== payload,
         ),
       };
     default:
@@ -46,7 +46,7 @@ const ChatReducer = (state: IChatContext, action: any) => {
   }
 };
 
-const ChatProvider = ({ children }: any) => {
+function ChatProvider({ children }: any) {
   const [state, dispatch] = useReducer(ChatReducer, initialState);
 
   const getState = () => {
@@ -57,46 +57,53 @@ const ChatProvider = ({ children }: any) => {
     (payload: TChatSummary[]) => {
       dispatch({ type: 'SET_CHAT_SUMMARY_LIST', payload });
     },
-    [dispatch]
+    [dispatch],
   );
   const addChatSummary = useCallback(
     (payload: Partial<TChatSummary>) => {
       dispatch({ type: 'ADD_CHAT_SUMMARY', payload });
     },
-    [dispatch]
+    [dispatch],
   );
 
   const updateChatSummary = useCallback(
     (payload: TChatSummary) => {
       dispatch({ type: 'UPDATE_CHAT_SUMMARY', payload });
     },
-    [dispatch]
+    [dispatch],
   );
 
   const deleteChatSummary = useCallback(
     (payload: number) => {
       dispatch({ type: 'DELETE_CHAT_SUMMARY', payload });
     },
-    [dispatch]
+    [dispatch],
   );
 
-  const value = {
-    chatSummaryList: state.chatSummaryList,
-    dispatcher: {
+  // Note: useMemo is used to prevent unnecessary re-renders
+  const value = useMemo(
+    () => ({
+      chatSummaryList: state.chatSummaryList,
+      dispatcher: {
+        getState,
+        setChatSummaryList,
+        addChatSummary,
+        updateChatSummary,
+        deleteChatSummary,
+      },
+    }),
+    [
+      addChatSummary,
+      deleteChatSummary,
       getState,
       setChatSummaryList,
-      addChatSummary,
+      state.chatSummaryList,
       updateChatSummary,
-      deleteChatSummary,
-    },
-  };
-
-  // React.useEffect(() => {
-  //   console.log('HELLO', state.chatSummaryList.length);
-  // }, [state.chatSummaryList]);
+    ],
+  );
 
   return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>;
-};
+}
 
 const useChatContext = () => {
   const context = React.useContext(ChatContext);

@@ -7,6 +7,7 @@ import { ApiProvider } from './src/lib/context/ApiContext';
 import { AuthProvider } from './src/lib/context/AuthContext';
 import { ChatProvider } from './src/lib/context/ChatContext';
 import { NotificationProvider } from './src/lib/context/NotificationContext';
+import { ContactsProvider } from './src/lib/context/ContactContext';
 
 function App() {
   return (
@@ -14,9 +15,11 @@ function App() {
       <NotificationProvider>
         <AuthProvider>
           <ApiProvider>
-            <ChatProvider>
-              <StackNavigator />
-            </ChatProvider>
+            <ContactsProvider>
+              <ChatProvider>
+                <StackNavigator />
+              </ChatProvider>
+            </ContactsProvider>
           </ApiProvider>
         </AuthProvider>
       </NotificationProvider>

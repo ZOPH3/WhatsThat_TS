@@ -30,7 +30,7 @@ const ContactServices = (useFetch: any): IContactServices => {
   };
 
   const addContact = async (user_id: number): Promise<Response | undefined> => {
-    const response = await useFetch({ url: `/user/${user_id}/contact`, method: 'GET' }, true);
+    const response = await useFetch({ url: `/user/${user_id}/contact`, method: 'POST' }, true);
     return response.data as Response;
   };
 
@@ -41,7 +41,7 @@ const ContactServices = (useFetch: any): IContactServices => {
 
   const blockUser = async (user_id: number) => {
     const response = await useFetch({ url: `/user/${user_id}/block`, method: 'POST' }, true);
-    return response || null;
+    return response.data || null;
   };
 
   const unblockUser = async (user_id: number): Promise<Response | undefined> => {

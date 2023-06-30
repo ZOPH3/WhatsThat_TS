@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import { useApiContext } from '../../../lib/context/ApiContext';
 import { useAuthContext } from '../../../lib/context/AuthContext';
 import { useMessageContext } from '../../../lib/context/MessageContext';
@@ -9,7 +10,7 @@ import { TSingleMessage } from '../../../lib/types/TSchema';
 const MessageInteractions = (chat_id: number) => {
   const { messageList, dispatcher } = useMessageContext();
   const { authState } = useAuthContext();
-  const current_user = authState.current_user;
+  const { current_user } = authState;
   const { useFetch } = useApiContext();
 
   if (dispatcher === undefined) {
@@ -35,9 +36,9 @@ const MessageInteractions = (chat_id: number) => {
     return m.sendMessage(chat_id, message).then((response) =>
       dispatcher.sendMessage({
         timestamp: Date.now(),
-        message: message,
+        message,
         author: current_user,
-      })
+      }),
     );
   };
 

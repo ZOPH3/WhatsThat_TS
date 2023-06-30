@@ -8,9 +8,13 @@ import ChatSummaryList from './list/ChatSummaryList';
 
 import useFetchHook from '../../lib/hooks/useFetchHook';
 import { useChatContext } from '../../lib/context/ChatContext';
+import { useApiContext } from '../../lib/context/ApiContext';
 
 function ChatSummaryViewContainer() {
   const { chatSummaryList, dispatcher } = useChatContext();
+
+  const { useFetch } = useApiContext();
+  if (!useFetch) throw new Error('useFetch is null');
 
   const { data, isLoading, onError, fetchCacheorFresh } = useFetchHook(
     { url: '/chat', method: 'GET' },

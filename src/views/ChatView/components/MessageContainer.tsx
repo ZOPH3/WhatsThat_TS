@@ -1,7 +1,8 @@
+/* eslint-disable camelcase */
 import React from 'react';
+import { List } from 'react-native-paper';
 import { TSingleMessage } from '../../../lib/types/TSchema';
 import { useAuthContext } from '../../../lib/context/AuthContext';
-import { List } from 'react-native-paper';
 import DialogComponent from '../../../components/Dialog';
 import MessageBubble from './MessageBubble';
 import { useMessageContext } from '../../../lib/context/MessageContext';
@@ -12,7 +13,7 @@ interface IMessageContainer {
   message: TSingleMessage;
 }
 
-const MessageContainer = ({ message }: IMessageContainer) => {
+function MessageContainer({ message }: IMessageContainer) {
   const currentUser = useAuthContext().authState.id;
   const { DialogBlock, showDialog } = DialogComponent();
   const { messageList, chat_id, dispatcher } = useMessageContext();
@@ -24,7 +25,7 @@ const MessageContainer = ({ message }: IMessageContainer) => {
         <List.Item
           title="Edit"
           description="Edit your message"
-          left={(props) => <List.Icon {...props} icon="folder" />}
+          left={props => <List.Icon {...props} icon="folder" />}
           onPress={() => {
             console.log('Edit', message.message_id);
           }}
@@ -36,10 +37,10 @@ const MessageContainer = ({ message }: IMessageContainer) => {
         <List.Item
           title="Delete"
           description="Delete your message"
-          left={(props) => <List.Icon {...props} icon="folder" />}
+          left={props => <List.Icon {...props} icon="folder" />}
           onPress={() => {
             console.log('Edit', message.message_id);
-            if(chat_id) MessageServices(useFetch).deleteMessage(chat_id, message.message_id);
+            if (chat_id) MessageServices(useFetch).deleteMessage(chat_id, message.message_id);
           }}
         />
       ),
@@ -68,9 +69,9 @@ const MessageContainer = ({ message }: IMessageContainer) => {
         isSelf={isSelf}
         actions={{ onLongPress: showDialog }}
       />
-      <DialogBlock title={'Actions'} content={dialogContent} />
+      <DialogBlock title="Actions" content={dialogContent} />
     </>
   );
-};
+}
 
 export default MessageContainer;

@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useEffect, useReducer } from 'react';
-import { TSingleMessage } from '../types/TSchema';
+/* eslint-disable camelcase */
+import React, { createContext, useContext, useEffect, useMemo, useReducer } from 'react';
+import { TChat, TSingleMessage } from '../types/TSchema';
 
 interface IMessageDispatcher {
   print: () => void;
@@ -12,6 +13,7 @@ interface IMessageDispatcher {
 interface IMessageContext {
   messageList: Partial<TSingleMessage>[];
   chat_id?: number;
+  chat_details?: TChat;
   dispatcher?: IMessageDispatcher;
 }
 
@@ -60,8 +62,7 @@ const messageReducer = (state: IMessageContext, action: any) => {
   }
 };
 
-const MessageProvider = ({ children, chat_id }: any) => {
-
+function MessageProvider({ children, chat_id }: any) {
   const [state, dispatch] = useReducer(messageReducer, initialState);
 
   const setMessages = (payload: Partial<TSingleMessage>[]) => {
@@ -84,18 +85,18 @@ const MessageProvider = ({ children, chat_id }: any) => {
     console.log('state', state);
   };
 
-  return (
-    <MessageContext.Provider
-      value={{
-        messageList: state.messageList,
-        chat_id: chat_id,
-        dispatcher: { print, deleteMessage, sendMessage, updateMessage, setMessages },
-      }}
-    >
-      {children}
-    </MessageContext.Provider>
+  const value = useMemo(
+    () => ({
+      messageList: state.messageList,
+      chat_details: state.chat_details,
+      chat_id,
+      dispatcher: { print, deleteMessage, sendMessage, updateMessage, setMessages },
+    }),
+    [state.messageList, chat_id],
   );
-};
+
+  return <MessageContext.Provider value={value}>{children}</MessageContext.Provider>;
+}
 
 const useMessageContext = () => {
   // get the context

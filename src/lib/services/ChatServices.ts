@@ -18,6 +18,7 @@ const ChatServices = (useFetch: any): IChatServices => {
 
   const fetchChatList = async (): Promise<TChatSummary | undefined> => {
     const response = await useFetch({ url: '/chat', method: 'GET' }, true);
+    if (response.ok) console.log('Chat List: ', response.data);
     return response ? (response.data as TChatSummary) : undefined;
   };
 

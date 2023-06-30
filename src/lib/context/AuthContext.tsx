@@ -48,7 +48,7 @@ interface Props {
   children?: ReactNode;
 }
 
-const AuthProvider = ({ children }: Props) => {
+function AuthProvider({ children }: Props) {
   const { Provider } = AuthContext;
 
   const [authState, setAuthState] = useState<IAuthState>({
@@ -71,7 +71,7 @@ const AuthProvider = ({ children }: Props) => {
   const setUserId = (id: number) => {
     setAuthState({
       ...authState,
-      id: id,
+      id,
     });
   };
 
@@ -79,6 +79,8 @@ const AuthProvider = ({ children }: Props) => {
     clearCachedData('/login');
     clearCachedData(`/user/${authState.id}`);
     clearCachedData('/chat');
+    clearCachedData('/contacts');
+    clearCachedData('/blocked');
     setAuthState({
       ...AuthStateDefault,
       authenticated: false,
@@ -106,7 +108,7 @@ const AuthProvider = ({ children }: Props) => {
       {children}
     </Provider>
   );
-};
+}
 
 const useAuthContext = () => {
   // get the context

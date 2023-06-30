@@ -24,18 +24,18 @@ function ChatViewContainer(props: { chat_id: number; title: string }) {
 
   const { isLoading, onFetch, onError, getFresh, fetchCacheorFresh } = useFetchHook(
     { url: `/chat/${chat_id}`, method: 'GET' },
-    true,
+    true
   );
 
   const items: IMenuItem[] = [
     {
       title: 'Refresh',
       onPress: () => {
-        onFetch(async () => getFresh()).then(res => {
+        onFetch(async () => getFresh()).then((res) => {
           if (res) {
             dispatchMessages(res.messages);
           } else {
-            fetchCacheorFresh().then(res => {
+            fetchCacheorFresh().then((res) => {
               if (res) {
                 dispatchMessages(res.messages);
               }
@@ -51,8 +51,11 @@ function ChatViewContainer(props: { chat_id: number; title: string }) {
     },
     {
       title: 'Edit Chat',
-      onPress: () => navigation.navigate('EditChatView'),
-      disabled: true,
+      onPress: () =>
+        navigation.navigate('EditChatView', {
+          chat_id: chat_id,
+        }),
+      disabled: false,
     },
   ];
 
@@ -61,7 +64,7 @@ function ChatViewContainer(props: { chat_id: number; title: string }) {
       title: `${title}`,
       headerRight: () => <SettingsMenu items={items} />,
     });
-    onFetch(async () => await getFresh()).then(data => {
+    onFetch(async () => getFresh()).then((data) => {
       if (!data) return;
       dispatchMessages(data.messages);
     });

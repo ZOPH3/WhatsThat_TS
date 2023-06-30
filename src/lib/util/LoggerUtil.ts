@@ -27,11 +27,12 @@ const defaultConfig = {
     },
     extensionColors: {
       root: 'magenta',
-      component: 'green',
+      component: 'grey',
       dispatcher: 'yellow',
       api: 'cyan',
       polling: 'white',
       cache: 'blue',
+      interaction: 'green',
     },
   },
   async: true,
@@ -49,6 +50,7 @@ export const dispatcherLog = log.extend('dispatcher');
 export const apiLog = log.extend('api');
 export const pollingLog = log.extend('polling');
 export const cacheLog = log.extend('cache');
+export const intLog = log.extend('interaction');
 
 export function logOutput(type: logType, message: string) {
   switch (type) {

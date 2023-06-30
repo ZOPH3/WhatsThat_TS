@@ -40,8 +40,8 @@ const ContactServices = (useFetch: any): IContactServices => {
   };
 
   const blockUser = async (user_id: number) => {
-    const response = await useFetch({ url: `/user/${user_id}/block`, method: 'GET' }, true);
-    return response.data as Response;
+    const response = await useFetch({ url: `/user/${user_id}/block`, method: 'POST' }, true);
+    return response || null;
   };
 
   const unblockUser = async (user_id: number): Promise<Response | undefined> => {

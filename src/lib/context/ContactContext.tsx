@@ -17,6 +17,8 @@ export const actionTypes = {
   ADD_CONTACT: 'ADD_CONTACT',
   REMOVE_CONTACT: 'REMOVE_CONTACT',
   BLOCK_USER: 'BLOCK_USER',
+  SET_CONTACTS: 'SET_CONTACTS',
+  SET_BLOCKED: 'SET_BLOCKED',
 };
 
 const ContactsReducer = (state: IContactsContext, action: any) => {
@@ -36,6 +38,16 @@ const ContactsReducer = (state: IContactsContext, action: any) => {
         ...state,
         blocked: [...state.blocked, action.payload],
         contacts: state.contacts.filter((contact) => contact.user_id !== action.payload.user_id),
+      };
+    case actionTypes.SET_CONTACTS:
+      return {
+        ...state,
+        contacts: action.payload,
+      };
+    case actionTypes.SET_BLOCKED:
+      return {
+        ...state,
+        blocked: action.payload,
       };
     default:
       return state;
@@ -59,6 +71,14 @@ function ContactsProvider({ children }: any) {
     dispatch({ type: actionTypes.BLOCK_USER, payload: user_id });
   };
 
+  const setContacts = (contacts: TUser[]) => {
+    dispatch({ type: actionTypes.SET_CONTACTS, payload: contacts });
+  };
+
+  const setBlocked = (blocked: TUser[]) => {
+    dispatch({ type: actionTypes.SET_BLOCKED, payload: blocked });
+  };
+
   // TODO: Move the functions outside of the provider because when the state is changed the functions are re-created (this is causing the re-render of the component)
   // Used Memo in order to avoid the re-render of the component - Havent checked if it works
   // eslint-disable-next-line react/jsx-no-constructed-context-values
@@ -70,9 +90,11 @@ function ContactsProvider({ children }: any) {
         handleAddContact,
         handleRemoveContact,
         handleBlockUser,
+        setContacts,
+        setBlocked,
       },
     }),
-    [state.blocked, state.contacts],
+    [state.blocked, state.contacts]
   );
 
   return <ContactsContext.Provider value={value}>{children}</ContactsContext.Provider>;

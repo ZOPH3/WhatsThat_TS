@@ -16,6 +16,7 @@ import ContactList from '../AddedUsersView/list/ContactList';
 import ContactServices, { TSearchParams } from '../../lib/services/ContactServices';
 import { useApiContext } from '../../lib/context/ApiContext';
 import { TUser } from '../../lib/types/TSchema';
+import { useContactContext } from '../../lib/context/ContactContext';
 
 const styles = StyleSheet.create({
   container: {
@@ -41,15 +42,21 @@ const styles = StyleSheet.create({
  */
 function SearchUsersView({ navigation }) {
   const { useFetch } = useApiContext();
+  const { contacts, blocked, dispatcher } = useContactContext();
 
   const [value, setValue] = React.useState('');
   const [searchQuery, setSearchQuery] = React.useState('');
-  const onChangeSearch = (query) => setSearchQuery(query);
+  const onChangeSearch = query => setSearchQuery(query);
   const [listType, setListType] = React.useState<'all' | 'blocked' | 'contacts'>('all');
   const [currentPage, setCurrentPage] = React.useState(0);
   const [isLoading, setIsLoading] = React.useState(false);
   const [data, setData] = React.useState<TUser[] | null>(null);
   const _handleMore = () => console.log('Shown more');
+
+  // useEffect(() => {
+  //   console.log('Contacts', contacts);
+  //   console.log('Blocked', blocked);
+  // }, [contacts, blocked]);
 
   const _handleSearch = () => {
     setIsLoading(true);
@@ -64,15 +71,15 @@ function SearchUsersView({ navigation }) {
     };
     ContactServices(useFetch)
       .searchUsers(params)
-      .then((res) => {
-        console.log(res);
+      .then(res => {
         if (res && res.length > 0) {
           setData(res as TUser[]);
+          if (listType === 'contacts') dispatcher.setContacts(res as TUser[]);
         } else {
           setData(null);
         }
       })
-      .catch((err) => {
+      .catch(err => {
         console.log(err);
       })
       .finally(() => {
@@ -81,25 +88,28 @@ function SearchUsersView({ navigation }) {
   };
 
   const _handleBlocked = () => {
-    console.log('Blocked');
     setIsLoading(true);
-    // const params: TSearchParams = {
-    //   q: searchQuery,
-    //   search_in: contactOnly ? 'contacts' : 'all',
-    //   limit: 6,
-    //   offset: currentPage * 6,
-    // };
     ContactServices(useFetch)
       .fetchBlockedList()
-      .then((res) => {
-        console.log(res);
+      .then(res => {
+        // console.log(res);
         if (res !== undefined && res.length > 0) {
-          setData(res as TUser[]);
+          if (listType === 'blocked') dispatcher.setBlocked(res as TUser[]);
+          if (searchQuery !== '') {
+            setData(
+              blocked.filter(
+                (user: TUser) =>
+                  user.first_name.includes(searchQuery) || user.last_name.includes(searchQuery),
+              ),
+            );
+          } else {
+            setData(res as TUser[]);
+          }
         } else {
           setData(null);
         }
       })
-      .catch((err) => {
+      .catch(err => {
         console.log(err);
       })
       .finally(() => {
@@ -148,8 +158,6 @@ function SearchUsersView({ navigation }) {
         style={{ margin: 10 }}
       />
       <View style={styles.contentContainer}>
-        {/* <Text>{contactOnly ? 'Contacts' : 'All Users'}</Text> */}
-        {/* {!!onError && <Text>{onError}</Text>} */}
         {(data?.length === 0 || data === null) && (
           <Text>
             No {searchQuery !== '' ? searchQuery : 'user'} in {listType}.

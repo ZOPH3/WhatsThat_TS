@@ -1,11 +1,20 @@
 /**
  * Extra services
  */
-import React, { createContext, useCallback, useMemo, useReducer } from 'react';
+import React, { createContext, useCallback, useEffect, useMemo, useReducer } from 'react';
 import { TSingleMessage } from '../types/TSchema';
 
+export type TDraftMessage = {
+  draft_id: number;
+  chat_id: number;
+  message: Partial<TSingleMessage>;
+  created_at: number;
+  scheduled: number;
+  sent: boolean;
+};
+
 const initialState: any = {
-  draftMessageList: [],
+  draftMessageList: [] as TDraftMessage[],
 };
 
 const ServicesContext = createContext(initialState);
@@ -21,21 +30,29 @@ const ServicesReducer = (state: any, action: any) => {
     case 'ADD_DRAFT_MESSAGE':
       return {
         ...state,
-        draftMessageList: [...state.draftMessageList, payload],
+        draftMessageList: [
+          ...state.draftMessageList,
+          { draft_id: state.draftMessageList.length + 1, ...payload },
+        ],
       };
     case 'UPDATE_DRAFT_MESSAGE':
       return {
         ...state,
-        draftMessageList: state.draftMessageList.map((message: TSingleMessage) =>
-          message.message_id === payload.message_id ? payload : message
+        draftMessageList: state.draftMessageList.map((message: TDraftMessage) =>
+          message.draft_id === payload.draft_id ? payload : message
         ),
       };
     case 'DELETE_DRAFT_MESSAGE':
       return {
         ...state,
         draftMessageList: state.draftMessageList.filter(
-          (message: TSingleMessage) => message.message_id !== payload
+          (message: TDraftMessage) => message.draft_id !== payload
         ),
+      };
+    case 'CLEAR_DRAFT_MESSAGE_LIST':
+      return {
+        ...state,
+        draftMessageList: [] as TDraftMessage[],
       };
     default:
       throw new Error(`No case for type ${type} found in ServicesReducer.`);
@@ -45,20 +62,24 @@ const ServicesReducer = (state: any, action: any) => {
 function ServiceProvider({ children }: any) {
   const [state, dispatch] = useReducer(ServicesReducer, initialState);
 
+  useEffect(() => {
+    console.log('state.draftMessageList', state.draftMessageList);
+  }, [state.draftMessageList]);
+
   const setDraftMessageList = useCallback(
-    (payload: TSingleMessage[]) => {
+    (payload: TDraftMessage[]) => {
       dispatch({ type: 'SET_DRAFT_MESSAGE_LIST', payload });
     },
     [dispatch]
   );
   const addDraftMessage = useCallback(
-    (payload: Partial<TSingleMessage>) => {
+    (payload: Partial<TDraftMessage>) => {
       dispatch({ type: 'ADD_DRAFT_MESSAGE', payload });
     },
     [dispatch]
   );
   const updateDraftMessage = useCallback(
-    (payload: Partial<TSingleMessage>) => {
+    (payload: Partial<TDraftMessage>) => {
       dispatch({ type: 'UPDATE_DRAFT_MESSAGE', payload });
     },
     [dispatch]
@@ -69,21 +90,34 @@ function ServiceProvider({ children }: any) {
     },
     [dispatch]
   );
+  const clearDraftMessageList = useCallback(() => {
+    dispatch({ type: 'CLEAR_DRAFT_MESSAGE_LIST' });
+  }, [dispatch]);
 
-  const services = useMemo(
+  const value = useMemo(
     () => ({
+      draftMessageList: state.draftMessageList,
+      dispatcher: {
+        setDraftMessageList,
+        addDraftMessage,
+        updateDraftMessage,
+        deleteDraftMessage,
+        clearDraftMessageList,
+      },
+    }),
+    [
+      state.draftMessageList,
       setDraftMessageList,
       addDraftMessage,
       updateDraftMessage,
       deleteDraftMessage,
-    }),
-    [setDraftMessageList, addDraftMessage, updateDraftMessage, deleteDraftMessage]
+      clearDraftMessageList,
+    ],
   );
 
   return (
-    <ServicesContext.Provider value={{ ...state, ...services }}>
-      {children}
-    </ServicesContext.Provider>
+    // eslint-disable-next-line react/jsx-no-constructed-context-values
+    <ServicesContext.Provider value={value}>{children}</ServicesContext.Provider>
   );
 }
 

@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 import React, { useEffect } from 'react';
 import { SafeAreaView, View } from 'react-native';
-import { ProgressBar, Text } from 'react-native-paper';
+import { Button, ProgressBar, Text } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 
 import styles from '../../styles/GlobalStyle';
@@ -11,6 +11,9 @@ import MessageList from './list/MessageList';
 import MessageInput from './components/MessageInput';
 import useFetchHook from '../../lib/hooks/useFetchHook';
 import MessageInteractions from './services/interactions';
+import { useServiceContext } from '../../lib/context/ServicesContext';
+import { useAuthContext } from '../../lib/context/AuthContext';
+import log from '../../lib/util/LoggerUtil';
 
 // FIXME: Loading from cache for messages is malformed, it loses the .messages property and needs [3] to access the messages
 
@@ -20,6 +23,9 @@ import MessageInteractions from './services/interactions';
 function ChatViewContainer(props: { chat_id: number; title: string }) {
   const { chat_id, title } = props;
   const navigation = useNavigation();
+  const service = useServiceContext();
+  const { current_user } = useAuthContext().authState;
+
   const { messageList, dispatchMessages, sendMessage } = MessageInteractions(chat_id);
 
   const { isLoading, onFetch, onError, getFresh, fetchCacheorFresh } = useFetchHook(
@@ -71,8 +77,21 @@ function ChatViewContainer(props: { chat_id: number; title: string }) {
   }, []);
 
   const handleSend = (inputValue: string) => {
-    // Do something with the input value, such as sending it to a server
     if (inputValue !== '') sendMessage(inputValue);
+  };
+
+  const handleDraft = (inputValue: string, date: string) => {
+    const draft = {
+      message: {
+        message: inputValue,
+        author: current_user,
+      },
+      chat_id: chat_id,
+      created_at: Date.now(),
+      scheduled: date,
+      sent: false,
+    };
+    service.dispatcher.addDraftMessage(draft);
   };
 
   return (
@@ -86,8 +105,10 @@ function ChatViewContainer(props: { chat_id: number; title: string }) {
         ) : (
           <Text>No Messages</Text>
         )}
+        <Button onPress={() => log.debug(service.draftMessageList)}>draft</Button>
+        <Button onPress={() => service.clearDraftMessageList}>clear</Button>
       </SafeAreaView>
-      <MessageInput onSend={handleSend} />
+      <MessageInput onSend={handleSend} onDraft={handleDraft} />
     </View>
   );
 }

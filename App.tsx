@@ -8,6 +8,7 @@ import { AuthProvider } from './src/lib/context/AuthContext';
 import { ChatProvider } from './src/lib/context/ChatContext';
 import { NotificationProvider } from './src/lib/context/NotificationContext';
 import { ContactsProvider } from './src/lib/context/ContactContext';
+import { ServiceProvider } from './src/lib/context/ServicesContext';
 
 function App() {
   return (
@@ -17,7 +18,9 @@ function App() {
           <ApiProvider>
             <ContactsProvider>
               <ChatProvider>
-                <StackNavigator />
+                <ServiceProvider>
+                  <StackNavigator />
+                </ServiceProvider>
               </ChatProvider>
             </ContactsProvider>
           </ApiProvider>

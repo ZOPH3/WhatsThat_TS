@@ -7,7 +7,7 @@ interface IChatServices {
   fetchChatList: () => Promise<TChatSummary | undefined>;
   createChat: (name: string) => Promise<TCreateChatResponse | undefined>;
   fetchChatDetails: (chat_id: number) => Promise<TChat | undefined>;
-  updateChatDetails: (chat_id: number, name: string) => Promise<Response | undefined>;
+  updateChatDetails: (chat_id: number, payload: Partial<TChat>) => Promise<Response | undefined>;
   addUserToConversation: (chat_id: number, user_id: number) => Promise<Response | undefined>;
   removeUserFromConversation: (chat_id: number, user_id: number) => Promise<Response | undefined>;
 }
@@ -34,30 +34,33 @@ const ChatServices = (useFetch: any): IChatServices => {
 
   const updateChatDetails = async (
     chat_id: number,
-    name: string,
+    payload: Partial<TChat>
   ): Promise<Response | undefined> => {
-    const response = await useFetch({ url: `/chat/${chat_id}`, method: 'POST', data: name }, true);
+    const response = await useFetch(
+      { url: `/chat/${chat_id}`, method: 'PATCH', data: payload },
+      true
+    );
     return response.data;
   };
 
   const addUserToConversation = async (
     chat_id: number,
-    user_id: number,
+    user_id: number
   ): Promise<Response | undefined> => {
     const response = await useFetch(
       { url: `/chat/${chat_id}/user/${user_id}`, method: 'POST' },
-      true,
+      true
     );
     return response.data;
   };
 
   const removeUserFromConversation = async (
     chat_id: number,
-    user_id: number,
+    user_id: number
   ): Promise<Response | undefined> => {
     const response = await useFetch(
       { url: `/chat/${chat_id}/user/${user_id}`, method: 'DELETE' },
-      true,
+      true
     );
     return response.data;
   };

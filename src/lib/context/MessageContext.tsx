@@ -92,7 +92,7 @@ function MessageProvider({ children, chat_id }: any) {
       chat_id,
       dispatcher: { print, deleteMessage, sendMessage, updateMessage, setMessages },
     }),
-    [state.messageList, chat_id],
+    [state.messageList, chat_id]
   );
 
   return <MessageContext.Provider value={value}>{children}</MessageContext.Provider>;

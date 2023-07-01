@@ -7,6 +7,12 @@
     "isolatedModules": true,
     "rootDir": "./src",
     "outDir": "./dist",
-    "sourceMap": true
+    "sourceMap": true,
+    "lib": [
+      "es5",
+      "es6",
+      "dom",
+      "dom.iterable"
+    ]
   }
 }

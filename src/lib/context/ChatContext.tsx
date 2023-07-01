@@ -22,7 +22,6 @@ const ChatReducer = (state: IChatContext, action: any) => {
         chatSummaryList: payload,
       };
     case 'ADD_CHAT_SUMMARY':
-      // console.log('ADD_CHAT_SUMMARY: ', payload);
       return {
         ...state,
         chatSummaryList: [...state.chatSummaryList, payload],
@@ -48,10 +47,6 @@ const ChatReducer = (state: IChatContext, action: any) => {
 
 function ChatProvider({ children }: any) {
   const [state, dispatch] = useReducer(ChatReducer, initialState);
-
-  const getState = () => {
-    return state;
-  };
 
   const setChatSummaryList = useCallback(
     (payload: TChatSummary[]) => {
@@ -85,7 +80,6 @@ function ChatProvider({ children }: any) {
     () => ({
       chatSummaryList: state.chatSummaryList,
       dispatcher: {
-        getState,
         setChatSummaryList,
         addChatSummary,
         updateChatSummary,
@@ -95,7 +89,6 @@ function ChatProvider({ children }: any) {
     [
       addChatSummary,
       deleteChatSummary,
-      getState,
       setChatSummaryList,
       state.chatSummaryList,
       updateChatSummary,

@@ -28,7 +28,17 @@ function MessageInput({ onSend, onDraft }) {
 
   return (
     <View
-      style={{ ...styles.bottomView, width: '80%', padding: 15, margin: 0, paddingHorizontal: 10 }}
+      style={{
+        flex: 1,
+        position: 'absolute',
+        width: '75%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'row',
+        // padding: 6,
+        margin: 5,
+        bottom: 5,
+      }}
     >
       <TextInput
         mode="outlined"
@@ -39,7 +49,7 @@ function MessageInput({ onSend, onDraft }) {
           }
         }}
         onChangeText={handleInputChange}
-        style={{ flex: 10, padding: 6 }}
+        style={{ flex: 10 }}
       />
       {/* <ButtonComponent
         mode="contained"
@@ -49,7 +59,7 @@ function MessageInput({ onSend, onDraft }) {
       /> */}
       <Portal>
         <FAB.Group
-          style={{ position: 'absolute', margin: 5, bottom: 35 }}
+          style={{ position: 'absolute', marginBottom: 5, bottom: 40, right: 5 }}
           open={open}
           visible
           toggleStackOnLongPress

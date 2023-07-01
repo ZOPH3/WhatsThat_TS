@@ -78,7 +78,7 @@ function ChatViewContainer(props: { chat_id: number; title: string }) {
   return (
     <View style={styles.container}>
       <ProgressBar indeterminate visible={isLoading} />
-      <SafeAreaView style={{ flex: 10 }}>
+      <SafeAreaView style={{ flex: 10, paddingBottom: 75 }}>
         {onError ? (
           <Text>{onError}</Text>
         ) : messageList ? (

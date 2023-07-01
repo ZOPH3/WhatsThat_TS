@@ -25,7 +25,6 @@ function ChatViewContainer(props: { chat_id: number; title: string }) {
   const navigation = useNavigation();
   const service = useServiceContext();
   const { current_user } = useAuthContext().authState;
-
   const { messageList, dispatchMessages, sendMessage } = MessageInteractions(chat_id);
 
   const { isLoading, onFetch, onError, getFresh, fetchCacheorFresh } = useFetchHook(
@@ -98,15 +97,11 @@ function ChatViewContainer(props: { chat_id: number; title: string }) {
     <View style={styles.container}>
       <ProgressBar indeterminate visible={isLoading} />
       <SafeAreaView style={{ flex: 10, paddingBottom: 75 }}>
-        {onError ? (
-          <Text>{onError}</Text>
-        ) : messageList ? (
-          <MessageList messages={messageList} />
-        ) : (
-          <Text>No Messages</Text>
-        )}
+        {!!onError && <Text>{onError}</Text>}
+        {!messageList && <Text>No Messages</Text>}
+        {!!messageList && <MessageList messages={messageList} />}
         <Button onPress={() => log.debug(service.draftMessageList)}>draft</Button>
-        <Button onPress={() => service.clearDraftMessageList}>clear</Button>
+        <Button onPress={() => service.clearDraftMessageList()}>clear</Button>
       </SafeAreaView>
       <MessageInput onSend={handleSend} onDraft={handleDraft} />
     </View>

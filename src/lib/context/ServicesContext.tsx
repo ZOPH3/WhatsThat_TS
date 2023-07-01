@@ -3,6 +3,7 @@
  */
 import React, { createContext, useCallback, useEffect, useMemo, useReducer } from 'react';
 import { TSingleMessage } from '../types/TSchema';
+import { getCachedData, setCachedData } from '../services/CacheService';
 
 export type TDraftMessage = {
   draft_id: number;
@@ -11,6 +12,11 @@ export type TDraftMessage = {
   created_at: number;
   scheduled: number;
   sent: boolean;
+};
+
+const loadCachedData = async () => {
+  const data = await getCachedData<TDraftMessage[]>('/drafts');
+  return data;
 };
 
 const initialState: any = {
@@ -63,7 +69,18 @@ function ServiceProvider({ children }: any) {
   const [state, dispatch] = useReducer(ServicesReducer, initialState);
 
   useEffect(() => {
-    console.log('state.draftMessageList', state.draftMessageList);
+    const getCache = async () => {
+      const data = await loadCachedData();
+      if (!data) return;
+      dispatch({ type: 'SET_DRAFT_MESSAGE_LIST', payload: data });
+    };
+    getCache();
+  }, []);
+
+  useEffect(() => {
+    // console.log('state.draftMessageList', state.draftMessageList);
+    const setCache = async () => setCachedData<TDraftMessage[]>('/drafts', state.draftMessageList);
+    setCache();
   }, [state.draftMessageList]);
 
   const setDraftMessageList = useCallback(
@@ -112,7 +129,7 @@ function ServiceProvider({ children }: any) {
       updateDraftMessage,
       deleteDraftMessage,
       clearDraftMessageList,
-    ],
+    ]
   );
 
   return (

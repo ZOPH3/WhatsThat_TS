@@ -18,6 +18,11 @@ async function setCachedData<T>(url: string, data: T) {
   await AsyncStorage.setItem(url, string);
 }
 
+const clearCachedData = async (url: string) => {
+  log.debug(`[CACHE] Clearing: ${url}`);
+  await AsyncStorage.removeItem(url);
+};
+
 async function getCachedData<T>(url: string, expiresIn?: number) {
   log.debug(`[CACHE] Fetching: ${url}`);
 
@@ -39,10 +44,5 @@ async function getCachedData<T>(url: string, expiresIn?: number) {
     log.error(err);
   }
 }
-
-const clearCachedData = async (url: string) => {
-  log.debug(`[CACHE] Clearing: ${url}`);
-  await AsyncStorage.removeItem(url);
-};
 
 export { getCachedData, setCachedData, clearCachedData };

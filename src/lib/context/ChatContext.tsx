@@ -2,14 +2,17 @@ import React, { createContext, useCallback, useEffect, useMemo, useReducer } fro
 import { TChat, TChatSummary } from '../types/TSchema';
 import { getCachedData, setCachedData } from '../services/CacheService';
 
+const CACHE_NAME = '/chat';
+type TChatInfo = TChat & TChatSummary;
+
 interface IChatContext {
-  chatSummaryList: TChatSummary[];
-  chatInfo: (TChat & TChatSummary)[];
+  // chatSummaryList: TChatSummary[];
+  chatSummaryList: TChatInfo[];
   dispatcher?: any;
 }
 
 const loadCachedData = async () => {
-  const data = await getCachedData<TChatSummary[]>('/chat');
+  const data = await getCachedData<(TChat & TChatSummary)[]>(CACHE_NAME);
   return data;
 };
 
@@ -24,7 +27,7 @@ const loadCachedData = async () => {
 
 const initialState: IChatContext = {
   chatSummaryList: [],
-  chatInfo: [],
+  // chatInfo: [],
 };
 
 const ChatContext = createContext(initialState);
@@ -32,16 +35,16 @@ const ChatContext = createContext(initialState);
 const ChatReducer = (state: IChatContext, action: any) => {
   const { type, payload } = action;
   switch (type) {
-    case 'SET_CHAT_INFO':
-      return {
-        ...state,
-        chatInfo: payload,
-      };
-    case 'ADD_CHAT_INFO':
-      return {
-        ...state,
-        chatInfo: [...[state.chatInfo], payload],
-      };
+    // case 'SET_CHAT_INFO':
+    //   return {
+    //     ...state,
+    //     chatInfo: payload,
+    //   };
+    // case 'ADD_CHAT_INFO':
+    //   return {
+    //     ...state,
+    //     chatInfo: [...[state.chatInfo], payload],
+    //   };
     case 'SET_CHAT_SUMMARY_LIST':
       return {
         ...state,
@@ -86,18 +89,10 @@ function ChatProvider({ children }: any) {
   useEffect(() => {
     if (!state.chatSummaryList.length) return;
     const setCache = async () => {
-      await setCachedData('/chat', state.chatSummaryList);
+      await setCachedData(CACHE_NAME, state.chatSummaryList);
     };
     setCache();
   }, [state.chatSummaryList]);
-
-  useEffect(() => {
-    if (state.chatInfo && !state.chatInfo.length) return;
-    const setCache = async () => {
-      await setCachedData('/chatInfo', state.chatInfo);
-    };
-    setCache();
-  }, [state.chatInfo]);
 
   const setChatSummaryList = useCallback(
     (payload: TChatSummary[]) => {
@@ -126,24 +121,24 @@ function ChatProvider({ children }: any) {
     [dispatch]
   );
 
-  const setChatInfo = useCallback(
-    (payload: TChat & TChatSummary[]) => {
-      dispatch({ type: 'SET_CHAT_INFO', payload });
-    },
-    [dispatch]
-  );
+  // const setChatInfo = useCallback(
+  //   (payload: TChat & TChatSummary[]) => {
+  //     dispatch({ type: 'SET_CHAT_INFO', payload });
+  //   },
+  //   [dispatch]
+  // );
 
   // Note: useMemo is used to prevent unnecessary re-renders
   const value = useMemo(
     () => ({
       chatSummaryList: state.chatSummaryList,
-      chatInfo: state.chatInfo,
+      // chatInfo: state.chatInfo,
       dispatcher: {
         setChatSummaryList,
         addChatSummary,
         updateChatSummary,
         deleteChatSummary,
-        setChatInfo,
+        // setChatInfo,
       },
     }),
     [
@@ -152,7 +147,7 @@ function ChatProvider({ children }: any) {
       setChatSummaryList,
       state.chatSummaryList,
       updateChatSummary,
-      setChatInfo,
+      // setChatInfo,
     ],
   );
 
@@ -170,4 +165,3 @@ const useChatContext = () => {
 };
 
 export { ChatProvider, useChatContext };
-

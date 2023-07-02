@@ -9,16 +9,18 @@ import { useChatContext } from '../../lib/context/ChatContext';
 import ChatSummaryViewContainer from './ChatSummaryViewContainer';
 import { Button } from 'react-native-paper';
 import log from '../../lib/util/LoggerUtil';
+import useChatController from '../../lib/controller/ChatController';
 
 function ChatSummaryView() {
   const navigation = useNavigation();
   const { logout } = useAuthContext();
-  const { chatInfo, dispatcher } = useChatContext();
+  const { chatSummaryList, dispatcher } = useChatContext();
   const dialogRef = useRef<{ show: () => void }>();
-  const { onFetch, getFresh, fetchCacheorFresh } = useFetchHook(
-    { url: '/chat', method: 'GET' },
-    true
-  );
+  const { fetchChatDetails, fetchChatSummary } = useChatController();
+  // const { onFetch, getFresh, fetchCacheorFresh } = useFetchHook(
+  //   { url: '/chat', method: 'GET' },
+  //   true
+  // );
 
   // Issue with re rendering closing the keyboard -> dispatcher function seems to be the issue as context is updated, forcing a re render
 
@@ -30,17 +32,23 @@ function ChatSummaryView() {
     {
       title: 'Reload',
       onPress: () => {
-        onFetch(async () => getFresh()).then((res) => {
-          if (res) {
-            dispatcher.setChatSummaryList(res);
-          } else {
-            fetchCacheorFresh().then((res) => {
-              if (res) {
-                dispatcher.setChatSummaryList(res);
-              }
-            });
+        fetchChatSummary().then((data) => {
+          if (data) {
+            // dispatcher.setChatSummaryList(data);
+            if (data.length > 0) fetchChatDetails(data);
           }
         });
+        // onFetch(async () => getFresh()).then((res) => {
+        //   if (res) {
+        //     dispatcher.setChatSummaryList(res);
+        //   } else {
+        //     fetchCacheorFresh().then((res) => {
+        //       if (res) {
+        //         dispatcher.setChatSummaryList(res);
+        //       }
+        //     });
+        //   }
+        // });
       },
     },
     {
@@ -68,7 +76,7 @@ function ChatSummaryView() {
 
   return (
     <>
-      <Button onPress={() => log.debug(chatInfo)}>ChatView</Button>
+      <Button onPress={() => log.debug(chatSummaryList)}>ChatView</Button>
       <CreateChatDialog ref={dialogRef} />
       <ChatSummaryViewContainer />
     </>

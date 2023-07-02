@@ -21,13 +21,13 @@ function ChatSummaryViewContainer() {
     true
   );
 
-  useEffect(() => {
-    fetchCacheorFresh().then((res) => {
-      if (res) {
-        dispatcher.setChatSummaryList(res);
-      }
-    });
-  }, []);
+  // useEffect(() => {
+  //   fetchCacheorFresh().then((res) => {
+  //     if (res) {
+  //       dispatcher.setChatSummaryList(res);
+  //     }
+  //   });
+  // }, []);
 
   return (
     <View style={styles.container}>

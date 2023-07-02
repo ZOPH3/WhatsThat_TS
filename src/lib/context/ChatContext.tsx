@@ -1,14 +1,30 @@
-import React, { createContext, useCallback, useMemo, useReducer } from 'react';
+import React, { createContext, useCallback, useEffect, useMemo, useReducer } from 'react';
 import { TChat, TChatSummary } from '../types/TSchema';
-import log from '../util/LoggerUtil';
+import { getCachedData, setCachedData } from '../services/CacheService';
 
 interface IChatContext {
   chatSummaryList: TChatSummary[];
+  chatInfo: (TChat & TChatSummary)[];
   dispatcher?: any;
 }
 
+const loadCachedData = async () => {
+  const data = await getCachedData<TChatSummary[]>('/chat');
+  return data;
+};
+
+// type TChatInfo = {
+//   chat_id: number;
+//   name: string;
+//   creator: TUser;
+//   last_message: TSingleMessage;
+//   members: TUser[];
+//   messages: TSingleMessage[];
+// };
+
 const initialState: IChatContext = {
   chatSummaryList: [],
+  chatInfo: [],
 };
 
 const ChatContext = createContext(initialState);
@@ -16,6 +32,16 @@ const ChatContext = createContext(initialState);
 const ChatReducer = (state: IChatContext, action: any) => {
   const { type, payload } = action;
   switch (type) {
+    case 'SET_CHAT_INFO':
+      return {
+        ...state,
+        chatInfo: payload,
+      };
+    case 'ADD_CHAT_INFO':
+      return {
+        ...state,
+        chatInfo: [...[state.chatInfo], payload],
+      };
     case 'SET_CHAT_SUMMARY_LIST':
       return {
         ...state,
@@ -29,15 +55,15 @@ const ChatReducer = (state: IChatContext, action: any) => {
     case 'UPDATE_CHAT_SUMMARY':
       return {
         ...state,
-        chatSummaryList: state.chatSummaryList.map(chatSummary =>
-          chatSummary.chat_id === payload.chat_id ? payload : chatSummary,
+        chatSummaryList: state.chatSummaryList.map((chatSummary) =>
+          chatSummary.chat_id === payload.chat_id ? payload : chatSummary
         ),
       };
     case 'DELETE_CHAT_SUMMARY':
       return {
         ...state,
         chatSummaryList: state.chatSummaryList.filter(
-          chatSummary => chatSummary.chat_id !== payload,
+          (chatSummary) => chatSummary.chat_id !== payload
         ),
       };
     default:
@@ -48,42 +74,76 @@ const ChatReducer = (state: IChatContext, action: any) => {
 function ChatProvider({ children }: any) {
   const [state, dispatch] = useReducer(ChatReducer, initialState);
 
+  useEffect(() => {
+    const getCache = async () => {
+      const data = await loadCachedData();
+      if (!data) return;
+      dispatch({ type: 'SET_CHAT_SUMMARY_LIST', payload: data });
+    };
+    getCache();
+  }, []);
+
+  useEffect(() => {
+    if (!state.chatSummaryList.length) return;
+    const setCache = async () => {
+      await setCachedData('/chat', state.chatSummaryList);
+    };
+    setCache();
+  }, [state.chatSummaryList]);
+
+  useEffect(() => {
+    if (state.chatInfo && !state.chatInfo.length) return;
+    const setCache = async () => {
+      await setCachedData('/chatInfo', state.chatInfo);
+    };
+    setCache();
+  }, [state.chatInfo]);
+
   const setChatSummaryList = useCallback(
     (payload: TChatSummary[]) => {
       dispatch({ type: 'SET_CHAT_SUMMARY_LIST', payload });
     },
-    [dispatch],
+    [dispatch]
   );
   const addChatSummary = useCallback(
     (payload: Partial<TChatSummary>) => {
       dispatch({ type: 'ADD_CHAT_SUMMARY', payload });
     },
-    [dispatch],
+    [dispatch]
   );
 
   const updateChatSummary = useCallback(
     (payload: TChatSummary) => {
       dispatch({ type: 'UPDATE_CHAT_SUMMARY', payload });
     },
-    [dispatch],
+    [dispatch]
   );
 
   const deleteChatSummary = useCallback(
     (payload: number) => {
       dispatch({ type: 'DELETE_CHAT_SUMMARY', payload });
     },
-    [dispatch],
+    [dispatch]
+  );
+
+  const setChatInfo = useCallback(
+    (payload: TChat & TChatSummary[]) => {
+      dispatch({ type: 'SET_CHAT_INFO', payload });
+    },
+    [dispatch]
   );
 
   // Note: useMemo is used to prevent unnecessary re-renders
   const value = useMemo(
     () => ({
       chatSummaryList: state.chatSummaryList,
+      chatInfo: state.chatInfo,
       dispatcher: {
         setChatSummaryList,
         addChatSummary,
         updateChatSummary,
         deleteChatSummary,
+        setChatInfo,
       },
     }),
     [
@@ -92,6 +152,7 @@ function ChatProvider({ children }: any) {
       setChatSummaryList,
       state.chatSummaryList,
       updateChatSummary,
+      setChatInfo,
     ],
   );
 
@@ -109,3 +170,4 @@ const useChatContext = () => {
 };
 
 export { ChatProvider, useChatContext };
+

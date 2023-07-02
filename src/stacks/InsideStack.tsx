@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import React, { useEffect } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
@@ -21,7 +22,7 @@ import BlockedUsersView from '../views/BlockedUsersView';
 import { useApiContext } from '../lib/context/ApiContext';
 import { useAuthContext } from '../lib/context/AuthContext';
 import log, { apiLog, pollingLog, rootLog } from '../lib/util/LoggerUtil';
-import { TChatSummary } from '../lib/types/TSchema';
+import { TChat, TChatSummary } from '../lib/types/TSchema';
 import { useChatContext } from '../lib/context/ChatContext';
 
 const ChatStack = createNativeStackNavigator();
@@ -50,6 +51,10 @@ function ContactTopTabNavigator() {
 }
 
 function ContactStackNavigator({ navigation }) {
+  const headerRight = () => (
+    <IconButton icon="plus" size={20} onPress={() => navigation.navigate('SearchUsersView')} />
+  );
+
   return (
     <InsideStack.Navigator>
       <InsideStack.Screen
@@ -57,13 +62,7 @@ function ContactStackNavigator({ navigation }) {
         component={ContactTopTabNavigator}
         options={{
           title: 'Contacts',
-          headerRight: () => (
-            <IconButton
-              icon="plus"
-              size={20}
-              onPress={() => navigation.navigate('SearchUsersView')}
-            />
-          ),
+          headerRight,
         }}
       />
       <InsideStack.Screen
@@ -158,8 +157,59 @@ function InsideStackNavigator() {
   };
 
   // FIXME: Poll continues even after logout
+  // const fetchChatMessages = async (chatSummaryList: TChatSummary[]) => {
+  //   const promises = [] as any[];
+  //   const INDEX = [] as { chat_id: number }[];
+
+  //   dispatcher.setChatInfo(...chatSummaryList);
+  //   try {
+  //     for (let i = 0; i < chatSummaryList.length; i++) {
+  //       promises.push(
+  //         useFetch(
+  //           {
+  //             url: `/chat/${chatSummaryList[i].chat_id}`,
+  //             method: 'GET',
+  //             headers: { polling: true },
+  //           },
+  //           true
+  //         )
+  //       );
+
+  //       INDEX.push({ chat_id: chatSummaryList[i].chat_id });
+
+  //       if (i === chatSummaryList.length - 1) {
+  //         Promise.allSettled(promises).then((results) => {
+  //           const chatInfo = [] as Partial<TChat & TChatSummary>[];
+  //           let chatInfoIndex = 0;
+
+  //           results.forEach((result) => {
+  //             if (!result || result.status === 'rejected') {
+  //               console.log(
+  //                 `Error on index ${chatInfoIndex}, chat_id ${INDEX[chatInfoIndex].chat_id}: `,
+  //                 result.reason
+  //               );
+  //               chatInfoIndex += 1;
+  //               return;
+  //             }
+  //             chatInfo.push({
+  //               chat_id: INDEX[chatInfoIndex].chat_id,
+  //               ...(result.value.data as TChat),
+  //             });
+  //             chatInfoIndex += 1;
+  //           });
+  //           dispatcher.setChatInfo(chatInfo);
+  //         });
+  //       }
+  //     }
+  //   } catch (err) {
+  //     log.error(`Error: ${err}`);
+  //   }
+  // };
+
   const fetchChatMessages = async (chatSummaryList: TChatSummary[]) => {
     const promises = [] as any[];
+    dispatcher.setChatInfo(...chatSummaryList);
+
     try {
       for (let i = 0; i < chatSummaryList.length; i++) {
         promises.push(
@@ -172,20 +222,34 @@ function InsideStackNavigator() {
             true
           )
         );
-
         if (i === chatSummaryList.length - 1) {
-          Promise.allSettled(promises).then((results) =>
+          Promise.allSettled(promises).then((results) => {
+            const chatInfo = [] as Partial<TChat & TChatSummary>[];
+            let chatInfoIndex = 0;
+
             results.forEach((result) => {
-              // console.log(result.value.data)
-            })
-          );
+              if (!result || result.status === 'rejected') {
+                console.log(
+                  `Error on index ${chatInfoIndex}, chat_id ${chatSummaryList[chatInfoIndex].chat_id}: `,
+                  result.reason,
+                );
+                chatInfoIndex += 1;
+                return;
+              }
+              chatInfo.push({
+                ...chatSummaryList[chatInfoIndex],
+                ...(result.value.data as TChat),
+              });
+              chatInfoIndex += 1;
+            });
+            dispatcher.setChatInfo(chatInfo);
+          });
         }
       }
     } catch (err) {
       log.error(`Error: ${err}`);
     }
   };
-
   const pollTest = () => {
     if (!pollId) {
       pollId = setInterval(() => {

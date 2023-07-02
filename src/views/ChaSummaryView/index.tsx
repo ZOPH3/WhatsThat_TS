@@ -7,15 +7,17 @@ import CreateChatDialog from './components/Dialog';
 import useFetchHook from '../../lib/hooks/useFetchHook';
 import { useChatContext } from '../../lib/context/ChatContext';
 import ChatSummaryViewContainer from './ChatSummaryViewContainer';
+import { Button } from 'react-native-paper';
+import log from '../../lib/util/LoggerUtil';
 
 function ChatSummaryView() {
   const navigation = useNavigation();
   const { logout } = useAuthContext();
-  const { dispatcher } = useChatContext();
+  const { chatInfo, dispatcher } = useChatContext();
   const dialogRef = useRef<{ show: () => void }>();
   const { onFetch, getFresh, fetchCacheorFresh } = useFetchHook(
     { url: '/chat', method: 'GET' },
-    true,
+    true
   );
 
   // Issue with re rendering closing the keyboard -> dispatcher function seems to be the issue as context is updated, forcing a re render
@@ -28,11 +30,11 @@ function ChatSummaryView() {
     {
       title: 'Reload',
       onPress: () => {
-        onFetch(async () => getFresh()).then(res => {
+        onFetch(async () => getFresh()).then((res) => {
           if (res) {
             dispatcher.setChatSummaryList(res);
           } else {
-            fetchCacheorFresh().then(res => {
+            fetchCacheorFresh().then((res) => {
               if (res) {
                 dispatcher.setChatSummaryList(res);
               }
@@ -66,6 +68,7 @@ function ChatSummaryView() {
 
   return (
     <>
+      <Button onPress={() => log.debug(chatInfo)}>ChatView</Button>
       <CreateChatDialog ref={dialogRef} />
       <ChatSummaryViewContainer />
     </>

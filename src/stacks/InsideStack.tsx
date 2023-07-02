@@ -88,7 +88,14 @@ function ChatStackNavigator() {
       />
       <ChatStack.Screen name="ChatView" component={ChatView} />
 
-      <ChatStack.Screen name="EditChatView" component={EditChatView} />
+      <ChatStack.Screen
+        name="EditChatView"
+        component={EditChatView}
+        options={{
+          title: 'Edit Chat',
+          headerShown: false,
+        }}
+      />
       <ChatStack.Screen name="InviteUserView" component={InviteUserView} />
     </ChatStack.Navigator>
   );
@@ -162,15 +169,15 @@ function InsideStackNavigator() {
               method: 'GET',
               headers: { polling: true },
             },
-            true,
-          ),
+            true
+          )
         );
 
         if (i === chatSummaryList.length - 1) {
-          Promise.allSettled(promises).then(results =>
-            results.forEach(result => {
+          Promise.allSettled(promises).then((results) =>
+            results.forEach((result) => {
               // console.log(result.value.data)
-            }),
+            })
           );
         }
       }
@@ -182,7 +189,7 @@ function InsideStackNavigator() {
   const pollTest = () => {
     if (!pollId) {
       pollId = setInterval(() => {
-        fetch().then(data => {
+        fetch().then((data) => {
           if (data) {
             dispatcher.setChatSummaryList(data);
             if (data.length > 0) fetchChatMessages(data);
@@ -198,8 +205,10 @@ function InsideStackNavigator() {
   };
 
   useEffect(() => {
-    // if (authState.authenticated === true) pollTest();
-    if (authState.authenticated === false) clearPoll();
+    if (authState.authenticated === true) pollTest();
+    // if (authState.authenticated === false) clearPoll();
+
+    return () => clearPoll();
   }, [authState.authenticated]);
 
   return (

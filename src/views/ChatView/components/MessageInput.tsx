@@ -115,7 +115,7 @@ function MessageInput({ onSend, onDraft }) {
 
       <Portal>
         <FAB.Group
-          style={{ position: 'absolute', right: 2, bottom: -5 }}
+          style={{ position: 'absolute', right: 2, bottom: -2 }}
           open={open}
           visible
           toggleStackOnLongPress

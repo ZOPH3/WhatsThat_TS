@@ -1,9 +1,8 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useApiContext } from '../context/ApiContext';
-import { useAuthContext } from '../context/AuthContext';
 import { useChatContext } from '../context/ChatContext';
 import { TChatSummary, TChat } from '../types/TSchema';
-import log, { pollingLog } from '../util/LoggerUtil';
+import log, { apiLog, pollingLog } from '../util/LoggerUtil';
 
 const useChatController = () => {
   const { useFetch } = useApiContext();
@@ -21,7 +20,7 @@ const useChatController = () => {
       pollingLog.debug(`Fetched ChatList: ${response.data.length}`);
       return response.data as TChatSummary[];
     } catch (err) {
-      log.error(`Error: ${err}`);
+      apiLog.warn(`Fetching chat summary: ${err}`);
     }
   };
 
@@ -64,7 +63,7 @@ const useChatController = () => {
         }
       }
     } catch (err) {
-      log.error(`Error: ${err}`);
+      apiLog.warn(`Fetching chat details: ${err}`);
     }
   };
 

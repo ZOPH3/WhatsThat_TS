@@ -5,9 +5,8 @@ import { Platform } from 'react-native';
 function isMobile(): boolean {
   if (Platform.OS === 'ios' || Platform.OS === 'android') {
     return true;
-  } else {
-    return false;
   }
+  return false;
 }
 
 interface IGlobalState {
@@ -31,7 +30,7 @@ interface Props {
   children?: ReactNode;
 }
 
-const GlobalProvider = ({ children }: Props) => {
+function GlobalProvider({ children }: Props) {
   const [GlobalState, setGlobalState] = useState<IGlobalState>(GlobalStateDefault);
   const toggleTheme = () => {
     setGlobalState((prevState) => {
@@ -52,7 +51,7 @@ const GlobalProvider = ({ children }: Props) => {
   };
 
   return <Provider value={{ ...GlobalState, toggleTheme, initialise }}>{children}</Provider>;
-};
+}
 
 const useGlobalContext = () => {
   // get the context

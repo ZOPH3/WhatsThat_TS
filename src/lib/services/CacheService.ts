@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import log from '../util/LoggerUtil';
+import log, { cacheLog } from '../util/LoggerUtil';
 
 type TCachedData<T> = {
   data: T;
@@ -14,17 +14,17 @@ async function setCachedData<T>(url: string, data: T) {
 
   const string = JSON.stringify(cdata);
 
-  log.debug(`[CACHE] Storing: ${url}`);
+  cacheLog.debug(`[CACHE] Storing: ${url}`);
   await AsyncStorage.setItem(url, string);
 }
 
 const clearCachedData = async (url: string) => {
-  log.debug(`[CACHE] Clearing: ${url}`);
+  cacheLog.debug(`[CACHE] Clearing: ${url}`);
   await AsyncStorage.removeItem(url);
 };
 
 async function getCachedData<T>(url: string, expiresIn?: number) {
-  log.debug(`[CACHE] Fetching: ${url}`);
+  cacheLog.debug(`[CACHE] Fetching: ${url}`);
 
   try {
     const cache = await AsyncStorage.getItem(url);
@@ -41,7 +41,7 @@ async function getCachedData<T>(url: string, expiresIn?: number) {
 
     return cdata.data as T;
   } catch (err) {
-    log.error(err);
+    cacheLog.warn(err);
   }
 }
 

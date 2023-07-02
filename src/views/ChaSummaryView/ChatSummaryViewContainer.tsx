@@ -11,7 +11,7 @@ import { useChatContext } from '../../lib/context/ChatContext';
 import { useApiContext } from '../../lib/context/ApiContext';
 
 function ChatSummaryViewContainer() {
-  const { chatSummaryList, dispatcher } = useChatContext();
+  const { chatSummaryList } = useChatContext();
 
   const { useFetch } = useApiContext();
   if (!useFetch) throw new Error('useFetch is null');
@@ -20,14 +20,6 @@ function ChatSummaryViewContainer() {
     { url: '/chat', method: 'GET' },
     true
   );
-
-  // useEffect(() => {
-  //   fetchCacheorFresh().then((res) => {
-  //     if (res) {
-  //       dispatcher.setChatSummaryList(res);
-  //     }
-  //   });
-  // }, []);
 
   return (
     <View style={styles.container}>

@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, FlatList, SafeAreaView } from 'react-native';
 
-import { TChatSummary } from '../../../lib/types/TSchema';
 import { useNavigation } from '@react-navigation/native';
+import { TChatSummary } from '../../../lib/types/TSchema';
 import ChatSummaryItemWrapper from '../components/ListItemWrapper';
 
 interface IChatSummaryList {
@@ -15,20 +15,20 @@ interface IChatSummaryActions {
   goTo?: () => void;
 }
 
-const ChatSummaryList = ({ chatSummaryList }) => {
+function ChatSummaryList({ chatSummaryList }) {
   const navigation = useNavigation();
 
   const actions = (chat_id: number, name: string): IChatSummaryActions => {
     return {
       edit: () =>
         navigation.navigate('EditChatView', {
-          chat_id: chat_id,
+          chat_id,
           chat_name: name,
         }),
       delete: () => console.log('delete'),
       goTo: () =>
         navigation.navigate('ChatView', {
-          chat_id: chat_id,
+          chat_id,
           chat_name: name,
         }),
     };
@@ -46,14 +46,14 @@ const ChatSummaryList = ({ chatSummaryList }) => {
     return chatSummary;
   };
 
-  //FIXME: For some reason, sorting the array here causes undefined function error
+  // FIXME: For some reason, sorting the array here causes undefined function error
   return (
     <View>
       <SafeAreaView>
         <FlatList
           data={chatSummaryList}
-          keyExtractor={(item) => item.chat_id.toString()}
-          renderItem={(_) => (
+          keyExtractor={item => item.chat_id.toString()}
+          renderItem={_ => (
             <ChatSummaryItemWrapper
               chatSummary={_.item}
               actions={actions(_.item.chat_id, _.item.name)}
@@ -63,5 +63,5 @@ const ChatSummaryList = ({ chatSummaryList }) => {
       </SafeAreaView>
     </View>
   );
-};
+}
 export default ChatSummaryList;

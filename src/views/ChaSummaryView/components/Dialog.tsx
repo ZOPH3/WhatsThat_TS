@@ -28,18 +28,19 @@ const CreateChatDialog = forwardRef((props, ref) => {
 
   return (
     <DialogBlock
-      title={'Create Chat'}
+      title="Create Chat"
       content={dialogContent}
       actions={
         <>
           <ButtonComponent
-            title={'Cancel'}
+            title="Cancel"
             onPress={() => {
               hideDialog();
             }}
           />
+          {/* FIXME: Show helper text when chat cant be created */}
           <ButtonComponent
-            title={'Create Chat'}
+            title="Create Chat"
             mode="contained"
             loading={isLoading}
             onPress={async () => {
@@ -47,6 +48,9 @@ const CreateChatDialog = forwardRef((props, ref) => {
               if (createTextRef && createTextRef.current !== '') {
                 const response = await ChatServices(useFetch)
                   .createChat(createTextRef.current)
+                  .catch((e) => {
+                    return null;
+                  })
                   .finally(() => setIsLoading(false));
 
                 if (!response) return;
@@ -55,7 +59,7 @@ const CreateChatDialog = forwardRef((props, ref) => {
                   name: createTextRef.current,
                   chat_id: response.chat_id,
                 });
-                
+
                 createTextRef.current = '';
                 hideDialog();
               }

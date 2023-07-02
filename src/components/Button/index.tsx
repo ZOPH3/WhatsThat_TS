@@ -5,7 +5,7 @@ import { Button } from 'react-native-paper';
 interface IButton {
   title: string;
   onPress: () => void;
-  mode?: "text" | "outlined" | "contained" | "elevated" | "contained-tonal" | undefined;
+  mode?: 'text' | 'outlined' | 'contained' | 'elevated' | 'contained-tonal' | undefined;
   backgroundColor?: string;
   color?: string;
   loading?: boolean;
@@ -27,7 +27,11 @@ const ButtonComponent = ({
   styleText,
   style,
 }: IButton): React.ReactElement => {
-  return <Button onPress={onPress} loading={loading} disabled={disabled} mode={mode} style={style}>{title}</Button>;
+  return (
+    <Button onPress={onPress} loading={loading} disabled={disabled} mode={mode} style={style}>
+      {title}
+    </Button>
+  );
 };
 
 export default ButtonComponent;

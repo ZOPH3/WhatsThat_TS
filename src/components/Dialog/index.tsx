@@ -12,8 +12,8 @@ const DialogComponent = () => {
   const showDialog = () => setVisible(true);
   const hideDialog = () => setVisible(false);
 
-  const DialogContent = (props: { items: IDialogContent[] }) => {
-    const items = props.items;
+  function DialogContent(props: { items: IDialogContent[] }) {
+    const { items } = props;
     return (
       <>
         {items.map((content, key: React.Key) => {
@@ -21,9 +21,13 @@ const DialogComponent = () => {
         })}
       </>
     );
-  };
+  }
 
-  const DialogBlock = (props: { title: string; content?: IDialogContent[], actions?: React.ReactNode }) => {
+  function DialogBlock(props: {
+    title: string;
+    content?: IDialogContent[];
+    actions?: React.ReactNode;
+  }) {
     const { title, content, actions } = props;
     return (
       <View>
@@ -31,14 +35,12 @@ const DialogComponent = () => {
           <Dialog visible={visible} onDismiss={hideDialog}>
             <Dialog.Title>{title}</Dialog.Title>
             {content ? <DialogContent items={content} /> : null}
-            <Dialog.Actions>
-              {actions? actions : <Button onPress={hideDialog}>Done</Button>}
-            </Dialog.Actions>
+            <Dialog.Actions>{actions || <Button onPress={hideDialog}>Done</Button>}</Dialog.Actions>
           </Dialog>
         </Portal>
       </View>
     );
-  };
+  }
 
   return { DialogBlock, showDialog, hideDialog };
 };

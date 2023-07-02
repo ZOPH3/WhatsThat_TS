@@ -15,7 +15,7 @@ interface IMessageContainer {
 
 function MessageContainer({ message }: IMessageContainer) {
   const currentUser = useAuthContext().authState.id;
-  const { DialogBlock, showDialog } = DialogComponent();
+  const { DialogBlock, showDialog, hideDialog } = DialogComponent();
   const { messageList, chat_id, dispatcher } = useMessageContext();
   const { useFetch } = useApiContext();
 
@@ -25,7 +25,7 @@ function MessageContainer({ message }: IMessageContainer) {
         <List.Item
           title="Edit"
           description="Edit your message"
-          left={props => <List.Icon {...props} icon="folder" />}
+          left={(props) => <List.Icon {...props} icon="folder" />}
           onPress={() => {
             console.log('Edit', message.message_id);
           }}
@@ -37,10 +37,12 @@ function MessageContainer({ message }: IMessageContainer) {
         <List.Item
           title="Delete"
           description="Delete your message"
-          left={props => <List.Icon {...props} icon="folder" />}
+          left={(props) => <List.Icon {...props} icon="folder" />}
           onPress={() => {
-            console.log('Edit', message.message_id);
-            if (chat_id) MessageServices(useFetch).deleteMessage(chat_id, message.message_id);
+            if (chat_id)
+              MessageServices(useFetch)
+                .deleteMessage(chat_id, message.message_id)
+                .then(() => hideDialog());
           }}
         />
       ),

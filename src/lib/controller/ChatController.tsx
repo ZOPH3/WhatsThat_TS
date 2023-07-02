@@ -42,9 +42,9 @@ const useChatController = () => {
           Promise.allSettled(promises).then((results) => {
             const chatInfo = [] as Partial<TChat & TChatSummary>[];
             let chatInfoIndex = 0;
-
+            if (!results) return;
             results.forEach((result) => {
-              if (!result || result.status === 'rejected') {
+              if (!result || result.status === 'rejected' || !result.value.data) {
                 console.log(
                   `Error on index ${chatInfoIndex}, chat_id ${chatSummaryList[chatInfoIndex].chat_id}: `,
                   result.reason

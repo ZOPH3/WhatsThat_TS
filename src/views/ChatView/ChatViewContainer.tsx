@@ -13,18 +13,21 @@ import useFetchHook from '../../lib/hooks/useFetchHook';
 import MessageInteractions from './services/interactions';
 import { useServiceContext } from '../../lib/context/ServicesContext';
 import { useAuthContext } from '../../lib/context/AuthContext';
+import { TChatInfo, useChatContext } from '../../lib/context/ChatContext';
 
 // FIXME: Loading from cache for messages is malformed, it loses the .messages property and needs [3] to access the messages
 
 /**
- * TODO: Need to set the state of the messages
+ * TODO: I think using MessageContext and copying the messages from the context is better for performance. Deleting a message from the chat context doesnt update the UI.
  */
-function ChatViewContainer(props: { chat_id: number; title: string }) {
-  const { chat_id, title } = props;
+function ChatViewContainer(props: { chat_id: number; title: string; chat: TChatInfo }) {
+  const { chat_id, title, chat } = props;
+
   const navigation = useNavigation();
   const service = useServiceContext();
   const { current_user } = useAuthContext().authState;
-  const { messageList, dispatchMessages, sendMessage } = MessageInteractions(chat_id);
+  const { dispatchMessages, sendMessage } = MessageInteractions(chat_id);
+  // const { chatSummaryList } = useChatContext();
 
   const { isLoading, onFetch, onError, getFresh, fetchCacheorFresh } = useFetchHook(
     { url: `/chat/${chat_id}`, method: 'GET' },
@@ -57,7 +60,7 @@ function ChatViewContainer(props: { chat_id: number; title: string }) {
       title: 'Edit Chat',
       onPress: () =>
         navigation.navigate('EditChatView', {
-          chat_id: chat_id,
+          chat_id,
         }),
       disabled: false,
     },
@@ -68,6 +71,7 @@ function ChatViewContainer(props: { chat_id: number; title: string }) {
       title: `${title}`,
       headerRight: () => <SettingsMenu items={items} />,
     });
+
     onFetch(async () => getFresh()).then((data) => {
       if (!data) return;
       dispatchMessages(data.messages);
@@ -84,7 +88,7 @@ function ChatViewContainer(props: { chat_id: number; title: string }) {
         message: inputValue,
         author: current_user,
       },
-      chat_id: chat_id,
+      chat_id,
       created_at: Date.now(),
       scheduled: date,
       sent: false,
@@ -98,8 +102,8 @@ function ChatViewContainer(props: { chat_id: number; title: string }) {
         <ProgressBar indeterminate visible={isLoading} />
         <SafeAreaView style={{ flex: 10, paddingBottom: 75 }}>
           {!!onError && <Text>{onError}</Text>}
-          {!messageList && <Text>No Messages</Text>}
-          {!!messageList && <MessageList messages={messageList} />}
+          {!chat.messages && <Text>No Messages</Text>}
+          {!!chat.messages && <MessageList messages={chat.messages} />}
         </SafeAreaView>
         <MessageInput onSend={handleSend} onDraft={handleDraft} />
       </Portal.Host>

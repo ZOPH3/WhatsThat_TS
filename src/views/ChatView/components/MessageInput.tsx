@@ -98,7 +98,7 @@ function MessageInput({ onSend, onDraft }) {
         flexDirection: 'row',
         // padding: 6,
         margin: 5,
-        bottom: 5,
+        bottom: 0,
       }}
     >
       <TextInput
@@ -110,11 +110,12 @@ function MessageInput({ onSend, onDraft }) {
           }
         }}
         onChangeText={handleInputChange}
-        style={{ flex: 10 }}
+        style={{ flex: 10, bottom: 10, marginLeft: 10 }}
       />
+
       <Portal>
         <FAB.Group
-          style={{ position: 'absolute', marginBottom: 5, bottom: 35, right: 2 }}
+          style={{ position: 'absolute', right: 2, bottom: -5 }}
           open={open}
           visible
           toggleStackOnLongPress
@@ -150,7 +151,8 @@ function MessageInput({ onSend, onDraft }) {
               onChangeText={handleDateSelection}
             />
             <HelperText type="error" visible={hasErrors()}>
-              Invalid date format. Expected format: 01/07/2023 12:34 (Day/Month/Year Hour:Min) and date must be in the future.
+              Invalid date format. Expected format: 01/07/2023 12:34 (Day/Month/Year Hour:Min) and
+              date must be in the future.
             </HelperText>
           </Dialog.Content>
           <Dialog.Actions>

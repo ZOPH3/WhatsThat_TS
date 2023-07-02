@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 import React, { useEffect } from 'react';
 import { SafeAreaView, View } from 'react-native';
-import { Button, ProgressBar, Text } from 'react-native-paper';
+import { Button, Portal, ProgressBar, Text } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 
 import styles from '../../styles/GlobalStyle';
@@ -13,7 +13,6 @@ import useFetchHook from '../../lib/hooks/useFetchHook';
 import MessageInteractions from './services/interactions';
 import { useServiceContext } from '../../lib/context/ServicesContext';
 import { useAuthContext } from '../../lib/context/AuthContext';
-import log from '../../lib/util/LoggerUtil';
 
 // FIXME: Loading from cache for messages is malformed, it loses the .messages property and needs [3] to access the messages
 
@@ -95,15 +94,15 @@ function ChatViewContainer(props: { chat_id: number; title: string }) {
 
   return (
     <View style={styles.container}>
-      <ProgressBar indeterminate visible={isLoading} />
-      <SafeAreaView style={{ flex: 10, paddingBottom: 75 }}>
-        {!!onError && <Text>{onError}</Text>}
-        {!messageList && <Text>No Messages</Text>}
-        {!!messageList && <MessageList messages={messageList} />}
-        <Button onPress={() => log.debug(service.draftMessageList)}>draft</Button>
-        <Button onPress={() => service.clearDraftMessageList()}>clear</Button>
-      </SafeAreaView>
-      <MessageInput onSend={handleSend} onDraft={handleDraft} />
+      <Portal.Host>
+        <ProgressBar indeterminate visible={isLoading} />
+        <SafeAreaView style={{ flex: 10, paddingBottom: 75 }}>
+          {!!onError && <Text>{onError}</Text>}
+          {!messageList && <Text>No Messages</Text>}
+          {!!messageList && <MessageList messages={messageList} />}
+        </SafeAreaView>
+        <MessageInput onSend={handleSend} onDraft={handleDraft} />
+      </Portal.Host>
     </View>
   );
 }

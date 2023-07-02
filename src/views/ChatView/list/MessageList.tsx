@@ -9,12 +9,6 @@ interface IMessageList {
   messages: TSingleMessage[];
 }
 
-// export interface IMessageActions {
-//   delete: () => void;
-//   edit: () => void;
-//   goTo?: () => void;
-// }
-
 function MessageList({ messages }: IMessageList) {
   const flatListRef = useRef<FlatList<TSingleMessage>>(null);
   if (!messages || messages.length === 0) return null;
@@ -25,7 +19,7 @@ function MessageList({ messages }: IMessageList) {
         <FlatList
           ref={flatListRef}
           data={messages ? messages.sort((a, b) => a.timestamp - b.timestamp) : []}
-          keyExtractor={item => item.message_id.toString()}
+          keyExtractor={item => item.timestamp.toString()}
           renderItem={_ => <MessageContainer message={_.item} />}
           onContentSizeChange={() => flatListRef.current?.scrollToEnd()}
         />

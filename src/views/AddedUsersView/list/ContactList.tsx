@@ -9,6 +9,7 @@ import AvatarComponent from '../../../components/Avatar';
 import ContactServices from '../../../lib/services/ContactServices';
 import { useApiContext } from '../../../lib/context/ApiContext';
 import { intLog } from '../../../lib/util/LoggerUtil';
+import { stringToColour } from '../../../lib/util/ColorGeneratorUtil';
 
 interface IContactList {
   contacts: TUser[];
@@ -23,10 +24,10 @@ function ContactListActions() {
     if (!user_id) return;
     ContactServices(useFetch)
       .deleteContact(user_id)
-      .then((res) => {
+      .then(res => {
         intLog.success('[Remove User]', res);
       })
-      .catch((err) => {
+      .catch(err => {
         intLog.error('[Remove User]', err);
       });
   };
@@ -35,10 +36,10 @@ function ContactListActions() {
     if (!user_id) return;
     ContactServices(useFetch)
       .blockUser(user_id)
-      .then((res) => {
+      .then(res => {
         if (res) intLog.success('[Block User]', res);
       })
-      .catch((err) => {
+      .catch(err => {
         intLog.error('[Block User]', err);
       });
   };
@@ -48,12 +49,12 @@ function ContactListActions() {
     ContactServices(useFetch)
       .unblockUser(user_id)
       .then(
-        (res) => {
+        res => {
           if (res) intLog.success('[Unblock User]', res);
         },
-        (err) => intLog.error('[Unblock User]', err)
+        err => intLog.error('[Unblock User]', err),
       )
-      .catch((err) => {
+      .catch(err => {
         intLog.error('[Unblock User]', err);
       });
   };
@@ -63,12 +64,12 @@ function ContactListActions() {
     ContactServices(useFetch)
       .addContact(user_id)
       .then(
-        (res) => {
+        res => {
           if (res) intLog.success('[Add User]', res);
         },
-        (err) => intLog.error('[Add User]', err)
+        err => intLog.error('[Add User]', err),
       )
-      .catch((err) => {
+      .catch(err => {
         intLog.error('[Add User]', err);
       });
   };
@@ -139,17 +140,26 @@ function ContactList({ contacts, listType }: IContactList) {
     hideDialog();
   };
 
+  const avatar = (label: string, color: string) => (
+    <AvatarComponent label={label} color={stringToColour(color)} />
+  );
+
   // FIXME: For some reason, sorting the array here causes undefined function error
   return (
     <View>
       <SafeAreaView>
         <FlatList
           data={contacts}
-          keyExtractor={(item) => item.user_id.toString()}
-          renderItem={(_) => (
+          keyExtractor={item => item.user_id.toString()}
+          renderItem={_ => (
             <List.Item
               title={`${_.item.first_name}`}
-              left={() => <AvatarComponent label={`${_.item.first_name}`} size={50} />}
+              left={() =>
+                avatar(
+                  `${_.item.first_name} ${_.item.last_name}`,
+                  `${_.item.user_id} ${_.item.first_name}`,
+                )
+              }
               right={() => null}
               onPress={() => {
                 if (listType === 'blocked') {

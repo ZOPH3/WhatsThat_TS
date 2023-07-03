@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import React from 'react';
+import React, { memo } from 'react';
 import { List } from 'react-native-paper';
 import { TSingleMessage } from '../../../lib/types/TSchema';
 import { useAuthContext } from '../../../lib/context/AuthContext';
@@ -16,7 +16,7 @@ interface IMessageContainer {
 function MessageContainer({ message }: IMessageContainer) {
   const currentUser = useAuthContext().authState.id;
   const { DialogBlock, showDialog, hideDialog } = DialogComponent();
-  const { messageList, chat_id, dispatcher } = useMessageContext();
+  const { chat_id } = useMessageContext();
   const { useFetch } = useApiContext();
 
   const dialogContent = [
@@ -69,11 +69,15 @@ function MessageContainer({ message }: IMessageContainer) {
         author={author}
         date={isToday(date) ? date.toLocaleTimeString() : date.toLocaleString()}
         isSelf={isSelf}
-        actions={{ onLongPress: showDialog }}
+        actions={{
+          onLongPress: showDialog,
+          onTouchStart: () =>
+            console.log(`chat_id ${chat_id}, message id: ${message.message_id ?? 'not defined'}`),
+        }}
       />
       <DialogBlock title="Actions" content={dialogContent} />
     </>
   );
 }
 
-export default MessageContainer;
+export default memo(MessageContainer);

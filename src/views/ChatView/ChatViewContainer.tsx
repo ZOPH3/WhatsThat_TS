@@ -13,7 +13,7 @@ import useFetchHook from '../../lib/hooks/useFetchHook';
 import MessageInteractions from './services/interactions';
 import { useServiceContext } from '../../lib/context/ServicesContext';
 import { useAuthContext } from '../../lib/context/AuthContext';
-import { TChatInfo, useChatContext } from '../../lib/context/ChatContext';
+import { TChatInfo } from '../../lib/context/ChatContext';
 
 // FIXME: Loading from cache for messages is malformed, it loses the .messages property and needs [3] to access the messages
 
@@ -76,7 +76,7 @@ function ChatViewContainer(props: { chat_id: number; title: string; chat: TChatI
       if (!data) return;
       dispatchMessages(data.messages);
     });
-  }, []);
+  }, [chat_id]);
 
   const handleSend = (inputValue: string) => {
     if (inputValue !== '') sendMessage(inputValue);

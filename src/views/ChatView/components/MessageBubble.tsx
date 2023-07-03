@@ -12,39 +12,38 @@ interface IMessageBubble {
   // eslint-disable-next-line @typescript-eslint/ban-types
 }
 
-const MessageBubble = ({
+function MessageBubble({
   message,
   author,
   date,
   isSelf = false,
   children,
   actions,
-}: IMessageBubble) => {
-  //TODO: Add actions for other users
+}: IMessageBubble) {
+  // TODO: Add actions for other users
   return (
-    <>
-      <View>
-        <TouchableOpacity
-          style={[isSelf ? styles.self : styles.others]}
-          onLongPress={
-            isSelf
-              ? () => actions.onLongPress()
-              : () => {
-                  /** do nothing */
-                }
-          }
-        >
-          <Text>{author}</Text>
-          <View onTouchStart={() => console.log(date)}>
-            <Text style={styles.date}>{date}</Text>
-            <Text style={styles.messageText}>{message}</Text>
-          </View>
-        </TouchableOpacity>
-        {children}
-      </View>
-    </>
+    <View>
+      <TouchableOpacity
+        style={[isSelf ? styles.self : styles.others]}
+        onLongPress={
+          isSelf
+            ? () => actions.onLongPress()
+            : () => {
+                /** do nothing */
+              }
+        }
+      >
+        {/* removed onTouchStart={() => console.log(date) */}
+        <Text>{author}</Text>
+        <View onTouchStart={actions.onTouchStart}>
+          <Text style={styles.date}>{date}</Text>
+          <Text style={styles.messageText}>{message}</Text>
+        </View>
+      </TouchableOpacity>
+      {children}
+    </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   date: { fontSize: 12, color: '#C3C3C3' },

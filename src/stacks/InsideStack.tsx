@@ -22,8 +22,6 @@ import BlockedUsersView from '../views/BlockedUsersView';
 import { useApiContext } from '../lib/context/ApiContext';
 import { useAuthContext } from '../lib/context/AuthContext';
 import log, { apiLog, pollingLog, rootLog } from '../lib/util/LoggerUtil';
-import { TChat, TChatSummary } from '../lib/types/TSchema';
-import { useChatContext } from '../lib/context/ChatContext';
 import useChatController from '../lib/controller/ChatController';
 
 const ChatStack = createNativeStackNavigator();
@@ -154,7 +152,7 @@ function InsideStackNavigator() {
             if (data.length > 0) fetchChatDetails(data);
           }
         });
-      }, 10000);
+      }, 5000);
     }
   };
 
@@ -165,8 +163,6 @@ function InsideStackNavigator() {
 
   useEffect(() => {
     if (authState.authenticated === true) pollTest();
-    // if (authState.authenticated === false) clearPoll();
-
     return () => clearPoll();
   }, [authState.authenticated]);
 

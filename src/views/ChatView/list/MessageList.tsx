@@ -19,8 +19,8 @@ function MessageList({ messages }: IMessageList) {
         <FlatList
           ref={flatListRef}
           data={messages ? messages.sort((a, b) => a.timestamp - b.timestamp) : []}
-          keyExtractor={item => item.timestamp.toString()}
-          renderItem={_ => <MessageContainer message={_.item} />}
+          keyExtractor={(item) => item.timestamp.toString()}
+          renderItem={({ item }) => <MessageContainer message={item} />}
           onContentSizeChange={() => flatListRef.current?.scrollToEnd()}
         />
       </SafeAreaView>

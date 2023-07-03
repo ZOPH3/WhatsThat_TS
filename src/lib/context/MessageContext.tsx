@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import React, { createContext, useContext, useEffect, useMemo, useReducer } from 'react';
+import React, { createContext, useContext, useMemo, useReducer } from 'react';
 import { TChat, TSingleMessage } from '../types/TSchema';
 
 interface IMessageDispatcher {

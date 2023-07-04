@@ -26,7 +26,7 @@ function ChatSummaryViewContainer() {
       <ProgressBar indeterminate visible={isLoading} />
       <SafeAreaView style={{ flex: 10 }}>
         {!!onError && <Text>{onError}</Text>}
-        {!chatSummaryList && <Text>No Chats</Text>}
+        {(!chatSummaryList || !chatSummaryList.length) && <Text>No Chats</Text>}
         {!!chatSummaryList && <ChatSummaryList chatSummaryList={chatSummaryList} />}
       </SafeAreaView>
     </View>

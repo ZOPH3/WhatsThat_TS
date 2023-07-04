@@ -15,7 +15,7 @@ function ChatSummaryView() {
   const { logout } = useAuthContext();
   const { chatSummaryList } = useChatContext();
   const dialogRef = useRef<{ show: () => void }>();
-  const { fetchChatDetails, fetchChatSummary } = useChatController();
+  const { handleIncomingChatSummary, fetchChatSummaryList } = useChatController();
 
   // Issue with re rendering closing the keyboard -> dispatcher function seems to be the issue as context is updated, forcing a re render
 
@@ -27,10 +27,10 @@ function ChatSummaryView() {
     {
       title: 'Reload',
       onPress: () => {
-        fetchChatSummary().then((data) => {
+        fetchChatSummaryList().then((data) => {
           if (data) {
             // dispatcher.setChatSummaryList(data);
-            if (data.length > 0) fetchChatDetails(data);
+            if (data.length > 0) handleIncomingChatSummary(data);
           }
         });
       },

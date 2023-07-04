@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useApiContext } from '../context/ApiContext';
-import log, { apiLog, pollingLog } from '../util/LoggerUtil';
+import log, { apiLog } from '../util/LoggerUtil';
 
 const useGlobalController = () => {
   const { useFetch } = useApiContext();

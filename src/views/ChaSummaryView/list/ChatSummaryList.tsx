@@ -50,16 +50,18 @@ function ChatSummaryList({ chatSummaryList }) {
   return (
     <View>
       <SafeAreaView>
-        <FlatList
-          data={chatSummaryList}
-          keyExtractor={item => item.chat_id.toString()}
-          renderItem={_ => (
-            <ChatSummaryItemWrapper
-              chatSummary={_.item}
-              actions={actions(_.item.chat_id, _.item.name)}
-            />
-          )}
-        />
+        {!!chatSummaryList && (
+          <FlatList
+            data={chatSummaryList}
+            keyExtractor={(item: TChatSummary, index: number) => index.toString()}
+            renderItem={(_) => (
+              <ChatSummaryItemWrapper
+                chatSummary={_.item}
+                actions={actions(_.item.chat_id, _.item.name)}
+              />
+            )}
+          />
+        )}
       </SafeAreaView>
     </View>
   );

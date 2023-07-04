@@ -135,7 +135,8 @@ function InsideTabNavigator() {
 function InsideStackNavigator() {
   const { useFetch } = useApiContext();
   const { authState } = useAuthContext();
-  const { fetchChatDetails, fetchChatSummary } = useChatController();
+  const { fetchChatSummaryList, handleIncomingChatSummary } = useChatController();
+
   let pollId: string | number | NodeJS.Timer | undefined;
 
   if (!useFetch) {
@@ -146,13 +147,15 @@ function InsideStackNavigator() {
   const pollTest = () => {
     if (!pollId) {
       pollId = setInterval(() => {
-        fetchChatSummary().then((data) => {
+        fetchChatSummaryList().then((data) => {
           if (data) {
             // dispatcher.setChatSummaryList(data);
-            if (data.length > 0) fetchChatDetails(data);
+            if (data.length > 0) {
+              handleIncomingChatSummary(data);
+            }
           }
         });
-      }, 5000);
+      }, 9000);
     }
   };
 
@@ -160,6 +163,19 @@ function InsideStackNavigator() {
     pollingLog.debug('Clearing Interval...');
     clearInterval(pollId);
   };
+
+  useEffect(() => {
+    if (authState.authenticated === true) {
+      apiLog.debug('Fetching Chat Summary List...');
+      fetchChatSummaryList().then((data) => {
+        if (data) {
+          if (data.length > 0) {
+            handleIncomingChatSummary(data);
+          }
+        }
+      });
+    }
+  }, []);
 
   useEffect(() => {
     if (authState.authenticated === true) pollTest();

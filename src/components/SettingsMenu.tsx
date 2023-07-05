@@ -14,15 +14,18 @@ export interface IMenuItem {
   onPress?: () => any;
 }
 
-function MenuItems(props: { items: IMenuItem[] }) {
-  const { items } = props;
+function MenuItems(props: { items: IMenuItem[]; closeMenu: () => void }) {
+  const { items, closeMenu } = props;
   return (
     <>
       {items.map((menuItem: IMenuItem, key: React.Key) => {
         return (
           <Menu.Item
             key={key}
-            onPress={menuItem.onPress}
+            onPress={() => {
+              menuItem.onPress();
+              closeMenu();
+            }}
             title={menuItem.title}
             disabled={menuItem.disabled}
           />
@@ -63,7 +66,7 @@ function SettingsMenu(props: { items: any }) {
           onPress={() => (toggleTheme ? toggleTheme() : console.log('No toggleTheme'))}
           title="Toggle Theme"
         />
-        <MenuItems items={items} />
+        <MenuItems items={items} closeMenu={closeMenu} />
       </Menu>
     </View>
   );

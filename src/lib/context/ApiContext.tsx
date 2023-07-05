@@ -61,13 +61,13 @@ function ApiProvider({ children }: Props) {
       .request({
         ...config,
         signal: newAbortSignal(5000),
-        validateStatus: status => status <= 304,
+        validateStatus: (status) => status <= 304,
       })
-      .catch(err => null); // Had to add catch here to catch the abort error
+      .catch((err) => null); // Had to add catch here to catch the abort error
   };
 
   _authApi.interceptors.request.use(
-    config => {
+    (config) => {
       // log.debug('[AUTH API] Intercepting: ' + config.url);
 
       if (!config.headers['X-Authorization'] && getToken) {
@@ -77,32 +77,32 @@ function ApiProvider({ children }: Props) {
 
       return config;
     },
-    error => {
+    (error) => {
       return Promise.reject(error);
-    },
+    }
   );
 
   _authApi.interceptors.response.use(
-    response => {
+    (response) => {
       log.debug(`[AUTH API] Response status for ${response.config.url}: ${response.status}`);
       return response;
     },
-    error => {
+    (error) => {
       // eslint-disable-next-line no-param-reassign
       error.message = error.name === 'CanceledError' ? 'Request timed out' : error.message;
       log.error(`[AUTH API] Response error: ${error.message}`);
       return Promise.reject(error);
-    },
+    }
   );
 
   _publicApi.interceptors.request.use(
-    config => {
+    (config) => {
       log.debug(`[PUBLIC API] Intercepting: ${config.url}`);
       return config;
     },
-    error => {
+    (error) => {
       return Promise.reject(error);
-    },
+    }
   );
 
   return <Provider value={{ useFetch }}>{children}</Provider>;

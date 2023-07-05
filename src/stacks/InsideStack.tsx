@@ -155,7 +155,7 @@ function InsideStackNavigator() {
             }
           }
         });
-      }, 5000);
+      }, 50000);
     }
   };
 

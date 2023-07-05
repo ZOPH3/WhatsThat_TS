@@ -43,6 +43,7 @@ async function getCachedData<T>(url: string, expiresIn?: number) {
   } catch (err) {
     cacheLog.warn(err);
   }
+  return null;
 }
 
 export { getCachedData, setCachedData, clearCachedData };

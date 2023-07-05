@@ -34,19 +34,18 @@ interface IAvatar {
   color?: string;
   size?: number;
   onPress?: () => void;
-  user_id?: number;
   style?: ViewStyle;
-  img?: string;
+  image?: any | null;
   children?: React.ReactElement | null;
   icon?: React.ReactElement | null;
 }
 
 const AvatarComponent = React.memo(
-  ({ label, color, size = 25, onPress, user_id, style, img, children, icon }: IAvatar) => {
+  ({ label, color, size = 25, onPress, style, image = null, children, icon }: IAvatar) => {
     if (!label) return null;
-
-    return <Avatar label={label} color={color} />;
-  },
+    // eslint-disable-next-line react/jsx-props-no-spreading
+    return <Avatar label={label} color={color} icon={icon} image={image} size={size} />;
+  }
 );
 
 export default AvatarComponent;

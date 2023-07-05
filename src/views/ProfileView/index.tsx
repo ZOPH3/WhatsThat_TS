@@ -1,12 +1,20 @@
+/* eslint-disable camelcase */
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
+import { Text } from 'react-native-paper';
+import { useAuthContext } from '../../lib/context/AuthContext';
 
-const ProfileView = () => {
-    return (
-        <View>
-            <Text>ProfileView</Text>
-        </View>
-    )
+function ProfileView() {
+  const { authState } = useAuthContext();
+  const { current_user } = authState;
+  const [state, setState] = React.useState(null);
+
+  return (
+    <View>
+      <Text>ProfileView</Text>
+      <Text>{JSON.stringify(current_user)}</Text>
+    </View>
+  );
 }
 
 export default ProfileView;

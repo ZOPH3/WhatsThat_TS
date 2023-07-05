@@ -6,7 +6,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { View, Image } from 'react-native';
 import { useApiContext } from '../context/ApiContext';
 import { getCachedData, setCachedData } from '../services/CacheService';
-import log, { cacheLog } from '../util/LoggerUtil';
+import log, { apiLog, cacheLog } from '../util/LoggerUtil';
 
 type ImageCache = {
   index: number;
@@ -52,6 +52,30 @@ function ImageFetcher(url: string) {
 
     return null;
   };
+
+  const fetch = useCallback(async () => {
+    try {
+      let data;
+      const response = await useFetch(
+        { url, method: 'GET', maxBodyLength: Infinity, responseType: 'blob' },
+        true
+      );
+      const mimeType = response.headers['content-type'];
+      const file = new File([response.data], url, { type: mimeType });
+      let base64data;
+      const fileReaderInstance = new FileReader();
+      fileReaderInstance.onload = () => {
+        base64data = fileReaderInstance.result;
+        data = base64data;
+      };
+      fileReaderInstance.readAsDataURL(file);
+
+      return data;
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
+
   const makeRequest = async () => {
     setIsLoading(true);
     try {
@@ -64,12 +88,17 @@ function ImageFetcher(url: string) {
 
       let base64data;
       const fileReaderInstance = new FileReader();
-      fileReaderInstance.readAsDataURL(file);
       fileReaderInstance.onload = () => {
         base64data = fileReaderInstance.result;
-        setData(base64data);
-        fetch_count.current += 1;
+        if (base64data !== data) {
+          setData(base64data);
+          fetch_count.current += 1;
+        } else {
+          apiLog.debug('ImageFetcher: No change in data...');
+        }
       };
+      fileReaderInstance.readAsDataURL(file);
+
       setIsLoading(false);
     } catch (error) {
       setData(undefined);

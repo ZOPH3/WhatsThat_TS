@@ -5,11 +5,9 @@ import { View, FlatList, SafeAreaView } from 'react-native';
 import { Button, Checkbox, Dialog, List, Portal, Text } from 'react-native-paper';
 
 import { TUser } from '../../../lib/types/TSchema';
-import AvatarComponent from '../../../components/Avatar';
 import ContactServices from '../../../lib/services/ContactServices';
 import { useApiContext } from '../../../lib/context/ApiContext';
 import { intLog } from '../../../lib/util/LoggerUtil';
-import { stringToColour } from '../../../lib/util/ColorGeneratorUtil';
 import ProfileAvatar from '../../SearchUsersView/ProfileAvatar';
 
 interface IContactList {
@@ -140,25 +138,17 @@ function ContactList({ contacts, listType }: IContactList) {
     hideDialog();
   };
 
-  // const avatar = (label: string, color: string, image?: JSX.Element) => (
-  //   <AvatarComponent label={label} color={stringToColour(color)} image={image} />
-  // );
-
+  // eslint-disable-next-line @typescript-eslint/no-shadow
   const avatar = (user: TUser) => {
     return <ProfileAvatar user={user} />;
   };
 
+  //TODO: Add button to add instead of long clcking to make it more obvious
   const _renderItem = (_) => {
     return (
       <List.Item
         title={`${_.item.first_name}`}
-        left={() =>
-          // avatar(
-          //   `${_.item.first_name} ${_.item.last_name}`,
-          //   `${_.item.user_id} ${_.item.first_name}`
-          // )
-          avatar(_.item)
-        }
+        left={() => avatar(_.item)}
         right={() => null}
         onPress={() => {
           if (listType === 'blocked') {
@@ -182,31 +172,7 @@ function ContactList({ contacts, listType }: IContactList) {
         <FlatList
           data={contacts}
           keyExtractor={(item) => item.user_id.toString()}
-          renderItem={
-            (_) => _renderItem(_)
-            // <List.Item
-            //   title={`${_.item.first_name}`}
-            //   left={() =>
-            //     avatar(
-            //       `${_.item.first_name} ${_.item.last_name}`,
-            //       `${_.item.user_id} ${_.item.first_name}`
-            //     )
-            //   }
-            //   right={() => null}
-            //   onPress={() => {
-            //     if (listType === 'blocked') {
-            //       _handleUnblock(_.item.user_id);
-            //     } else {
-            //       _handleAdd(_.item.user_id);
-            //     }
-            //   }}
-            //   onLongPress={() => {
-            //     setUser(_.item);
-            //     // console.log('USER', _.item);
-            //     setVisible(true);
-            //   }}
-            // />
-          }
+          renderItem={(_) => _renderItem(_)}
         />
         {!!user && <RemoveContactDialog visible={visible} user={user} hideDialog={hideDialog} />}
       </SafeAreaView>

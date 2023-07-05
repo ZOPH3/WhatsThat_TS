@@ -81,6 +81,7 @@ function AuthProvider({ children }: Props) {
     clearCachedData('/chat');
     clearCachedData('/contacts');
     clearCachedData('/blocked');
+    clearCachedData('IMG_CACHE');
     setAuthState({
       ...AuthStateDefault,
       authenticated: false,

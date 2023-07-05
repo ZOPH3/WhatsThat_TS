@@ -29,11 +29,10 @@ function ImageFetcher(url: string) {
     throw new Error('Unable to find Auth API...');
   }
 
-  const cache = async () => {
+  const getCache = async () => {
     setOnError(undefined);
-    setData(undefined);
     setIsLoading(true);
-    const data = await getCachedData<ImageCache[]>(CACHE_URL)
+    const response = await getCachedData<ImageCache[]>(CACHE_URL)
       .catch((err) => {
         setOnError(err);
       })
@@ -41,40 +40,35 @@ function ImageFetcher(url: string) {
         setIsLoading(false);
       });
 
-    if (data) {
-      const c = data.find((cache) => cache.url === url);
+    if (response) {
+      const c = response.find((cache: ImageCache) => cache.url === url);
       if (c) {
-        setData(c.data);
+        if (c.data !== data) setData(c.data);
         setOnError(undefined);
-        return c.data;
+      } else {
+        cacheLog.debug('ImageFetcher: No cache found...');
       }
     }
-
-    return null;
   };
 
-  const fetch = useCallback(async () => {
-    try {
-      let data;
-      const response = await useFetch(
-        { url, method: 'GET', maxBodyLength: Infinity, responseType: 'blob' },
-        true
-      );
-      const mimeType = response.headers['content-type'];
-      const file = new File([response.data], url, { type: mimeType });
-      let base64data;
-      const fileReaderInstance = new FileReader();
-      fileReaderInstance.onload = () => {
-        base64data = fileReaderInstance.result;
-        data = base64data;
-      };
-      fileReaderInstance.readAsDataURL(file);
+  const setCache = async (c: ImageCache[]) => {
+    await setCachedData<ImageCache[]>(CACHE_URL, c);
+  };
 
-      return data;
-    } catch (error) {
-      console.log(error);
+  const filterCache = async () => {
+    let c;
+    const cached = await getCachedData<ImageCache[]>(CACHE_URL);
+    if (cached) {
+      c = cached.filter((cache) => cache.url !== url);
     }
-  }, []);
+    return c || [];
+  };
+
+  const pushCache = async () => {
+    const c = await filterCache();
+    c.push({ index: c.length + 1, url, data });
+    await setCache(c);
+  };
 
   const makeRequest = async () => {
     setIsLoading(true);
@@ -92,6 +86,7 @@ function ImageFetcher(url: string) {
         base64data = fileReaderInstance.result;
         if (base64data !== data) {
           setData(base64data);
+          pushCache();
           fetch_count.current += 1;
         } else {
           apiLog.debug('ImageFetcher: No change in data...');
@@ -138,45 +133,19 @@ function ImageFetcher(url: string) {
   }, []);
 
   useEffect(() => {
-    const getCache = async () => cache();
-    getCache();
+    const initialCache = async () => getCache();
+    initialCache();
   }, []);
 
   const getFetch = async () => makeRequest();
   useEffect(() => {
-    if (data === undefined) {
+    if (!data) {
       getFetch();
     }
   }, [data]);
 
-  const setCache = async (c: ImageCache[]) => {
-    await setCachedData<ImageCache[]>(CACHE_URL, c);
-  };
-
-  const filterCache = async () => {
-    let c;
-    const cached = await getCachedData<ImageCache[]>(CACHE_URL);
-    if (cached) {
-      c = cached.filter((cache) => cache.url !== url);
-    }
-    return c || [];
-  };
-
-  const pushCache = async () => {
-    const c = await filterCache();
-    c.push({ index: c.length + 1, url, data });
-    await setCache(c);
-  };
-
-  useEffect(() => {
-    if (data) {
-      cacheLog.info(`Caching image ${url} to ${CACHE_URL}...`);
-      pushCache();
-    }
-  }, [fetch_count]);
-
   return {
-    cache,
+    getCache,
     data,
     isLoading,
     onError,

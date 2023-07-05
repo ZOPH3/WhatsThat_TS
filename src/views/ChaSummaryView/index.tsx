@@ -1,7 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { Avatar, Button } from 'react-native-paper';
+import { Button } from 'react-native-paper';
 import { Image, View } from 'react-native';
+import { Avatar } from '@react-native-material/core';
 import ButtonComponent from '../../components/Button';
 import SettingsMenu, { IMenuItem } from '../../components/SettingsMenu';
 import { useAuthContext } from '../../lib/context/AuthContext';
@@ -68,18 +69,14 @@ function ChatSummaryView() {
     });
   }, []);
 
-  const newImage = (src) => {
-    return <Image source={{ uri: src }} />;
-  };
-
   return (
     <>
       <ImageProfile />
       {isLoading ? (
         <></>
       ) : (
-        <Avatar.Image
-          source={{
+        <Avatar
+          image={{
             uri: data,
           }}
         />

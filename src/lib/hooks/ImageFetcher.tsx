@@ -1,11 +1,12 @@
+/* eslint-disable camelcase */
 /* eslint-disable @typescript-eslint/no-shadow */
 /* eslint-disable react-hooks/rules-of-hooks */
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import { View, Image } from 'react-native';
 import { useApiContext } from '../context/ApiContext';
-import { getCachedData } from '../services/CacheService';
-import log from '../util/LoggerUtil';
+import { getCachedData, setCachedData } from '../services/CacheService';
+import log, { cacheLog } from '../util/LoggerUtil';
 
 type ImageCache = {
   index: number;
@@ -13,12 +14,14 @@ type ImageCache = {
   data: string;
 };
 
+const CACHE_URL = 'IMG_CACHE';
+
 function ImageFetcher(url: string) {
   const [data, setData] = React.useState<any>(undefined);
   const [isLoading, setIsLoading] = React.useState(false);
   const [onError, setOnError] = React.useState<any | undefined>(undefined);
+  const fetch_count = useRef(0);
 
-  const CACHE_URL = 'IMG_CACHE';
   const { useFetch } = useApiContext();
 
   if (!useFetch) {
@@ -49,33 +52,6 @@ function ImageFetcher(url: string) {
 
     return null;
   };
-
-  const fetchImage = useCallback(async () => {
-    const res = await useFetch(
-      { url, method: 'GET', maxBodyLength: Infinity, responseType: 'blob' },
-      true
-    );
-
-    const mimeType = res.headers['content-type'];
-    const file = new File([res.data], url, { type: mimeType });
-
-    return file;
-  }, []);
-
-  function ImageProfile() {
-    return (
-      <Image
-        source={{
-          uri: data,
-        }}
-        style={{
-          width: 100,
-          height: 100,
-        }}
-      />
-    );
-  }
-
   const makeRequest = async () => {
     setIsLoading(true);
     try {
@@ -92,7 +68,7 @@ function ImageFetcher(url: string) {
       fileReaderInstance.onload = () => {
         base64data = fileReaderInstance.result;
         setData(base64data);
-        // console.log(base64data);
+        fetch_count.current += 1;
       };
       setIsLoading(false);
     } catch (error) {
@@ -102,8 +78,75 @@ function ImageFetcher(url: string) {
     }
   };
 
+  function ImageProfile() {
+    return (
+      <Image
+        source={{
+          uri: data,
+        }}
+        style={{
+          width: 100,
+          height: 100,
+        }}
+      />
+    );
+  }
+
+  let pollId: string | number | NodeJS.Timer | undefined;
+
+  const pollRequest = () => {
+    if (!pollId) {
+      pollId = setInterval(async () => {
+        await makeRequest();
+      }, 50000);
+    }
+  };
+  const clear = () => clearInterval(pollId);
+
+  useEffect(() => {
+    pollRequest();
+    return () => clear();
+  }, []);
+
+  useEffect(() => {
+    const getCache = async () => cache();
+    getCache();
+  }, []);
+
+  const getFetch = async () => makeRequest();
+  useEffect(() => {
+    if (data === undefined) {
+      getFetch();
+    }
+  }, [data]);
+
+  const setCache = async (c: ImageCache[]) => {
+    await setCachedData<ImageCache[]>(CACHE_URL, c);
+  };
+
+  const filterCache = async () => {
+    let c;
+    const cached = await getCachedData<ImageCache[]>(CACHE_URL);
+    if (cached) {
+      c = cached.filter((cache) => cache.url !== url);
+    }
+    return c || [];
+  };
+
+  const pushCache = async () => {
+    const c = await filterCache();
+    c.push({ index: c.length + 1, url, data });
+    await setCache(c);
+  };
+
+  useEffect(() => {
+    if (data) {
+      cacheLog.info(`Caching image ${url} to ${CACHE_URL}...`);
+      pushCache();
+    }
+  }, [fetch_count]);
+
   return {
-    fetchImage,
     cache,
     data,
     isLoading,

@@ -10,6 +10,7 @@ import ContactServices from '../../../lib/services/ContactServices';
 import { useApiContext } from '../../../lib/context/ApiContext';
 import { intLog } from '../../../lib/util/LoggerUtil';
 import { stringToColour } from '../../../lib/util/ColorGeneratorUtil';
+import ProfileAvatar from '../../SearchUsersView/ProfileAvatar';
 
 interface IContactList {
   contacts: TUser[];
@@ -24,10 +25,10 @@ function ContactListActions() {
     if (!user_id) return;
     ContactServices(useFetch)
       .deleteContact(user_id)
-      .then(res => {
+      .then((res) => {
         intLog.success('[Remove User]', res);
       })
-      .catch(err => {
+      .catch((err) => {
         intLog.error('[Remove User]', err);
       });
   };
@@ -36,10 +37,10 @@ function ContactListActions() {
     if (!user_id) return;
     ContactServices(useFetch)
       .blockUser(user_id)
-      .then(res => {
+      .then((res) => {
         if (res) intLog.success('[Block User]', res);
       })
-      .catch(err => {
+      .catch((err) => {
         intLog.error('[Block User]', err);
       });
   };
@@ -49,12 +50,12 @@ function ContactListActions() {
     ContactServices(useFetch)
       .unblockUser(user_id)
       .then(
-        res => {
+        (res) => {
           if (res) intLog.success('[Unblock User]', res);
         },
-        err => intLog.error('[Unblock User]', err),
+        (err) => intLog.error('[Unblock User]', err)
       )
-      .catch(err => {
+      .catch((err) => {
         intLog.error('[Unblock User]', err);
       });
   };
@@ -64,12 +65,12 @@ function ContactListActions() {
     ContactServices(useFetch)
       .addContact(user_id)
       .then(
-        res => {
+        (res) => {
           if (res) intLog.success('[Add User]', res);
         },
-        err => intLog.error('[Add User]', err),
+        (err) => intLog.error('[Add User]', err)
       )
-      .catch(err => {
+      .catch((err) => {
         intLog.error('[Add User]', err);
       });
   };
@@ -105,7 +106,6 @@ function RemoveContactDialog(props: {
           Remove {first_name} {last_name} from your contacts?
         </Dialog.Title>
         <Dialog.Content>
-          {/* <Text variant="bodyMedium">This is simple dialog</Text> */}
           <Checkbox.Item
             label={`Block ${first_name} ${last_name}`}
             status={checked ? 'checked' : 'unchecked'}
@@ -140,9 +140,40 @@ function ContactList({ contacts, listType }: IContactList) {
     hideDialog();
   };
 
-  const avatar = (label: string, color: string) => (
-    <AvatarComponent label={label} color={stringToColour(color)} />
-  );
+  // const avatar = (label: string, color: string, image?: JSX.Element) => (
+  //   <AvatarComponent label={label} color={stringToColour(color)} image={image} />
+  // );
+
+  const avatar = (user: TUser) => {
+    return <ProfileAvatar user={user} />;
+  };
+
+  const _renderItem = (_) => {
+    return (
+      <List.Item
+        title={`${_.item.first_name}`}
+        left={() =>
+          // avatar(
+          //   `${_.item.first_name} ${_.item.last_name}`,
+          //   `${_.item.user_id} ${_.item.first_name}`
+          // )
+          avatar(_.item)
+        }
+        right={() => null}
+        onPress={() => {
+          if (listType === 'blocked') {
+            _handleUnblock(_.item.user_id);
+          } else {
+            _handleAdd(_.item.user_id);
+          }
+        }}
+        onLongPress={() => {
+          setUser(_.item);
+          setVisible(true);
+        }}
+      />
+    );
+  };
 
   // FIXME: For some reason, sorting the array here causes undefined function error
   return (
@@ -150,31 +181,32 @@ function ContactList({ contacts, listType }: IContactList) {
       <SafeAreaView>
         <FlatList
           data={contacts}
-          keyExtractor={item => item.user_id.toString()}
-          renderItem={_ => (
-            <List.Item
-              title={`${_.item.first_name}`}
-              left={() =>
-                avatar(
-                  `${_.item.first_name} ${_.item.last_name}`,
-                  `${_.item.user_id} ${_.item.first_name}`,
-                )
-              }
-              right={() => null}
-              onPress={() => {
-                if (listType === 'blocked') {
-                  _handleUnblock(_.item.user_id);
-                } else {
-                  _handleAdd(_.item.user_id);
-                }
-              }}
-              onLongPress={() => {
-                setUser(_.item);
-                // console.log('USER', _.item);
-                setVisible(true);
-              }}
-            />
-          )}
+          keyExtractor={(item) => item.user_id.toString()}
+          renderItem={
+            (_) => _renderItem(_)
+            // <List.Item
+            //   title={`${_.item.first_name}`}
+            //   left={() =>
+            //     avatar(
+            //       `${_.item.first_name} ${_.item.last_name}`,
+            //       `${_.item.user_id} ${_.item.first_name}`
+            //     )
+            //   }
+            //   right={() => null}
+            //   onPress={() => {
+            //     if (listType === 'blocked') {
+            //       _handleUnblock(_.item.user_id);
+            //     } else {
+            //       _handleAdd(_.item.user_id);
+            //     }
+            //   }}
+            //   onLongPress={() => {
+            //     setUser(_.item);
+            //     // console.log('USER', _.item);
+            //     setVisible(true);
+            //   }}
+            // />
+          }
         />
         {!!user && <RemoveContactDialog visible={visible} user={user} hideDialog={hideDialog} />}
       </SafeAreaView>

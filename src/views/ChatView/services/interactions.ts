@@ -2,7 +2,6 @@
 import { useApiContext } from '../../../lib/context/ApiContext';
 import { useAuthContext } from '../../../lib/context/AuthContext';
 import { useChatContext } from '../../../lib/context/ChatContext';
-import { useMessageContext } from '../../../lib/context/MessageContext';
 import MessageServices from '../../../lib/services/MessageServices';
 
 import { TSingleMessage } from '../../../lib/types/TSchema';

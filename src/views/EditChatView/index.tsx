@@ -144,6 +144,7 @@ function EditChatView({ route, navigation }) {
           />
         </Tooltip>
       </Appbar.Header>
+
       <ProgressBar indeterminate visible={isLoading || handleEditLoad} />
       <SafeAreaView style={{ flex: 10, margin: 10 }}>
         {!!onError && <Text>{onError}</Text>}

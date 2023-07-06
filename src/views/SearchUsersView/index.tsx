@@ -46,7 +46,7 @@ function SearchUsersView({ navigation }) {
 
   const [value, setValue] = React.useState('');
   const [searchQuery, setSearchQuery] = React.useState('');
-  const onChangeSearch = query => setSearchQuery(query);
+  const onChangeSearch = (query) => setSearchQuery(query);
   const [listType, setListType] = React.useState<'all' | 'blocked' | 'contacts'>('all');
   const [currentPage, setCurrentPage] = React.useState(0);
   const [isLoading, setIsLoading] = React.useState(false);
@@ -71,7 +71,7 @@ function SearchUsersView({ navigation }) {
     };
     ContactServices(useFetch)
       .searchUsers(params)
-      .then(res => {
+      .then((res) => {
         if (res && res.length > 0) {
           setData(res as TUser[]);
           if (listType === 'contacts') dispatcher.setContacts(res as TUser[]);
@@ -79,7 +79,7 @@ function SearchUsersView({ navigation }) {
           setData(null);
         }
       })
-      .catch(err => {
+      .catch((err) => {
         console.log(err);
       })
       .finally(() => {
@@ -91,7 +91,7 @@ function SearchUsersView({ navigation }) {
     setIsLoading(true);
     ContactServices(useFetch)
       .fetchBlockedList()
-      .then(res => {
+      .then((res) => {
         // console.log(res);
         if (res !== undefined && res.length > 0) {
           if (listType === 'blocked') dispatcher.setBlocked(res as TUser[]);
@@ -99,8 +99,8 @@ function SearchUsersView({ navigation }) {
             setData(
               blocked.filter(
                 (user: TUser) =>
-                  user.first_name.includes(searchQuery) || user.last_name.includes(searchQuery),
-              ),
+                  user.first_name.includes(searchQuery) || user.last_name.includes(searchQuery)
+              )
             );
           } else {
             setData(res as TUser[]);
@@ -109,7 +109,7 @@ function SearchUsersView({ navigation }) {
           setData(null);
         }
       })
-      .catch(err => {
+      .catch((err) => {
         console.log(err);
       })
       .finally(() => {
@@ -149,6 +149,7 @@ function SearchUsersView({ navigation }) {
         </Tooltip>
         <Appbar.Action icon="dots-vertical" onPress={_handleMore} />
       </Appbar.Header>
+
       <ProgressBar indeterminate visible={isLoading} />
       <Searchbar
         placeholder="Search"

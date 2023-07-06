@@ -1,23 +1,28 @@
+/* eslint-disable react/jsx-props-no-spreading */
+/* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable camelcase */
 import React, { memo } from 'react';
 import { List } from 'react-native-paper';
-import { TSingleMessage } from '../../../lib/types/TSchema';
-import { useAuthContext } from '../../../lib/context/AuthContext';
+
+import { useAuth } from '../../../lib/context/auth';
+import { useApi } from '../../../lib/context/api';
+
+import MessageServices from '../../../lib/services/MessageServices';
 import DialogComponent from '../../../components/Dialog';
 import MessageBubble from './MessageBubble';
-import { useMessageContext } from '../../../lib/context/MessageContext';
-import { useApiContext } from '../../../lib/context/ApiContext';
-import MessageServices from '../../../lib/services/MessageServices';
+
+import { TSingleMessage } from '../../../lib/types/TSchema';
+import { useMessages } from '../../../lib/context/messages';
 
 interface IMessageContainer {
   message: TSingleMessage;
 }
 
 function MessageContainer({ message }: IMessageContainer) {
-  const currentUser = useAuthContext().authState.id;
+  const currentUser = useAuth().authState.id;
   const { DialogBlock, showDialog, hideDialog } = DialogComponent();
-  const { chat_id } = useMessageContext();
-  const { useFetch } = useApiContext();
+  const { chat_id } = useMessages();
+  const { apiCaller } = useApi();
 
   const dialogContent = [
     {
@@ -40,7 +45,7 @@ function MessageContainer({ message }: IMessageContainer) {
           left={(props) => <List.Icon {...props} icon="folder" />}
           onPress={() => {
             if (chat_id)
-              MessageServices(useFetch)
+              MessageServices(apiCaller)
                 .deleteMessage(chat_id, message.message_id)
                 .then(() => hideDialog());
           }}

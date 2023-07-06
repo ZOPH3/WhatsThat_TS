@@ -6,7 +6,7 @@ import OutsideStackNavigator from './OutsideStack';
 
 const MasterStack = createNativeStackNavigator();
 
-const MasterStackNavigator = ({ auth = false }: any) => {
+function MasterStackNavigator({ auth = false }: any) {
   return (
     <MasterStack.Navigator>
       {auth ? (
@@ -24,6 +24,6 @@ const MasterStackNavigator = ({ auth = false }: any) => {
       )}
     </MasterStack.Navigator>
   );
-};
+}
 
 export default MasterStackNavigator;

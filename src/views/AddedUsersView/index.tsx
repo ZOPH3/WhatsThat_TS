@@ -1,20 +1,23 @@
 import React, { useEffect } from 'react';
 import { SafeAreaView, View } from 'react-native';
 import { ProgressBar, Text, TextInput } from 'react-native-paper';
+
+import { useApi } from '../../lib/context/api';
+import { useAuth } from '../../lib/context/auth';
+import useFetchHook from '../../lib/hooks/useFetchHook';
+
+import ContactList from './list/ContactList';
 import ButtonComponent from '../../components/Button';
 import DialogComponent from '../../components/Dialog';
-import { useApiContext } from '../../lib/context/ApiContext';
-import { useAuthContext } from '../../lib/context/AuthContext';
-import useFetchHook from '../../lib/hooks/useFetchHook';
-import log from '../../lib/util/LoggerUtil';
+
 import styles from '../../styles/GlobalStyle';
-import ContactList from './list/ContactList';
+import log from '../../lib/util/LoggerUtil';
 
 function AddedUsersView() {
-  const { useFetch } = useApiContext();
-  const { logout } = useAuthContext();
+  const { apiCaller } = useApi();
+  const { logout } = useAuth();
 
-  if (!useFetch || !logout) {
+  if (!apiCaller || !logout) {
     log.error('Unable to find Auth API...');
     throw new Error('Unable to find Auth API...');
   }
@@ -47,7 +50,7 @@ function AddedUsersView() {
       <SafeAreaView style={{ flex: 10 }}>
         {!!onError && <Text>{onError}</Text>}
         {!data && <Text>No contacts</Text>}
-        {!!data && <ContactList contacts={data} />}
+        {!!data && <ContactList contacts={data} listType="contacts" />}
       </SafeAreaView>
       <DialogBlock
         title="Create Chat"

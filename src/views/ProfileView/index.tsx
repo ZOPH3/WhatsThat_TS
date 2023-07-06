@@ -1,18 +1,20 @@
 /* eslint-disable camelcase */
 import React from 'react';
+import { AxiosResponse } from 'axios';
 import { View } from 'react-native';
 import { ActivityIndicator, Card, Text } from 'react-native-paper';
-import { AxiosResponse } from 'axios';
-import { useAuthContext } from '../../lib/context/AuthContext';
-import CameraComponent from './CameraComponent';
+
+import { useApi } from '../../lib/context/api';
+import { useAuth } from '../../lib/context/auth';
 import ImageFetcher from '../../lib/hooks/ImageFetcher';
-import { useApiContext } from '../../lib/context/ApiContext';
+
+import CameraComponent from './CameraComponent';
 
 function ProfileView() {
-  const { useFetch } = useApiContext();
-  const { authState } = useAuthContext();
+  const { apiCaller } = useApi();
+  const { authState } = useAuth();
   const { current_user } = authState;
-  if (!current_user || !useFetch) return <View />;
+  if (!current_user || !apiCaller) return <View />;
 
   const { user_id, first_name, last_name } = current_user;
 
@@ -23,7 +25,7 @@ function ProfileView() {
     const blob = await res.blob();
 
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    const response: AxiosResponse = await useFetch(
+    const response: AxiosResponse = await apiCaller(
       {
         url: `user/${user_id}/photo`,
         method: 'POST',

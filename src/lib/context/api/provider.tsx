@@ -1,47 +1,35 @@
 /* eslint-disable no-underscore-dangle */
-import React, { ReactNode, createContext, useContext } from 'react';
+import React, { ReactNode } from 'react';
 import axios, { AxiosRequestConfig } from 'axios';
 
-import log from '../util/LoggerUtil';
+import ApiContext from './context';
 
-import { useAuthContext } from './AuthContext';
-import { useGlobalContext } from './GlobalContext';
+import { useAuth } from '../auth';
+import { useGlobal } from '../global';
 
-interface IApiContext {
-  useFetch?: (config: AxiosRequestConfig, auth: boolean) => any;
-}
-
-const ApiContext = createContext<IApiContext>({});
-const { Provider } = ApiContext;
+import log from '../../util/LoggerUtil';
 
 interface Props {
   // eslint-disable-next-line react/require-default-props
   children?: ReactNode;
 }
 
-function setBaseURL() {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const globalContext = useGlobalContext();
-
-  if (globalContext.isMobile) {
-    return 'http://10.0.2.2:3333/api/1.0.0';
-  }
-  return 'http://localhost:3333/api/1.0.0';
-}
-
-const doNothing = (): void => {
-  /* Does nothing */
-};
+const { Provider } = ApiContext;
 
 function ApiProvider({ children }: Props) {
-  const globalContext = useGlobalContext();
-  const { getToken } = useAuthContext();
+  const globalContext = useGlobal();
+  const { getToken } = useAuth();
+
+  const BASE_URL = globalContext.isMobile
+    ? 'http://10.0.2.2:3333/api/1.0.0'
+    : 'http://localhost:3333/api/1.0.0';
+
   const _authApi = axios.create({
-    baseURL: setBaseURL(),
+    baseURL: BASE_URL,
     timeout: 5000,
   });
   const _publicApi = axios.create({
-    baseURL: setBaseURL(),
+    baseURL: BASE_URL,
     timeout: 5000,
   });
 
@@ -56,7 +44,7 @@ function ApiProvider({ children }: Props) {
     return abortController.signal;
   }
 
-  const useFetch = async (config: AxiosRequestConfig<any>, auth: any) => {
+  const apiCaller = async (config: AxiosRequestConfig<any>, auth: any) => {
     const _apiInstance = auth ? _authApi : _publicApi;
     return _apiInstance
       .request({
@@ -107,19 +95,7 @@ function ApiProvider({ children }: Props) {
     }
   );
 
-  return <Provider value={{ useFetch }}>{children}</Provider>;
+  return <Provider value={{ apiCaller }}>{children}</Provider>;
 }
 
-const useApiContext = () => {
-  // get the context
-  const context = useContext(ApiContext);
-
-  // if `undefined`, throw an error
-  if (context === undefined) {
-    throw new Error('useAuthContext was used outside of its Provider');
-  }
-
-  return context;
-};
-
-export { ApiProvider, useApiContext };
+export default ApiProvider;

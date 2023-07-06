@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+
 import Icons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { IconButton } from 'react-native-paper';
 
@@ -19,10 +20,10 @@ import AddedUsersView from '../views/AddedUsersView';
 import SearchUsersView from '../views/SearchUsersView';
 import BlockedUsersView from '../views/BlockedUsersView';
 
-import { useApiContext } from '../lib/context/ApiContext';
-import { useAuthContext } from '../lib/context/AuthContext';
-import log, { apiLog, pollingLog, rootLog } from '../lib/util/LoggerUtil';
+import { useAuth } from '../lib/context/auth';
 import useChatController from '../lib/controller/ChatController';
+
+import log, { apiLog, pollingLog, rootLog } from '../lib/util/LoggerUtil';
 
 const ChatStack = createNativeStackNavigator();
 const ProfileStack = createNativeStackNavigator();
@@ -133,23 +134,15 @@ function InsideTabNavigator() {
 }
 
 function InsideStackNavigator() {
-  const { useFetch } = useApiContext();
-  const { authState } = useAuthContext();
+  const { authState } = useAuth();
   const { fetchChatDetails, fetchChatSummary } = useChatController();
 
   let pollId: string | number | NodeJS.Timer | undefined;
-
-  if (!useFetch) {
-    log.error('Unable to find Auth API...');
-    throw new Error('Unable to find Auth API...');
-  }
-
   const pollTest = () => {
     if (!pollId) {
       pollId = setInterval(() => {
         fetchChatSummary().then((data) => {
           if (data) {
-            // dispatcher.setChatSummaryList(data);
             if (data.length > 0) {
               fetchChatDetails(data);
             }

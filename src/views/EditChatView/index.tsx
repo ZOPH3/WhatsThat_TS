@@ -17,31 +17,15 @@ import {
   TextInput,
   Tooltip,
 } from 'react-native-paper';
-import useFetchHook from '../../lib/hooks/useFetchHook';
-import styles from '../../styles/GlobalStyle';
-import { TChat, TUser } from '../../lib/types/TSchema';
-import { useAuthContext } from '../../lib/context/AuthContext';
-import ContactList from '../AddedUsersView/list/ContactList';
-import ChatServices from '../../lib/services/ChatServices';
-import { useApiContext } from '../../lib/context/ApiContext';
 
-function ChatDetails(props: { chatDetails: TChat; isEditing: boolean }) {
-  const { chatDetails, isEditing } = props;
-  const { name, creator, members, messages } = chatDetails;
-  return (
-    <View>
-      <Card>
-        <Card.Content>
-          {isEditing ? (
-            <TextInput label="title" value={name} mode="outlined" />
-          ) : (
-            <Text variant="titleLarge">{name}</Text>
-          )}
-        </Card.Content>
-      </Card>
-    </View>
-  );
-}
+import useFetchHook from '../../lib/hooks/useFetchHook';
+import { useAuth } from '../../lib/context/auth';
+import { useApi } from '../../lib/context/api';
+import ChatServices from '../../lib/services/ChatServices';
+
+import ContactList from '../AddedUsersView/list/ContactList';
+import { TChat, TUser } from '../../lib/types/TSchema';
+import styles from '../../styles/GlobalStyle';
 
 function Members(props: { members: TUser[] }) {
   const { members } = props;
@@ -54,15 +38,16 @@ function Members(props: { members: TUser[] }) {
 }
 
 function EditChatView({ route, navigation }) {
-  const [handleEditLoad, setHandleEditLoad] = React.useState<boolean>(false);
-  const { useFetch } = useApiContext();
-
   const { chat_id } = route.params;
-  const current_user = useAuthContext().authState.id;
-  const [isOwner, setIsOwner] = React.useState<boolean>(false);
+  const { apiCaller } = useApi();
+  const current_user = useAuth().authState.id;
+  const c = ChatServices(apiCaller);
+
   const [chatDetails, setChatDetails] = React.useState<TChat | undefined>(undefined);
-  const [isEditing, setIsEditing] = React.useState<boolean>(false);
+  const [isOwner, setIsOwner] = React.useState<boolean>(false);
   const [titleEdit, setTitleEdit] = React.useState<string>('');
+  const [isEditing, setIsEditing] = React.useState<boolean>(false);
+  const [handleEditLoad, setHandleEditLoad] = React.useState<boolean>(false);
 
   const [visible, setVisible] = React.useState(false);
   const showDialog = () => setVisible(true);
@@ -80,8 +65,7 @@ function EditChatView({ route, navigation }) {
   function _handleEdit() {
     if (titleEdit !== '' && titleEdit !== chatDetails?.name) {
       setHandleEditLoad(true);
-      ChatServices(useFetch)
-        .updateChatDetails(chat_id, { name: titleEdit })
+      c.updateChatDetails(chat_id, { name: titleEdit })
         .then((res) => {
           // console.log(res);
           if (res !== undefined) {

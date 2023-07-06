@@ -1,6 +1,5 @@
 /* eslint-disable camelcase */
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useApiContext } from '../context/ApiContext';
 import { TChatSummary, TCreateChatResponse, TChat } from '../types/TSchema';
 
 interface IChatServices {
@@ -12,23 +11,20 @@ interface IChatServices {
   removeUserFromConversation: (chat_id: number, user_id: number) => Promise<Response | undefined>;
 }
 
-const ChatServices = (useFetch: any): IChatServices => {
-  // const { useFetch } = useApiContext();
-  // if (!useFetch) throw new Error('Unable to find Auth API...');
-
+const ChatServices = (apiCaller: any): IChatServices => {
   const fetchChatList = async (): Promise<TChatSummary | undefined> => {
-    const response = await useFetch({ url: '/chat', method: 'GET' }, true);
+    const response = await apiCaller({ url: '/chat', method: 'GET' }, true);
     if (response.ok) console.log('Chat List: ', response.data);
     return response ? (response.data as TChatSummary) : undefined;
   };
 
   const createChat = async (name: string): Promise<TCreateChatResponse | undefined> => {
-    const response = await useFetch({ url: '/chat', method: 'POST', data: { name } }, true);
+    const response = await apiCaller({ url: '/chat', method: 'POST', data: { name } }, true);
     return response.data as TCreateChatResponse;
   };
 
   const fetchChatDetails = async (chat_id: number): Promise<TChat | undefined> => {
-    const response = await useFetch({ url: `/chat/${chat_id}`, method: 'GET' }, true);
+    const response = await apiCaller({ url: `/chat/${chat_id}`, method: 'GET' }, true);
     return response.data as TChat;
   };
 
@@ -36,7 +32,7 @@ const ChatServices = (useFetch: any): IChatServices => {
     chat_id: number,
     payload: Partial<TChat>
   ): Promise<Response | undefined> => {
-    const response = await useFetch(
+    const response = await apiCaller(
       { url: `/chat/${chat_id}`, method: 'PATCH', data: payload },
       true
     );
@@ -47,7 +43,7 @@ const ChatServices = (useFetch: any): IChatServices => {
     chat_id: number,
     user_id: number
   ): Promise<Response | undefined> => {
-    const response = await useFetch(
+    const response = await apiCaller(
       { url: `/chat/${chat_id}/user/${user_id}`, method: 'POST' },
       true
     );
@@ -58,7 +54,7 @@ const ChatServices = (useFetch: any): IChatServices => {
     chat_id: number,
     user_id: number
   ): Promise<Response | undefined> => {
-    const response = await useFetch(
+    const response = await apiCaller(
       { url: `/chat/${chat_id}/user/${user_id}`, method: 'DELETE' },
       true
     );

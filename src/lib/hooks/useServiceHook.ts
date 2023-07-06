@@ -1,8 +1,9 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable @typescript-eslint/no-shadow */
 import React, { useEffect } from 'react';
-import { useApiContext } from '../context/ApiContext';
-import { useNotificationContext } from '../context/NotificationContext';
+
+import { useApi } from '../context/api';
+import { useNotification } from '../context/notification';
 
 interface IConfig {
   onEmpty: string;
@@ -13,11 +14,11 @@ interface IConfig {
 
 /**
  * @param service Generic service api hook
- * TODO: Replace useFetch with useServiceApiHook 
+ * TODO: Replace useFetch with useServiceApiHook
  */
 function useServiceApiHook<T>(service: (api: any) => Promise<T>, config: IConfig) {
-  const { dispatcher } = useNotificationContext();
-  const { useFetch } = useApiContext();
+  const { dispatcher } = useNotification();
+  const { apiCaller } = useApi();
 
   const [data, setData] = React.useState<T | undefined>(undefined);
   const [isLoading, setIsLoading] = React.useState(false);
@@ -34,7 +35,7 @@ function useServiceApiHook<T>(service: (api: any) => Promise<T>, config: IConfig
     setOnError(undefined);
     setData(undefined);
 
-    return service(useFetch)
+    return service(apiCaller)
       .then(
         (res: any) => {
           if (res && res.data) {

@@ -1,16 +1,17 @@
 /* eslint-disable camelcase */
-import { useApiContext } from '../../../lib/context/ApiContext';
-import { useAuthContext } from '../../../lib/context/AuthContext';
-import { useChatContext } from '../../../lib/context/ChatContext';
+
+import { useApi } from '../../../lib/context/api';
+import { useAuth } from '../../../lib/context/auth';
+import { useChat } from '../../../lib/context/chats';
 import MessageServices from '../../../lib/services/MessageServices';
 
 import { TSingleMessage } from '../../../lib/types/TSchema';
 
 const MessageInteractions = (chat_id: number) => {
-  const { authState } = useAuthContext();
-  const { dispatcher } = useChatContext();
+  const { authState } = useAuth();
+  const { dispatcher } = useChat();
   const { current_user } = authState;
-  const { useFetch } = useApiContext();
+  const { apiCaller } = useApi();
 
   if (dispatcher === undefined) {
     throw new Error('Message dispatcher is undefined');
@@ -24,7 +25,7 @@ const MessageInteractions = (chat_id: number) => {
     throw new Error('Chat id is undefined');
   }
 
-  const m = MessageServices(useFetch);
+  const m = MessageServices(apiCaller);
 
   const dispatchMessages = (messages: TSingleMessage[]) => {
     dispatcher.setMessages({ chat_id, messages });
@@ -71,4 +72,3 @@ const MessageInteractions = (chat_id: number) => {
 };
 
 export default MessageInteractions;
-

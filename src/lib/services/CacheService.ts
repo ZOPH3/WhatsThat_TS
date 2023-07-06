@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import log, { cacheLog } from '../util/LoggerUtil';
+import { cacheLog } from '../util/LoggerUtil';
 
 type TCachedData<T> = {
   data: T;
@@ -8,7 +8,7 @@ type TCachedData<T> = {
 
 async function setCachedData<T>(url: string, data: T) {
   const cdata: TCachedData<T> = {
-    data: data,
+    data,
     created: Date.now(),
   };
 
@@ -33,7 +33,7 @@ async function getCachedData<T>(url: string, expiresIn?: number) {
     }
 
     const cdata = JSON.parse(cache) as TCachedData<T>;
-    expiresIn = expiresIn ? expiresIn : 1000 * 60 * 60 * 24 * 7; // 7 days
+    expiresIn = expiresIn || 1000 * 60 * 60 * 24 * 7; // 7 days
     if (cdata.created + expiresIn < Date.now()) {
       await clearCachedData(url);
       throw new Error(`[CACHE] Expired: ${url}`);

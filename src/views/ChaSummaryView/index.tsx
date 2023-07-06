@@ -1,16 +1,18 @@
 import React, { useRef } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { Appbar } from 'react-native-paper';
-import ButtonComponent from '../../components/Button';
-import SettingsMenu, { IMenuItem } from '../../components/SettingsMenu';
-import { useAuthContext } from '../../lib/context/AuthContext';
-import CreateChatDialog from './components/Dialog';
-import ChatSummaryViewContainer from './ChatSummaryViewContainer';
+
+import { useAuth } from '../../lib/context/auth';
 import useChatController from '../../lib/controller/ChatController';
+
+import ChatSummaryViewContainer from './ChatSummaryViewContainer';
+import SettingsMenu, { IMenuItem } from '../../components/SettingsMenu';
+import CreateChatDialog from './components/Dialog';
+import ButtonComponent from '../../components/Button';
 
 function ChatSummaryView() {
   const navigation = useNavigation();
-  const { logout } = useAuthContext();
+  const { logout } = useAuth();
   const dialogRef = useRef<{ show: () => void }>();
   const { fetchChatDetails, fetchChatSummary } = useChatController();
 

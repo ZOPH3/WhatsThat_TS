@@ -2,30 +2,30 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { CombinedDarkTheme, CombinedDefaultTheme } from '../styles/theme';
 import { PaperProvider, Portal } from 'react-native-paper';
+import { CombinedDarkTheme, CombinedDefaultTheme } from '../styles/theme';
 
-import { useAuthContext } from '../lib/context/AuthContext';
-import { useGlobalContext } from '../lib/context/GlobalContext';
+import { useAuth } from '../lib/context/auth';
+import { useGlobal } from '../lib/context/global';
 
 import MasterStackNavigator from './MasterStack';
 import SplashView from '../views/SplashView';
 import NotificationContainer from '../components/Notification';
 
-//TODO Add the splash screen here and the state such as loading can be dealt with at this level.
-const StackNavigator = () => {
-  const { theme, init } = useGlobalContext();
-  const { authState } = useAuthContext();
+// TODO Add the splash screen here and the state such as loading can be dealt with at this level.
+function StackNavigator() {
+  const { theme, init } = useGlobal();
+  const { authState } = useAuth();
 
   const stack = createNativeStackNavigator();
 
-  const SplashNavigator = () => {
+  function SplashNavigator() {
     return (
       <stack.Navigator>
         <stack.Screen name="SplashView" component={SplashView} options={{ headerShown: false }} />
       </stack.Navigator>
     );
-  };
+  }
 
   return (
     <PaperProvider theme={theme === 'light' ? CombinedDefaultTheme : CombinedDarkTheme}>
@@ -37,6 +37,6 @@ const StackNavigator = () => {
       </NavigationContainer>
     </PaperProvider>
   );
-};
+}
 
 export default StackNavigator;

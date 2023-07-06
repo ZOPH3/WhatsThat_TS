@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import { Snackbar } from 'react-native-paper';
-import { useNotificationContext } from '../../lib/context/NotificationContext';
 import log from '../../lib/util/LoggerUtil';
+import { useNotification } from '../../lib/context/notification';
 
 function NotificationContainer() {
-  const { notifications, notificationCount, dispatcher } = useNotificationContext();
+  const { notifications, notificationCount, dispatcher } = useNotification();
   const [showSnackbar, setShowSnackbar] = React.useState(false);
   const [notification, setNotification] = React.useState({} as any);
 

@@ -1,18 +1,23 @@
 import React, { forwardRef, useImperativeHandle } from 'react';
 import { TextInput } from 'react-native-paper';
 
+import ChatServices from '../../../lib/services/ChatServices';
+import { useApi } from '../../../lib/context/api';
+import { useChat } from '../../../lib/context/chats';
+
 import DialogComponent from '../../../components/Dialog';
 import ButtonComponent from '../../../components/Button';
-import { useChatContext } from '../../../lib/context/ChatContext';
-import { useApiContext } from '../../../lib/context/ApiContext';
-import ChatServices from '../../../lib/services/ChatServices';
 
 const CreateChatDialog = forwardRef((props, ref) => {
+  const [isLoading, setIsLoading] = React.useState(false);
+
+  const { apiCaller } = useApi();
+  const { dispatcher } = useChat();
+
   const { DialogBlock, showDialog, hideDialog } = DialogComponent();
   const createTextRef = React.useRef('');
-  const { useFetch } = useApiContext();
-  const { dispatcher } = useChatContext();
-  const [isLoading, setIsLoading] = React.useState(false);
+
+  const c = ChatServices(apiCaller);
 
   const dialogContent = [
     {
@@ -46,7 +51,7 @@ const CreateChatDialog = forwardRef((props, ref) => {
             onPress={async () => {
               setIsLoading(true);
               if (createTextRef && createTextRef.current !== '') {
-                const response = await ChatServices(useFetch)
+                const response = await c
                   .createChat(createTextRef.current)
                   .catch((e) => {
                     return null;

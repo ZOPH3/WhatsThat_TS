@@ -31,23 +31,18 @@ const MessageInteractions = (chat_id: number) => {
     dispatcher.setMessages({ chat_id, messages });
   };
 
-  const sendMessage = async (message: string) => {
-    return m.sendMessage(chat_id, message).then((response) =>
-      dispatcher.addMessage({
-        chat_id,
-        message: {
-          timestamp: Date.now(),
-          message,
-          author: current_user,
-        },
-      })
-    );
+  const sendMessage = async (message: string): Promise<Partial<TSingleMessage>> => {
+    return m.sendMessage(chat_id, message).then((response) => {
+      return {
+        timestamp: Date.now(),
+        message,
+        author: current_user,
+      };
+    });
   };
 
   const deleteMessage = async (message_id: number) => {
-    return m
-      .deleteMessage(chat_id, message_id)
-      .then((response) => dispatcher.deleteMessage({ message_id, chat_id }));
+    return m.deleteMessage(chat_id, message_id).then((response) => message_id);
   };
 
   const updateMessage = async (obj: TSingleMessage) => {

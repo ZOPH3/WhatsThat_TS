@@ -69,20 +69,6 @@ function MessageInput({ onSend, onDraft }) {
     return !patternCheck() || !isFutureDate();
   };
 
-  // const hasErrors = () => {
-  //   const pattern = /^(\d{2})\/(\d{2})\/(\d{4}) (\d{2}):(\d{2})$/;
-  //   if (selectedDate === '') return false;
-  //   if (pattern.test(selectedDate)) {
-  //     try {
-  //       const date = convertStringToDate(selectedDate);
-  //       return date < new Date();
-  //     } catch (e) {
-  //       return true;
-  //     }
-  //   }
-  //   return !pattern.test(selectedDate);
-  // };
-
   const handleDateSelection = (date) => {
     setSelectedDate(date);
   };

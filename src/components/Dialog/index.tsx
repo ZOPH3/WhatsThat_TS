@@ -1,3 +1,4 @@
+/* eslint-disable react/require-default-props */
 import React from 'react';
 import { View } from 'react-native';
 import { Button, Dialog, Portal } from 'react-native-paper';

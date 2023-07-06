@@ -52,7 +52,7 @@ const NotificationReducer = (state: any, action: any) => {
   }
 };
 
-const NotificationProvider = ({ children }: any) => {
+function NotificationProvider({ children }: any) {
   const [state, dispatch] = useReducer(NotificationReducer, initialState);
   const addNotification = (payload: INotification) => {
     dispatch({ type: 'ADD_NOTIFICATION', payload });
@@ -76,7 +76,7 @@ const NotificationProvider = ({ children }: any) => {
   };
 
   return <NotificationContext.Provider value={value}>{children}</NotificationContext.Provider>;
-};
+}
 
 const useNotificationContext = () => {
   const context = React.useContext(NotificationContext);

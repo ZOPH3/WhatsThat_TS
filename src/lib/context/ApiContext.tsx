@@ -34,6 +34,7 @@ const doNothing = (): void => {
 };
 
 function ApiProvider({ children }: Props) {
+  const globalContext = useGlobalContext();
   const { getToken } = useAuthContext();
   const _authApi = axios.create({
     baseURL: setBaseURL(),
@@ -98,6 +99,7 @@ function ApiProvider({ children }: Props) {
   _publicApi.interceptors.request.use(
     (config) => {
       log.debug(`[PUBLIC API] Intercepting: ${config.url}`);
+      log.debug(globalContext.isMobile);
       return config;
     },
     (error) => {

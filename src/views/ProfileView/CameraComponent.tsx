@@ -1,30 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { View, Image, Modal, TouchableOpacity } from 'react-native';
 import { Button, Text } from 'react-native-paper';
-import { Camera } from 'expo-camera';
+import { Camera, CameraType } from 'expo-camera';
 
 function CameraComponent() {
-  const [image, setImage] = useState(undefined);
+  const [image, setImage] = useState<string | null>(null);
   const [showCamera, setShowCamera] = useState(false);
-  const [camera, setCamera] = useState(null);
-  //   const [cameraPermission, setCameraPermission] = useState('undetermined');
-  const [type, setType] = useState(Camera.Constants.Type.back);
+  const [camera, setCamera] = useState<Camera | null>(null);
+
+  const [type, setType] = useState<CameraType>(CameraType.back);
   const [imageUri, setImageUri] = useState(null);
   const [permission, requestPermission] = Camera.useCameraPermissions();
 
-  //   const permisionFunction = async () => {
-  //     const c = await Camera.requestCameraPermissionsAsync();
-  //     setCameraPermission(c.status);
-
-  //     if (cameraPermission === 'denied' || cameraPermission === 'undetermined') {
-  //       console.log('Permission for media access needed.');
-  //     }
-  //   };
-
   const takePicture = async () => {
     if (camera) {
-      const data = await camera.takePictureAsync(null);
-      console.log(data);
+      const data = await camera.takePictureAsync({ base64: true });
+      if (!data || !data.uri) return;
+      console.log('data', data);
       setImageUri(data.uri);
     }
   };
@@ -63,9 +55,6 @@ function CameraComponent() {
         >
           <Camera
             style={{ flex: 1 }}
-            ratio="16:9"
-            flashMode={Camera.Constants.FlashMode.on}
-            type={type}
             ref={(ref) => {
               setCamera(ref);
             }}
@@ -156,15 +145,6 @@ function CameraComponent() {
         </View>
         {!!permission && (
           <View>
-            <Button
-              icon="camera"
-              mode="contained"
-              onPress={() => {
-                console.log(permission);
-              }}
-            >
-              Camera
-            </Button>
             <Button
               icon="camera"
               mode="contained"

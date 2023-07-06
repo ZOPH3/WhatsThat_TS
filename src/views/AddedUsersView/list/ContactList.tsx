@@ -147,7 +147,7 @@ function ContactList({ contacts, listType }: IContactList) {
   const _renderItem = (_) => {
     return (
       <List.Item
-        title={`${_.item.first_name}`}
+        title={`${_.item.first_name} ${_.item.last_name}`}
         left={() => avatar(_.item)}
         right={() => null}
         onPress={() => {

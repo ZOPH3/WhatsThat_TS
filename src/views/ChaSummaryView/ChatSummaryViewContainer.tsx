@@ -16,10 +16,7 @@ function ChatSummaryViewContainer() {
   const { useFetch } = useApiContext();
   if (!useFetch) throw new Error('useFetch is null');
 
-  const { data, isLoading, onError, fetchCacheorFresh } = useFetchHook(
-    { url: '/chat', method: 'GET' },
-    true
-  );
+  const { isLoading, onError } = useFetchHook({ url: '/chat', method: 'GET' }, true);
 
   return (
     <View style={styles.container}>

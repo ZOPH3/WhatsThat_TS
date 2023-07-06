@@ -1,6 +1,6 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { View } from 'react-native';
+import { Appbar } from 'react-native-paper';
 import ButtonComponent from '../../components/Button';
 import SettingsMenu, { IMenuItem } from '../../components/SettingsMenu';
 import { useAuthContext } from '../../lib/context/AuthContext';
@@ -39,26 +39,18 @@ function ChatSummaryView() {
     },
   ];
 
-  const headerRight = () => (
-    <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-      <ButtonComponent
-        title="Create"
-        onPress={() => {
-          if (dialogRef && dialogRef.current) dialogRef.current.show();
-        }}
-      />
-      <SettingsMenu items={items} onPress={() => navigation.navigate('ProfileStackNavigator')} />
-    </View>
-  );
-
-  useEffect(() => {
-    navigation.setOptions({
-      headerRight,
-    });
-  }, []);
-
   return (
     <>
+      <Appbar.Header>
+        <Appbar.Content title="Chat" />
+        <ButtonComponent
+          title="Create"
+          onPress={() => {
+            if (dialogRef && dialogRef.current) dialogRef.current.show();
+          }}
+        />
+        <SettingsMenu items={items} onPress={() => navigation.navigate('ProfileStackNavigator')} />
+      </Appbar.Header>
       <CreateChatDialog ref={dialogRef} />
       <ChatSummaryViewContainer />
     </>

@@ -35,14 +35,14 @@ function MenuItems(props: { items: IMenuItem[]; closeMenu: () => void }) {
   );
 }
 
-function SettingsMenu(props: { items: any }) {
+function SettingsMenu(props: { items: any; onPress?: () => any }) {
   const { toggleTheme } = useGlobalContext();
   const [visible, setVisible] = React.useState(false);
 
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
 
-  const { items } = props;
+  const { items, onPress } = props;
 
   return (
     <View
@@ -57,7 +57,11 @@ function SettingsMenu(props: { items: any }) {
         anchor={
           // <IconButton icon="dots-horizontal" size={20} onPress={openMenu} />
 
-          <TouchableRipple onPress={openMenu} rippleColor="rgba(0, 0, 0, .32)">
+          <TouchableRipple
+            onLongPress={openMenu}
+            onPress={onPress}
+            rippleColor="rgba(0, 0, 0, .32)"
+          >
             <Avatar.Icon size={35} icon="account" style={{ margin: 10 }} />
           </TouchableRipple>
         }

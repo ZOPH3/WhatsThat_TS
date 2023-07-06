@@ -1,23 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import { View, Image, Modal, TouchableOpacity } from 'react-native';
 import { Button, Text } from 'react-native-paper';
-import { Camera, CameraType } from 'expo-camera';
+import { Camera, CameraCapturedPicture, CameraType, ImageType } from 'expo-camera';
+import log from '../../lib/util/LoggerUtil';
 
-function CameraComponent() {
-  const [image, setImage] = useState<string | null>(null);
+function CameraComponent(props: { trigger: (data: CameraCapturedPicture) => void }) {
+  const { trigger } = props;
   const [showCamera, setShowCamera] = useState(false);
   const [camera, setCamera] = useState<Camera | null>(null);
-
   const [type, setType] = useState<CameraType>(CameraType.back);
-  const [imageUri, setImageUri] = useState(null);
+  const [image, setImage] = useState<string | undefined>(undefined);
   const [permission, requestPermission] = Camera.useCameraPermissions();
 
   const takePicture = async () => {
     if (camera) {
-      const data = await camera.takePictureAsync({ base64: true });
-      if (!data || !data.uri) return;
-      console.log('data', data);
-      setImageUri(data.uri);
+      const data = (await camera.takePictureAsync({
+        base64: true,
+        imageType: ImageType.png,
+        onPictureSaved: (data) => trigger(data),
+      })) as CameraCapturedPicture;
+      if (!data || !data.base64) return;
+      console.log(data.base64);
+      setImage(`${data.base64}`);
     }
   };
 
@@ -55,6 +59,7 @@ function CameraComponent() {
         >
           <Camera
             style={{ flex: 1 }}
+            ratio="4:3"
             ref={(ref) => {
               setCamera(ref);
             }}
@@ -123,14 +128,10 @@ function CameraComponent() {
                   mode="outlined"
                   color="white"
                   onPress={() => {
-                    setType(
-                      type === Camera.Constants.Type.back
-                        ? Camera.Constants.Type.front
-                        : Camera.Constants.Type.back
-                    );
+                    setType(type === CameraType.back ? CameraType.front : CameraType.back);
                   }}
                 >
-                  {type === Camera.Constants.Type.back ? 'Front' : 'Back '}
+                  {type === CameraType.back ? 'Front' : 'Back '}
                 </Button>
               </View>
             </View>

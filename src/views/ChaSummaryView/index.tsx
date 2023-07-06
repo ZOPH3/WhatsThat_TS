@@ -47,13 +47,7 @@ function ChatSummaryView() {
           if (dialogRef && dialogRef.current) dialogRef.current.show();
         }}
       />
-      <ButtonComponent
-        title="Profile"
-        onPress={() => {
-          navigation.navigate('ProfileStackNavigator');
-        }}
-      />
-      <SettingsMenu items={items} />
+      <SettingsMenu items={items} onPress={() => navigation.navigate('ProfileStackNavigator')} />
     </View>
   );
 

@@ -79,7 +79,6 @@ function ImageFetcher(url: string) {
       );
       const mimeType = response.headers['content-type'];
       const file = new File([response.data], url, { type: mimeType });
-
       let base64data;
       const fileReaderInstance = new FileReader();
       fileReaderInstance.onload = () => {
@@ -95,6 +94,20 @@ function ImageFetcher(url: string) {
       fileReaderInstance.readAsDataURL(file);
 
       setIsLoading(false);
+    } catch (error) {
+      setData(undefined);
+      setIsLoading(false);
+      console.log(error);
+    }
+  };
+
+  const postImage = async (image: string) => {
+    setIsLoading(true);
+    try {
+      const response = await useFetch(
+        { url, method: 'POST', data: image, maxBodyLength: Infinity },
+        true
+      );
     } catch (error) {
       setData(undefined);
       setIsLoading(false);

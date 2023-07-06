@@ -94,6 +94,13 @@ function ChatProvider({ children }: any) {
     return state.chatSummaryList;
   }, [state.chatSummaryList]);
 
+  const getChatSummary = useCallback(
+    (chatId: number) => {
+      return state.chatSummaryList.find((chat) => chat.id === chatId);
+    },
+    [state.chatSummaryList]
+  );
+
   // Note: useMemo is used to prevent unnecessary re-renders
   const value = useMemo(
     () => ({
@@ -109,6 +116,7 @@ function ChatProvider({ children }: any) {
         deleteMessage,
         setMessages,
         getChatSummaryList,
+        getChatSummary,
       },
     }),
     [
@@ -122,6 +130,7 @@ function ChatProvider({ children }: any) {
       deleteMessage,
       setMessages,
       getChatSummaryList,
+      getChatSummary,
     ]
   );
 

@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable camelcase */
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, SafeAreaView } from 'react-native';
 import {
   Appbar,
@@ -86,7 +86,6 @@ function EditChatView({ route, navigation }) {
   useEffect(() => {
     onFetch(async () => getFresh()).then((res) => {
       if (res) {
-        // console.log(res);
         setChatDetails(res as TChat);
         setTitleEdit(res.name);
       }
@@ -95,7 +94,6 @@ function EditChatView({ route, navigation }) {
 
   // Set if owner
   useEffect(() => {
-    // console.log(current_user);
     if (!chatDetails || !current_user) return;
     if (chatDetails.creator.user_id === current_user) {
       setIsOwner(true);
@@ -111,14 +109,6 @@ function EditChatView({ route, navigation }) {
           }}
         />
         <Appbar.Content title="Chat Details" />
-        {/* <Tooltip title="Invite user">
-          <IconButton
-            icon="account-plus"
-            selected={isEditing}
-            size={24}
-            onPress={() => setIsEditing(!isEditing)}
-          />
-        </Tooltip> */}
         <Tooltip title="Show Contacts">
           <IconButton
             icon="content-save-edit"
@@ -143,7 +133,6 @@ function EditChatView({ route, navigation }) {
             visible
             icon={open ? 'pencil' : 'dots-vertical'}
             actions={[
-              //   { icon: 'plus', onPress: () => console.log('Pressed add') },
               {
                 icon: 'account-multiple-plus',
                 label: 'Invite user',

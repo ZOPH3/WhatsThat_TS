@@ -5,14 +5,13 @@ import React, { memo } from 'react';
 import { List } from 'react-native-paper';
 
 import { useAuth } from '../../../lib/context/auth';
-import { useApi } from '../../../lib/context/api';
 
-import MessageServices from '../../../lib/services/MessageServices';
 import DialogComponent from '../../../components/Dialog';
 import MessageBubble from './MessageBubble';
 
 import { TSingleMessage } from '../../../lib/types/TSchema';
 import { useMessages } from '../../../lib/context/messages';
+import MessageInteractions from '../services/interactions';
 
 interface IMessageContainer {
   message: TSingleMessage;
@@ -21,8 +20,11 @@ interface IMessageContainer {
 function MessageContainer({ message }: IMessageContainer) {
   const currentUser = useAuth().authState.id;
   const { DialogBlock, showDialog, hideDialog } = DialogComponent();
+
   const { chat_id } = useMessages();
-  const { apiCaller } = useApi();
+  if (!chat_id) throw new Error('Missing chat_id');
+
+  const m = MessageInteractions(chat_id);
 
   const dialogContent = [
     {
@@ -33,6 +35,7 @@ function MessageContainer({ message }: IMessageContainer) {
           left={(props) => <List.Icon {...props} icon="folder" />}
           onPress={() => {
             console.log('Edit', message.message_id);
+            m.updateMessage(message.message_id, 'Hello World').then(() => hideDialog());
           }}
         />
       ),
@@ -44,10 +47,7 @@ function MessageContainer({ message }: IMessageContainer) {
           description="Delete your message"
           left={(props) => <List.Icon {...props} icon="folder" />}
           onPress={() => {
-            if (chat_id)
-              MessageServices(apiCaller)
-                .deleteMessage(chat_id, message.message_id)
-                .then(() => hideDialog());
+            if (chat_id) m.deleteMessage(message.message_id).then(() => hideDialog());
           }}
         />
       ),

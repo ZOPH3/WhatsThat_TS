@@ -2,25 +2,29 @@
 
 import { useApi } from '../../../lib/context/api';
 import { useAuth } from '../../../lib/context/auth';
-import { useChat } from '../../../lib/context/chats';
+import { useMessages } from '../../../lib/context/messages';
+import useFetchHook from '../../../lib/hooks/useFetchHook';
 import MessageServices from '../../../lib/services/MessageServices';
 
 import { TSingleMessage } from '../../../lib/types/TSchema';
 
 const MessageInteractions = (chat_id: number) => {
   const { authState } = useAuth();
-  const { dispatcher } = useChat();
+  const { messageList, dispatcher } = useMessages();
   const { current_user } = authState;
   const { apiCaller } = useApi();
+
+  const { isLoading, onFetch, onError, getFresh } = useFetchHook(
+    { url: `/chat/${chat_id}`, method: 'GET' },
+    true
+  );
 
   if (dispatcher === undefined) {
     throw new Error('Message dispatcher is undefined');
   }
-
   if (current_user === undefined) {
     throw new Error('Current user is undefined');
   }
-
   if (chat_id === undefined) {
     throw new Error('Chat id is undefined');
   }
@@ -28,46 +32,48 @@ const MessageInteractions = (chat_id: number) => {
   const m = MessageServices(apiCaller);
 
   const dispatchMessages = (messages: TSingleMessage[]) => {
-    dispatcher.setMessages({ chat_id, messages });
+    dispatcher.setMessages(messages);
+  };
+
+  const fetchMessages = async () => {
+    onFetch(async () => getFresh()).then((data) => {
+      if (!data) return;
+      dispatchMessages(data.messages);
+    });
   };
 
   const sendMessage = async (message: string) => {
-    return m.sendMessage(chat_id, message).then((response) =>
-      dispatcher.addMessage({
-        chat_id,
-        message: {
-          timestamp: Date.now(),
-          message,
-          author: current_user,
-        },
-      })
-    );
+    return m.sendMessage(chat_id, message).then((response) => {
+      if (!response) return;
+      dispatcher.sendMessage({
+        timestamp: Date.now(),
+        message,
+        author: current_user,
+      });
+    });
   };
 
   const deleteMessage = async (message_id: number) => {
     return m
       .deleteMessage(chat_id, message_id)
-      .then((response) => dispatcher.deleteMessage({ message_id, chat_id }));
+      .then((response) => dispatcher.deleteMessage(message_id));
   };
 
-  const updateMessage = async (obj: TSingleMessage) => {
+  const updateMessage = async (message_id: number, message: string) => {
     return m
-      .updateMessage(chat_id, obj.message_id, obj.message)
-      .then((response) => dispatcher.updateMessage({ chat_id, ...obj }));
+      .updateMessage(chat_id, message_id, message)
+      .then((response) => dispatcher.updateMessage({ message, message_id }));
   };
-
-  function getLatestMessageId(messages: TSingleMessage[]): number {
-    if (!messages || messages.length === 0) return 0;
-    const filteredMessages = messages.filter((message) => message.message_id);
-    return filteredMessages[filteredMessages.length - 1].message_id;
-  }
 
   return {
+    isLoading,
+    onError,
+    fetchMessages,
     dispatchMessages,
     sendMessage,
     deleteMessage,
     updateMessage,
-    // messageList,
+    messageList,
   };
 };
 

@@ -1,12 +1,11 @@
 import { TSingleMessage } from '../../types/TSchema';
-import chatActions from './actions';
 import { IChatContext } from './types';
 
-const ChatReducer = (state: IChatContext, action: { type: chatActions; payload: any }) => {
+const ChatReducer = (state: IChatContext, action: any) => {
   const { type, payload } = action;
 
   switch (type) {
-    case chatActions.SET_CHAT_SUMMARY_LIST:
+    case 'SET_CHAT_SUMMARY_LIST':
       return {
         ...state,
         chatSummaryList: payload,

@@ -7,6 +7,7 @@ enum chatActions {
   ADD_MESSAGE = 'ADD_MESSAGE',
   UPDATE_MESSAGE = 'UPDATE_MESSAGE',
   DELETE_MESSAGE = 'DELETE_MESSAGE',
+  GET_CHAT_SUMMARY = 'GET_CHAT_SUMMARY',
 }
 
 export default chatActions;

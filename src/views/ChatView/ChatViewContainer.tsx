@@ -2,16 +2,16 @@
 import React, { useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView, View } from 'react-native';
-import { Portal, ProgressBar, Text } from 'react-native-paper';
+import { Appbar, Portal, ProgressBar, Text } from 'react-native-paper';
 
-import useFetchHook from '../../lib/hooks/useFetchHook';
-import { TChatInfo } from '../../lib/context/chats/types';
 import { useAuth } from '../../lib/context/auth';
 import { useService } from '../../lib/context/services';
+import { useMessages } from '../../lib/context/messages';
 
 import MessageInteractions from './services/interactions';
-import MessageList from './list/MessageList';
+
 import MessageInput from './components/MessageInput';
+import MessageList from './list/MessageList';
 import SettingsMenu, { IMenuItem } from '../../components/SettingsMenu';
 
 import styles from '../../styles/GlobalStyle';
@@ -21,36 +21,21 @@ import styles from '../../styles/GlobalStyle';
 /**
  * TODO: I think using MessageContext and copying the messages from the context is better for performance. Deleting a message from the chat context doesnt update the UI.
  */
-function ChatViewContainer(props: { chat_id: number; title: string; chat: TChatInfo }) {
-  const { chat_id, title, chat } = props;
-
+function ChatViewContainer() {
   const navigation = useNavigation();
-  const service = useService();
   const { current_user } = useAuth().authState;
-  const { dispatchMessages, sendMessage } = MessageInteractions(chat_id);
-  // const { chatSummaryList } = useChatContext();
+  const { chat_id } = useMessages();
+  const service = useService(); // Draft Services
 
-  const { isLoading, onFetch, onError, getFresh, fetchCacheorFresh } = useFetchHook(
-    { url: `/chat/${chat_id}`, method: 'GET' },
-    true
-  );
+  if (!chat_id) throw new Error('Missing context');
+
+  const { messageList, sendMessage, isLoading, onError, fetchMessages } =
+    MessageInteractions(chat_id);
 
   const items: IMenuItem[] = [
     {
       title: 'Refresh',
-      onPress: () => {
-        onFetch(async () => getFresh()).then((res) => {
-          if (res) {
-            dispatchMessages(res.messages);
-          } else {
-            fetchCacheorFresh().then((res) => {
-              if (res) {
-                dispatchMessages(res.messages);
-              }
-            });
-          }
-        });
-      },
+      onPress: () => fetchMessages(),
     },
     {
       title: 'Invite user',
@@ -68,16 +53,8 @@ function ChatViewContainer(props: { chat_id: number; title: string; chat: TChatI
   ];
 
   useEffect(() => {
-    navigation.setOptions({
-      title: `${title}`,
-      headerRight: () => <SettingsMenu items={items} />,
-    });
-
-    onFetch(async () => getFresh()).then((data) => {
-      if (!data) return;
-      dispatchMessages(data.messages);
-    });
-  }, [chat_id]);
+    fetchMessages();
+  }, []);
 
   const handleSend = (inputValue: string) => {
     if (inputValue !== '') sendMessage(inputValue);
@@ -98,17 +75,23 @@ function ChatViewContainer(props: { chat_id: number; title: string; chat: TChatI
   };
 
   return (
-    <View style={styles.container}>
-      <Portal.Host>
-        <ProgressBar indeterminate visible={isLoading} />
-        <SafeAreaView style={{ flex: 10, paddingBottom: 75 }}>
-          {!!onError && <Text>{onError}</Text>}
-          {!chat.messages && <Text>No Messages</Text>}
-          {!!chat.messages && <MessageList messages={chat.messages} />}
-        </SafeAreaView>
-        <MessageInput onSend={handleSend} onDraft={handleDraft} />
-      </Portal.Host>
-    </View>
+    <>
+      <Appbar.Header>
+        <Appbar.Content title="Chat" />
+        <SettingsMenu items={items} onPress={() => navigation.navigate('ProfileStackNavigator')} />
+      </Appbar.Header>
+      <View style={styles.container}>
+        <Portal.Host>
+          <ProgressBar indeterminate visible={isLoading} />
+          <SafeAreaView style={{ flex: 10, paddingBottom: 75 }}>
+            {!!onError && <Text>{onError}</Text>}
+            {!messageList && <Text>No Messages</Text>}
+            {!!messageList && <MessageList messages={messageList} />}
+          </SafeAreaView>
+          <MessageInput onSend={handleSend} onDraft={handleDraft} />
+        </Portal.Host>
+      </View>
+    </>
   );
 }
 

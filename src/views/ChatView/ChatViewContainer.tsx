@@ -1,19 +1,20 @@
 /* eslint-disable camelcase */
 import React, { useEffect } from 'react';
-import { SafeAreaView, View } from 'react-native';
-import { Button, Portal, ProgressBar, Text } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
+import { SafeAreaView, View } from 'react-native';
+import { Portal, ProgressBar, Text } from 'react-native-paper';
 
-import styles from '../../styles/GlobalStyle';
+import useFetchHook from '../../lib/hooks/useFetchHook';
+import { TChatInfo } from '../../lib/context/chats/types';
+import { useAuth } from '../../lib/context/auth';
+import { useService } from '../../lib/context/services';
 
-import SettingsMenu, { IMenuItem } from '../../components/SettingsMenu';
+import MessageInteractions from './services/interactions';
 import MessageList from './list/MessageList';
 import MessageInput from './components/MessageInput';
-import useFetchHook from '../../lib/hooks/useFetchHook';
-import MessageInteractions from './services/interactions';
-import { useServiceContext } from '../../lib/context/ServicesContext';
-import { useAuthContext } from '../../lib/context/AuthContext';
-import { TChatInfo } from '../../lib/context/ChatContext';
+import SettingsMenu, { IMenuItem } from '../../components/SettingsMenu';
+
+import styles from '../../styles/GlobalStyle';
 
 // FIXME: Loading from cache for messages is malformed, it loses the .messages property and needs [3] to access the messages
 
@@ -24,8 +25,8 @@ function ChatViewContainer(props: { chat_id: number; title: string; chat: TChatI
   const { chat_id, title, chat } = props;
 
   const navigation = useNavigation();
-  const service = useServiceContext();
-  const { current_user } = useAuthContext().authState;
+  const service = useService();
+  const { current_user } = useAuth().authState;
   const { dispatchMessages, sendMessage } = MessageInteractions(chat_id);
   // const { chatSummaryList } = useChatContext();
 

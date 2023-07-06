@@ -1,12 +1,13 @@
 /* eslint-disable camelcase */
 import React from 'react';
 import ChatViewContainer from './ChatViewContainer';
-import { MessageProvider } from '../../lib/context/MessageContext';
-import { useChatContext } from '../../lib/context/ChatContext';
+
+import { useChat } from '../../lib/context/chats';
+import { MessageProvider } from '../../lib/context/messages';
 
 function ChatView({ route, navigation }) {
   const { chat_id } = route.params;
-  const { chatSummaryList } = useChatContext();
+  const { chatSummaryList } = useChat();
   const chat = chatSummaryList.find((chat) => chat.chat_id === chat_id);
 
   if (!chat) {

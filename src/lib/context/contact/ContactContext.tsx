@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 import React, { createContext, useContext, useMemo, useReducer } from 'react';
-import { TUser } from '../types/TSchema';
+import { TUser } from '../../types/TSchema';
 
 interface IContactsContext {
   contacts: any[];

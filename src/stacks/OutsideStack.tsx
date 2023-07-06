@@ -12,21 +12,25 @@ import RegisterView from '../views/RegisterView';
 const OutsideTab = createBottomTabNavigator();
 const OutsideStack = createNativeStackNavigator();
 
-const OutsideTabNavigator = () => {
+function OutsideTabNavigator() {
   return (
     <OutsideTab.Navigator>
       <OutsideTab.Screen name="LoginView" component={LoginView} />
       <OutsideTab.Screen name="RegisterView" component={RegisterView} />
     </OutsideTab.Navigator>
   );
-};
+}
 
-const OutsideStackNavigator = () => {
+function OutsideStackNavigator() {
   return (
     <OutsideStack.Navigator>
-      <OutsideStack.Screen name="OutsideStack" component={OutsideTabNavigator} options={{ headerShown: false }}/>
+      <OutsideStack.Screen
+        name="OutsideStack"
+        component={OutsideTabNavigator}
+        options={{ headerShown: false }}
+      />
     </OutsideStack.Navigator>
   );
-};
+}
 
 export default OutsideStackNavigator;

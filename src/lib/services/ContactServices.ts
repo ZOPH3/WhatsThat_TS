@@ -1,6 +1,5 @@
 /* eslint-disable camelcase */
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useApiContext } from '../context/ApiContext';
 import { TUser } from '../types/TSchema';
 
 interface IContactServices {
@@ -20,34 +19,34 @@ export type TSearchParams = {
   offset?: number;
 };
 
-const ContactServices = (useFetch: any): IContactServices => {
+const ContactServices = (apiCaller: any): IContactServices => {
   const fetchContactList = async (): Promise<TUser[] | undefined> => {
-    const response = await useFetch({ url: '/contacts', method: 'GET' }, true);
+    const response = await apiCaller({ url: '/contacts', method: 'GET' }, true);
     return response.data as TUser[];
   };
 
   const addContact = async (user_id: number): Promise<Response | undefined> => {
-    const response = await useFetch({ url: `/user/${user_id}/contact`, method: 'POST' }, true);
+    const response = await apiCaller({ url: `/user/${user_id}/contact`, method: 'POST' }, true);
     return response.data as Response;
   };
 
   const deleteContact = async (user_id: number): Promise<Response | undefined> => {
-    const response = await useFetch({ url: `/user/${user_id}/contact`, method: 'DELETE' }, true);
+    const response = await apiCaller({ url: `/user/${user_id}/contact`, method: 'DELETE' }, true);
     return response.data as Response;
   };
 
   const blockUser = async (user_id: number) => {
-    const response = await useFetch({ url: `/user/${user_id}/block`, method: 'POST' }, true);
+    const response = await apiCaller({ url: `/user/${user_id}/block`, method: 'POST' }, true);
     return response.data || null;
   };
 
   const unblockUser = async (user_id: number): Promise<Response | undefined> => {
-    const response = await useFetch({ url: `/user/${user_id}/block`, method: 'DELETE' }, true);
+    const response = await apiCaller({ url: `/user/${user_id}/block`, method: 'DELETE' }, true);
     return response.data as Response;
   };
 
   const fetchBlockedList = async (): Promise<TUser[] | undefined> => {
-    const response = await useFetch({ url: '/blocked', method: 'GET' }, true);
+    const response = await apiCaller({ url: '/blocked', method: 'GET' }, true);
     return response.data as TUser[];
   };
 
@@ -58,7 +57,7 @@ const ContactServices = (useFetch: any): IContactServices => {
     if (parameters.limit) base += `&limit=${parameters.limit}`;
     if (parameters.offset) base += `&offset=${parameters.offset}`;
 
-    const response = await useFetch({ url: base, method: 'GET' }, true);
+    const response = await apiCaller({ url: base, method: 'GET' }, true);
     const userList: { user_id: any; first_name: any; last_name: any; email: any }[] = [];
     response.data.forEach(
       (user: {

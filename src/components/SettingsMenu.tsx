@@ -2,7 +2,8 @@ import * as React from 'react';
 import { View } from 'react-native';
 import { Menu, IconButton, Avatar, TouchableRipple } from 'react-native-paper';
 import { IconSource } from 'react-native-paper/lib/typescript/src/components/Icon';
-import { useGlobalContext } from '../lib/context/GlobalContext';
+
+import { useGlobal } from '../lib/context/global';
 
 export interface IMenuItem {
   title: React.ReactNode;
@@ -36,7 +37,7 @@ function MenuItems(props: { items: IMenuItem[]; closeMenu: () => void }) {
 }
 
 function SettingsMenu(props: { items: any; onPress?: () => any }) {
-  const { toggleTheme } = useGlobalContext();
+  const { toggleTheme } = useGlobal();
   const [visible, setVisible] = React.useState(false);
 
   const openMenu = () => setVisible(true);

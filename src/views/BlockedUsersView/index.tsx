@@ -1,24 +1,16 @@
 import React, { useEffect } from 'react';
 import { View } from 'react-native';
-import { ProgressBar, Snackbar, Text, TextInput } from 'react-native-paper';
-import ButtonComponent from '../../components/Button';
-import DialogComponent from '../../components/Dialog';
-import { useApiContext } from '../../lib/context/ApiContext';
-import { useAuthContext } from '../../lib/context/AuthContext';
+import { ProgressBar, Text, TextInput } from 'react-native-paper';
+
 import useFetchHook from '../../lib/hooks/useFetchHook';
-import log from '../../lib/util/LoggerUtil';
+
 import styles from '../../styles/GlobalStyle';
+
+import DialogComponent from '../../components/Dialog';
+import ButtonComponent from '../../components/Button';
 import ContactList from '../AddedUsersView/list/ContactList';
 
 function BlockedUsersView() {
-  const { useFetch } = useApiContext();
-  const { logout } = useAuthContext();
-
-  if (!useFetch || !logout) {
-    log.error('Unable to find Auth API...');
-    throw new Error('Unable to find Auth API...');
-  }
-
   const { data, isLoading, onFetch, onError, getFresh, getCache } = useFetchHook(
     { url: '/blocked', method: 'GET' },
     true
@@ -45,7 +37,7 @@ function BlockedUsersView() {
       <ProgressBar indeterminate visible={isLoading} />
       {!!onError && <Text>{onError}</Text>}
       {!data && <Text>No contacts</Text>}
-      {!!data && <ContactList contacts={data} />}
+      {!!data && <ContactList contacts={data} listType="blocked" />}
       {/* <Result /> */}
       <DialogBlock
         title="Create Chat"

@@ -1,13 +1,15 @@
 import React, { useEffect } from 'react';
 import { TextInput } from 'react-native-paper';
 import { View } from 'react-native';
-import { useAuthContext } from '../../lib/context/AuthContext';
 
-import ButtonComponent from '../../components/Button';
-import styles from '../../styles/GlobalStyle';
+import { useAuth } from '../../lib/context/auth';
 import useFetchHook from '../../lib/hooks/useFetchHook';
 
-const LoginView = () => {
+import ButtonComponent from '../../components/Button';
+
+import styles from '../../styles/GlobalStyle';
+
+function LoginView() {
   const user = {
     email: 'newwilliams@mmu.ac.uk',
     password: 'Characters1*',
@@ -16,7 +18,7 @@ const LoginView = () => {
   };
 
   const [text, setText] = React.useState({ email: '', password: '' });
-  const { authState, setAuthState } = useAuthContext();
+  const { authState, setAuthState } = useAuth();
 
   const { isLoading, onFetch, getFresh } = useFetchHook(
     { url: '/login', method: 'POST', data: { ...user } },
@@ -26,7 +28,7 @@ const LoginView = () => {
   const getUser = useFetchHook({ url: `/user/${authState.id}` }, true);
 
   const onLogin = async () => {
-    onFetch(async () => await getFresh())
+    onFetch(async () => getFresh())
       .then((data) => {
         if (!data) return;
         if (data && data.id && data.token) {
@@ -91,7 +93,7 @@ const LoginView = () => {
         onChangeText={(e) => setText({ ...text, password: e })}
       />
       <ButtonComponent
-        title={'Login'}
+        title="Login"
         onPress={async () => {
           await onLogin();
         }}
@@ -100,6 +102,6 @@ const LoginView = () => {
       />
     </View>
   );
-};
+}
 
 export default LoginView;

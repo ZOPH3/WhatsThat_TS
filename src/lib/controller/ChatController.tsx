@@ -1,21 +1,24 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useApiContext } from '../context/ApiContext';
-import { useChatContext } from '../context/ChatContext';
+
+import useApi from '../context/api/useApi';
+import { useChat } from '../context/chats';
+
 import { TChatSummary, TChat } from '../types/TSchema';
+
 import log, { apiLog, pollingLog } from '../util/LoggerUtil';
 
 const useChatController = () => {
-  const { useFetch } = useApiContext();
-  const { chatSummaryList: prevState, dispatcher } = useChatContext();
+  const { apiCaller } = useApi();
+  const { chatSummaryList: prevState, dispatcher } = useChat();
 
-  if (!useFetch) {
+  if (!apiCaller) {
     log.error('Unable to find Auth API...');
     throw new Error('Unable to find Auth API...');
   }
 
   const fetchChatSummary = async () => {
     try {
-      const response = await useFetch({ url: `/chat`, method: 'GET' }, true);
+      const response = await apiCaller({ url: `/chat`, method: 'GET' }, true);
       if (!response || !response.data) return;
       pollingLog.debug(`Fetched ChatList: ${response.data.length}`);
       return response.data as TChatSummary[];
@@ -29,7 +32,7 @@ const useChatController = () => {
     try {
       for (let i = 0; i < chatSummaryList.length; i += 1) {
         promises.push(
-          useFetch(
+          apiCaller(
             {
               url: `/chat/${chatSummaryList[i].chat_id}`,
               method: 'GET',

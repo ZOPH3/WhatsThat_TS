@@ -5,8 +5,8 @@ import React, { useEffect, useState } from 'react';
 import log from '../util/LoggerUtil';
 import { getCachedData, setCachedData } from '../services/CacheService';
 
-import { useNotificationContext } from '../context/NotificationContext';
-import { useApiContext } from '../context/ApiContext';
+import { useApi } from '../context/api';
+import { useNotification } from '../context/notification';
 
 export enum EState {
   success = 'success',
@@ -20,10 +20,10 @@ export enum EFetch {
 }
 
 const useFetchHook = (config: any, auth = false) => {
-  const { useFetch } = useApiContext();
-  const { dispatcher } = useNotificationContext();
+  const { apiCaller } = useApi();
+  const { dispatcher } = useNotification();
 
-  if (!useFetch) {
+  if (!apiCaller) {
     log.error('Unable to find Auth API...');
     throw new Error('Unable to find Auth API...');
   }
@@ -33,7 +33,7 @@ const useFetchHook = (config: any, auth = false) => {
   const [onError, setOnError] = React.useState<any | undefined>(undefined);
   const [dataState, setDataState] = useState<EState | undefined>(undefined); // State of the data
 
-  //TODO: Do i need a useeffect for this? 
+  // TODO: Do i need a useeffect for this?
   useEffect(() => {
     if (onError) {
       dispatcher.addNotification({ type: 'error', message: onError });
@@ -43,7 +43,7 @@ const useFetchHook = (config: any, auth = false) => {
   async function getCache() {
     const cachedData = await getCachedData(config.url);
     if (!cachedData) {
-      throw new Error('No cached data found...', config.url);
+      throw new Error(`No cached data found...${config.url}`);
     }
     return Object.values(cachedData);
   }
@@ -53,7 +53,7 @@ const useFetchHook = (config: any, auth = false) => {
      * Fetch
      */
     let msg = '';
-    const data = await useFetch(config, auth).catch((err: AxiosError) => {
+    const data = await apiCaller(config, auth).catch((err: AxiosError) => {
       msg = err.request?.response
         ? err.request.response
         : 'Timeout: It took more than 5 seconds to get the result!!';
@@ -108,7 +108,7 @@ const useFetchHook = (config: any, auth = false) => {
     let error;
     // eslint-disable-next-line @typescript-eslint/no-shadow
     const data = Promise.race([getCache(), getFresh()])
-      .then(data => data)
+      .then((data) => data)
       .catch((err: any) => {
         // setOnError(err.message ? err.message : 'Something went wrong...');
         error = err.message ? err.message : 'Something went wrong...';
@@ -137,9 +137,9 @@ const useFetchHook = (config: any, auth = false) => {
   };
 
   const doFetch = async () => {
-    let data = await onFetch(async () => await getCache());
+    let data = await onFetch(async () => getCache());
     if (!data) {
-      data = await onFetch(async () => await getFresh());
+      data = await onFetch(async () => getFresh());
     }
     return data;
   };

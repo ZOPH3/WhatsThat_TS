@@ -1,20 +1,23 @@
 import React, { useEffect } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { IAuthState, useAuthContext } from '../lib/context/AuthContext';
-import { useGlobalContext } from '../lib/context/GlobalContext';
-import { getCachedData } from '../lib/services/CacheService';
 import { ActivityIndicator } from 'react-native-paper';
-import { TLoginResponse, TUser } from '../lib/types/TSchema';
 
+import { useAuth } from '../lib/context/auth';
+import { useGlobal } from '../lib/context/global';
+
+import { getCachedData } from '../lib/services/CacheService';
+
+import { IAuthState } from '../lib/context/auth/types';
+import { TLoginResponse, TUser } from '../lib/types/TSchema';
 /**
  * - Read state from context
  * - Render UI from state
  */
 
-const SplashView = () => {
-  const authContext = useAuthContext();
+function SplashView() {
+  const authContext = useAuth();
   const { setAuthState } = authContext;
-  const { initialise } = useGlobalContext();
+  const { initialise } = useGlobal();
 
   const getState = async () => {
     let state: IAuthState = {
@@ -28,7 +31,7 @@ const SplashView = () => {
       const login = (await getCachedData('/login')) as TLoginResponse;
 
       if (login && login.id && login.token) {
-        const user = (await getCachedData('/user/' + login.id)) as TUser;
+        const user = (await getCachedData(`/user/${login.id}`)) as TUser;
 
         if (user) {
           state = {
@@ -55,10 +58,10 @@ const SplashView = () => {
 
   return (
     <View style={styles.container}>
-      <ActivityIndicator animating={true} size={80} />
+      <ActivityIndicator animating size={80} />
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {

@@ -4,11 +4,14 @@ import React from 'react';
 import { View, FlatList, SafeAreaView } from 'react-native';
 import { Button, Checkbox, Dialog, List, Portal, Text } from 'react-native-paper';
 
-import { TUser } from '../../../lib/types/TSchema';
+import { useApi } from '../../../lib/context/api';
+
 import ContactServices from '../../../lib/services/ContactServices';
-import { useApiContext } from '../../../lib/context/ApiContext';
-import { intLog } from '../../../lib/util/LoggerUtil';
 import ProfileAvatar from '../../SearchUsersView/ProfileAvatar';
+
+import { TUser } from '../../../lib/types/TSchema';
+
+import { intLog } from '../../../lib/util/LoggerUtil';
 
 interface IContactList {
   contacts: TUser[];
@@ -16,13 +19,12 @@ interface IContactList {
 }
 
 function ContactListActions() {
-  const { useFetch } = useApiContext();
-  if (!useFetch) throw new Error('useFetch is null');
-
+  const { apiCaller } = useApi();
+  if (!apiCaller) throw new Error('useFetch is null');
+  const c = ContactServices(apiCaller);
   const handleRemove = (user_id: number | undefined) => {
     if (!user_id) return;
-    ContactServices(useFetch)
-      .deleteContact(user_id)
+    c.deleteContact(user_id)
       .then((res) => {
         intLog.success('[Remove User]', res);
       })
@@ -33,8 +35,7 @@ function ContactListActions() {
 
   const handleBlock = (user_id: number | undefined) => {
     if (!user_id) return;
-    ContactServices(useFetch)
-      .blockUser(user_id)
+    c.blockUser(user_id)
       .then((res) => {
         if (res) intLog.success('[Block User]', res);
       })
@@ -45,8 +46,7 @@ function ContactListActions() {
 
   const handleUnblock = (user_id: number | undefined) => {
     if (!user_id) return;
-    ContactServices(useFetch)
-      .unblockUser(user_id)
+    c.unblockUser(user_id)
       .then(
         (res) => {
           if (res) intLog.success('[Unblock User]', res);
@@ -60,8 +60,7 @@ function ContactListActions() {
 
   const handleAdd = (user_id: number | undefined) => {
     if (!user_id) return;
-    ContactServices(useFetch)
-      .addContact(user_id)
+    c.addContact(user_id)
       .then(
         (res) => {
           if (res) intLog.success('[Add User]', res);
@@ -143,7 +142,7 @@ function ContactList({ contacts, listType }: IContactList) {
     return <ProfileAvatar user={user} />;
   };
 
-  //TODO: Add button to add instead of long clcking to make it more obvious
+  // TODO: Add button to add instead of long clcking to make it more obvious
   const _renderItem = (_) => {
     return (
       <List.Item

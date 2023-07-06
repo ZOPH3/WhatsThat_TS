@@ -6,17 +6,19 @@ import {
   Appbar,
   Searchbar,
   SegmentedButtons,
-  TextInput,
   Text,
   Tooltip,
   IconButton,
   ProgressBar,
 } from 'react-native-paper';
-import ContactList from '../AddedUsersView/list/ContactList';
+
 import ContactServices, { TSearchParams } from '../../lib/services/ContactServices';
-import { useApiContext } from '../../lib/context/ApiContext';
+import { useContactContext } from '../../lib/context/contact/ContactContext';
+import { useApi } from '../../lib/context/api';
+
+import ContactList from '../AddedUsersView/list/ContactList';
+
 import { TUser } from '../../lib/types/TSchema';
-import { useContactContext } from '../../lib/context/ContactContext';
 
 const styles = StyleSheet.create({
   container: {
@@ -41,23 +43,21 @@ const styles = StyleSheet.create({
  * TODO: Load from cache for contacts?
  */
 function SearchUsersView({ navigation }) {
-  const { useFetch } = useApiContext();
-  const { contacts, blocked, dispatcher } = useContactContext();
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [data, setData] = React.useState<TUser[] | null>(null);
+
+  const { blocked, dispatcher } = useContactContext();
+  const { apiCaller } = useApi();
+  const c = ContactServices(apiCaller);
 
   const [value, setValue] = React.useState('');
   const [searchQuery, setSearchQuery] = React.useState('');
-  const onChangeSearch = (query) => setSearchQuery(query);
+
   const [listType, setListType] = React.useState<'all' | 'blocked' | 'contacts'>('all');
   const [currentPage, setCurrentPage] = React.useState(0);
-  const [isLoading, setIsLoading] = React.useState(false);
-  const [data, setData] = React.useState<TUser[] | null>(null);
+
+  const onChangeSearch = (query) => setSearchQuery(query);
   const _handleMore = () => console.log('Shown more');
-
-  // useEffect(() => {
-  //   console.log('Contacts', contacts);
-  //   console.log('Blocked', blocked);
-  // }, [contacts, blocked]);
-
   const _handleSearch = () => {
     setIsLoading(true);
 
@@ -69,8 +69,7 @@ function SearchUsersView({ navigation }) {
       limit: 6,
       offset: currentPage * 6,
     };
-    ContactServices(useFetch)
-      .searchUsers(params)
+    c.searchUsers(params)
       .then((res) => {
         if (res && res.length > 0) {
           setData(res as TUser[]);
@@ -89,8 +88,7 @@ function SearchUsersView({ navigation }) {
 
   const _handleBlocked = () => {
     setIsLoading(true);
-    ContactServices(useFetch)
-      .fetchBlockedList()
+    c.fetchBlockedList()
       .then((res) => {
         // console.log(res);
         if (res !== undefined && res.length > 0) {

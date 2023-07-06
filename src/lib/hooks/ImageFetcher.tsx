@@ -1,11 +1,12 @@
 /* eslint-disable camelcase */
 /* eslint-disable @typescript-eslint/no-shadow */
 /* eslint-disable react-hooks/rules-of-hooks */
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Image } from 'react-native';
+import React, { useEffect, useRef } from 'react';
 
-import { View, Image } from 'react-native';
-import { useApiContext } from '../context/ApiContext';
+import { useApi } from '../context/api';
 import { getCachedData, setCachedData } from '../services/CacheService';
+
 import log, { apiLog, cacheLog } from '../util/LoggerUtil';
 
 type ImageCache = {
@@ -22,9 +23,9 @@ function ImageFetcher(url: string) {
   const [onError, setOnError] = React.useState<any | undefined>(undefined);
   const fetch_count = useRef(0);
 
-  const { useFetch } = useApiContext();
+  const { apiCaller } = useApi();
 
-  if (!useFetch) {
+  if (!apiCaller) {
     log.error('Unable to find Auth API...');
     throw new Error('Unable to find Auth API...');
   }
@@ -73,7 +74,7 @@ function ImageFetcher(url: string) {
   const makeRequest = async () => {
     setIsLoading(true);
     try {
-      const response = await useFetch(
+      const response = await apiCaller(
         { url, method: 'GET', maxBodyLength: Infinity, responseType: 'blob' },
         true
       );
@@ -104,7 +105,7 @@ function ImageFetcher(url: string) {
   const postImage = async (image: string) => {
     setIsLoading(true);
     try {
-      const response = await useFetch(
+      const response = await apiCaller(
         { url, method: 'POST', data: image, maxBodyLength: Infinity },
         true
       );

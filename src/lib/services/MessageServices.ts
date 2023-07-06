@@ -1,6 +1,5 @@
 /* eslint-disable camelcase */
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useApiContext } from '../context/ApiContext';
 import { TSingleMessage } from '../types/TSchema';
 
 interface IMessageServices {
@@ -10,16 +9,14 @@ interface IMessageServices {
   updateMessage: (
     chat_id: number,
     message_id: number,
-    message: string,
+    message: string
   ) => Promise<Response | undefined>;
 }
 
-const MessageServices = (useFetch: any): IMessageServices => {
-  // const { useFetch } = useApiContext();
-  // if (!useFetch) throw new Error('Unable to find Auth API...');
+const MessageServices = (apiCaller: any): IMessageServices => {
 
   const getMessages = async (chat_id: number): Promise<TSingleMessage[] | undefined> => {
-    const response = await useFetch({ url: `/chat/${chat_id}`, method: 'GET' }, true);
+    const response = await apiCaller({ url: `/chat/${chat_id}`, method: 'GET' }, true);
     return response.data.messages as TSingleMessage[];
   };
 
@@ -30,9 +27,9 @@ const MessageServices = (useFetch: any): IMessageServices => {
    * @returns
    */
   const sendMessage = async (chat_id: number, message: string) => {
-    const response = await useFetch(
+    const response = await apiCaller(
       { url: `/chat/${chat_id}/message`, method: 'POST', data: { message } },
-      true,
+      true
     );
     return response.data;
   };
@@ -45,11 +42,11 @@ const MessageServices = (useFetch: any): IMessageServices => {
    */
   const deleteMessage = async (
     chat_id: number,
-    message_id: number,
+    message_id: number
   ): Promise<Response | undefined> => {
-    const response = await useFetch(
+    const response = await apiCaller(
       { url: `/chat/${chat_id}/message/${message_id}`, method: 'DELETE' },
-      true,
+      true
     );
     return response.data;
   };
@@ -64,11 +61,11 @@ const MessageServices = (useFetch: any): IMessageServices => {
   const updateMessage = async (
     chat_id: number,
     message_id: number,
-    message: string,
+    message: string
   ): Promise<Response | undefined> => {
-    const response = await useFetch(
+    const response = await apiCaller(
       { url: `/chat/${chat_id}/message/${message_id}`, method: 'PUT', data: { message } },
-      true,
+      true
     );
     return response.data;
   };

@@ -13,7 +13,7 @@ interface IActions {
   onPress: () => void;
 }
 
-const SnackbarComponent = ({ text, actions, toggleVisible }: ISnackBar) => {
+function SnackbarComponent({ text, actions, toggleVisible }: ISnackBar) {
   const [visible, setVisible] = React.useState(false);
   const onToggleSnackBar = () => setVisible(!visible);
   const onDismissSnackBar = () => setVisible(false);
@@ -23,10 +23,12 @@ const SnackbarComponent = ({ text, actions, toggleVisible }: ISnackBar) => {
   return (
     <View style={styles.container}>
       <Button onPress={onToggleSnackBar}>{visible ? 'Hide' : 'Show'}</Button>
-      <Snackbar visible={visible} onDismiss={onDismissSnackBar} action={actions}>HELLO</Snackbar>
+      <Snackbar visible={visible} onDismiss={onDismissSnackBar} action={actions}>
+        HELLO
+      </Snackbar>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {

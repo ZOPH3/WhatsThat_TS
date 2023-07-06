@@ -1,18 +1,18 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useApiContext } from '../context/ApiContext';
+import { useApi } from '../context/api';
 import log, { apiLog } from '../util/LoggerUtil';
 
 const useGlobalController = () => {
-  const { useFetch } = useApiContext();
+  const { apiCaller } = useApi();
 
-  if (!useFetch) {
+  if (!apiCaller) {
     log.error('Unable to find Auth API...');
     throw new Error('Unable to find Auth API...');
   }
 
   const checkServerConnection = async () => {
     try {
-      const response = await useFetch({ url: `/`, method: 'GET' }, false);
+      const response = await apiCaller({ url: `/`, method: 'GET' }, false);
       if (!response || !response.msg) return false;
       return response.msg === 'Server up';
     } catch (err) {

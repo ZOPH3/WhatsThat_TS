@@ -19,13 +19,9 @@ import styles from '../../styles/GlobalStyle';
 import { getCachedData, setCachedData } from '../../lib/services/CacheService';
 import { useNotification } from '../../lib/context/notification';
 import { pollingItem } from '../../lib/services/PollingService';
-import { pollingLog } from '../../lib/util/LoggerUtil';
+import { apiLog, pollingLog } from '../../lib/util/LoggerUtil';
+import { useApi } from '../../lib/context/api';
 
-// FIXME: Loading from cache for messages is malformed, it loses the .messages property and needs [3] to access the messages
-
-/**
- * TODO: I think using MessageContext and copying the messages from the context is better for performance. Deleting a message from the chat context doesnt update the UI.
- */
 function ChatViewContainer(props: { chat_id: number }) {
   const [messageList, setMessageList] = useState<Partial<TSingleMessage>[]>([]);
   const [buttonLoading, setButtonLoading] = useState(false);
@@ -33,6 +29,7 @@ function ChatViewContainer(props: { chat_id: number }) {
   const n = useNotification();
   const navigation = useNavigation();
   const service = useService();
+  const { apiCaller } = useApi();
 
   const { chat_id } = props;
   const { current_user } = useAuth().authState;
@@ -82,15 +79,13 @@ function ChatViewContainer(props: { chat_id: number }) {
   ];
 
   const fetch = () => {
-    onFetch(async () => getFresh())
-      .then((data) => {
-        if (!data) throw new Error('No data');
-        if (
-          data.messages.legnth !== messageList.length &&
-          data.messages[0].message_id !== messageList[0].message_id
-        ) {
-          console.log('Updating message list...');
-          setMessageList(data.messages);
+    if (!apiCaller) return;
+    apiCaller({ url: `/chat/${chat_id}`, method: 'GET' }, true)
+      .then((res) => {
+        if (!res) throw new Error('No data');
+        if (res.data.messages.legnth !== messageList.length) {
+          apiLog.info(`Updating message list...`);
+          setMessageList(res.data.messages);
         }
       })
       .catch((err) => {
@@ -127,9 +122,9 @@ function ChatViewContainer(props: { chat_id: number }) {
   useEffect(() => {
     const setCache = async () => setCachedData<TSingleMessage[]>(CACHE_URL, messageList);
 
-    if (messageList.length > 0) {
-      setCache();
-    }
+    // if (messageList.length > 0) {
+    //   setCache();
+    // }
   }, [messageList]);
 
   const handleSend = async (inputValue: string) => {

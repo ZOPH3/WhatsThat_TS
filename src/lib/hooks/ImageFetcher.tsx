@@ -160,6 +160,7 @@ function ImageFetcher(url: string) {
   return {
     getCache,
     data,
+    setData,
     isLoading,
     onError,
     ImageProfile,

@@ -12,6 +12,12 @@ function CameraComponent(props: { trigger: (data: CameraCapturedPicture) => void
   const [image, setImage] = useState<string | undefined>(undefined);
   const [permission, requestPermission] = Camera.useCameraPermissions();
 
+  useEffect(() => {
+    if (!permission?.granted) requestPermission();
+  }, []);
+
+  const setModalVisible = () => setShowCamera(false);
+
   const takePicture = async () => {
     if (camera) {
       const data = (await camera.takePictureAsync({
@@ -19,18 +25,12 @@ function CameraComponent(props: { trigger: (data: CameraCapturedPicture) => void
         imageType: ImageType.png,
         onPictureSaved: (data) => trigger(data),
       })) as CameraCapturedPicture;
+      setModalVisible();
       if (!data || !data.base64) return;
-      console.log(data.base64);
+      // console.log(data.base64);
       setImage(`${data.base64}`);
     }
   };
-
-  useEffect(() => {
-    if (!permission?.granted) requestPermission();
-  }, []);
-
-  const setModalVisible = () => setShowCamera(false);
-
   if (!permission) {
     // Camera permissions are still loading
     return <View />;
@@ -140,9 +140,9 @@ function CameraComponent(props: { trigger: (data: CameraCapturedPicture) => void
       )}
       <View>
         <View>
-          {!!image && (
+          {/* {!!image && (
             <Image source={{ uri: image }} style={{ width: 120, height: 120, borderRadius: 100 }} />
-          )}
+          )} */}
         </View>
         {!!permission && (
           <View>

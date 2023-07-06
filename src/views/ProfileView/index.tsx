@@ -2,6 +2,7 @@
 import React from 'react';
 import { View } from 'react-native';
 import { ActivityIndicator, Card, Text } from 'react-native-paper';
+import { AxiosResponse } from 'axios';
 import { useAuthContext } from '../../lib/context/AuthContext';
 import CameraComponent from './CameraComponent';
 import ImageFetcher from '../../lib/hooks/ImageFetcher';
@@ -15,15 +16,14 @@ function ProfileView() {
 
   const { user_id, first_name, last_name } = current_user;
 
-  const { isLoading, data, makeRequest } = ImageFetcher(`user/${user_id}/photo`);
+  const { isLoading, data, setData } = ImageFetcher(`user/${user_id}/photo`);
 
   const sendToServer = async (data: any) => {
     const res = await fetch(data.base64);
     const blob = await res.blob();
-    console.log(blob);
 
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    const response = await useFetch(
+    const response: AxiosResponse = await useFetch(
       {
         url: `user/${user_id}/photo`,
         method: 'POST',
@@ -33,7 +33,7 @@ function ProfileView() {
       true
     );
 
-    console.log(response);
+    if (response && response.status === 200) setData(data.base64);
   };
 
   return (

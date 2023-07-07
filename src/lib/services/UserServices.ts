@@ -1,16 +1,11 @@
 /* eslint-disable camelcase */
 /* eslint-disable react-hooks/rules-of-hooks */
-import { TLoginResponse, TSignUpResponse, TUser } from '../types/TSchema';
+import { TAddUser, TLoginResponse, TSignUpResponse, TUser } from '../types/TSchema';
 
 interface IUserServices {
   login: (email: string, password: string) => Promise<TLoginResponse | undefined>;
   logout: () => Promise<Response | undefined>;
-  register: (
-    first_name: string,
-    last_name: string,
-    email: string,
-    password: string
-  ) => Promise<TSignUpResponse | undefined>;
+  register: (input: TAddUser) => Promise<TSignUpResponse | undefined>;
   getUserInfo: (user_id: number) => Promise<TUser | undefined>;
   updateUserInfo: (user_id: number, payload: Partial<TUser>) => Promise<Response | undefined>;
 }
@@ -28,16 +23,8 @@ const UserServices = (apiCaller: any): IUserServices => {
     return response.data;
   };
 
-  const register = async (
-    first_name: string,
-    last_name: string,
-    email: string,
-    password: string
-  ): Promise<TSignUpResponse | undefined> => {
-    const response = await apiCaller(
-      { url: '/user', method: 'POST', data: { first_name, last_name, email, password } },
-      false
-    );
+  const register = async (input: TAddUser): Promise<TSignUpResponse | undefined> => {
+    const response = await apiCaller({ url: '/user', method: 'POST', data: input }, false);
     return response.data as TSignUpResponse;
   };
 

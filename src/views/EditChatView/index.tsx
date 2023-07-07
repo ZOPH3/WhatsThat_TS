@@ -15,31 +15,73 @@ import {
   useTheme,
 } from 'react-native-paper';
 
-import useFetchHook from '../../lib/hooks/useFetchHook';
 import { useAuth } from '../../lib/context/auth';
 import { useApi } from '../../lib/context/api';
+import { useNotification } from '../../lib/context/notification';
+import useFetchHook from '../../lib/hooks/useFetchHook';
 import ChatServices from '../../lib/services/ChatServices';
 
-import ContactList from '../AddedUsersView/list/ContactList';
+import ContactList from '../../components/ContactList';
 import { TChat, TUser } from '../../lib/types/TSchema';
 import styles from '../../styles/GlobalStyle';
+import ContactServices from '../../lib/services/ContactServices';
 
-function Members(props: { members: TUser[] }) {
-  const { members } = props;
+function Members({ members, actions }) {
+  return (
+    <View>
+      <ContactList contacts={members} actions={actions} />
+    </View>
+  );
+}
+
+function Contacts({ apiCaller, existing, actions }) {
+  const [contacts, setContacts] = useState<TUser[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const c = ContactServices(apiCaller);
+  const getContacts = () => {
+    setIsLoading(true);
+    c.fetchContactList()
+      .then((res) => {
+        if (res) {
+          const filtered = res.filter((item) => !existing.find((i) => i.user_id === item.user_id));
+          setContacts(filtered);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    getContacts();
+
+    return () => {
+      setContacts([]);
+    };
+  }, []);
+
+  if (isLoading) return <Text>Is Loading</Text>;
+  if (!contacts) return <Text>No contacts</Text>;
 
   return (
     <View>
-      <ContactList contacts={members} listType="contacts" />
+      <ContactList contacts={contacts} actions={actions} />
     </View>
   );
 }
 
 function EditChatView({ route, navigation }) {
   const theme = useTheme();
+
   const { chat_id } = route.params;
-  const { apiCaller } = useApi();
   const current_user = useAuth().authState.id;
+  const { apiCaller } = useApi();
+
   const c = ChatServices(apiCaller);
+  const n = useNotification();
 
   const [chatDetails, setChatDetails] = useState<TChat | undefined>(undefined);
   const [members, setMembers] = useState<TUser[]>([]);
@@ -82,6 +124,34 @@ function EditChatView({ route, navigation }) {
     hideDialog();
   }
 
+  function _handleInvite(user: TUser) {
+    setHandleEditLoad(true);
+    c.addUserToConversation(chat_id, user.user_id)
+      .then((res) => {
+        if (res) {
+          setMembers([...members, user]);
+        }
+      })
+      .catch((err) => {
+        n.dispatcher.addNotification({ type: 'warn', message: 'Unable to add user...' });
+      })
+      .finally(() => setHandleEditLoad(false));
+  }
+
+  function _handleRemove(user: TUser) {
+    setHandleEditLoad(true);
+    c.removeUserFromConversation(chat_id, user.user_id)
+      .then((res) => {
+        if (res) {
+          const filtered = members.filter((m) => m.user_id !== user.user_id);
+          setMembers(filtered);
+        }
+      })
+      .catch((err) => {
+        n.dispatcher.addNotification({ type: 'warn', message: 'Unable to remove user...' });
+      })
+      .finally(() => setHandleEditLoad(false));
+  }
   // Api call
   useEffect(() => {
     onFetch(async () => getFresh()).then((res) => {
@@ -118,9 +188,11 @@ function EditChatView({ route, navigation }) {
       <SafeAreaView style={{ flex: 10, margin: 10 }}>
         {!!onError && <Text>{onError}</Text>}
         {!chatDetails && <Text>Unable to find details</Text>}
-        {!!members && <Members members={members} />}
+        {!!members && (
+          <Members members={members} actions={{ onPress: (user) => _handleRemove(user) }} />
+        )}
         {!!isOwner && <Text>Owner</Text>}
-        <Button onPress={() => setModalVisible(true)}>Add Members</Button>
+        {/* FAB Buttons */}
         <Portal>
           <FAB.Group
             style={{ position: 'absolute', bottom: 50, right: 0 }}
@@ -131,7 +203,7 @@ function EditChatView({ route, navigation }) {
               {
                 icon: 'account-multiple-plus',
                 label: 'Invite user',
-                onPress: () => console.log('Pressed star'),
+                onPress: () => setModalVisible(true),
               },
               {
                 icon: 'file-document-edit',
@@ -152,7 +224,7 @@ function EditChatView({ route, navigation }) {
             }}
           />
         </Portal>
-
+        {/* Dialog to edit the chat title */}
         <Portal>
           <Dialog visible={visible} onDismiss={hideDialog}>
             <Dialog.Title>Edit Chat Name</Dialog.Title>
@@ -169,7 +241,7 @@ function EditChatView({ route, navigation }) {
             </Dialog.Actions>
           </Dialog>
         </Portal>
-
+        {/* Modal to invite user */}
         <Portal>
           <Modal
             visible={modalVisible}
@@ -177,8 +249,17 @@ function EditChatView({ route, navigation }) {
             style={{ backgroundColor: theme.colors.background, padding: 20 }}
           >
             <View>
-              <Text>Modal</Text>
-              <ContactList contacts={members} listType="contacts" />
+              <Text>Add to Chat</Text>
+              <Contacts
+                apiCaller={apiCaller}
+                actions={{
+                  onPress: (user) => {
+                    _handleInvite(user);
+                    setModalVisible(false);
+                  },
+                }}
+                existing={members}
+              />
             </View>
           </Modal>
         </Portal>

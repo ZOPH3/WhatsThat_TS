@@ -83,17 +83,20 @@ function ChatViewContainer(props: { chat_id: number }) {
     apiCaller({ url: `/chat/${chat_id}`, method: 'GET' }, true)
       .then((res) => {
         if (!res) throw new Error('No data');
-        if (res.data.messages.legnth !== messageList.length) {
+        if (res.data.messages.length !== messageList.length) {
           apiLog.info(`Updating message list...`);
-          setMessageList(res.data.messages);
         }
+        return res.data.messages as TSingleMessage[];
+      })
+      .then((res) => {
+        setMessageList(res as TSingleMessage[]);
       })
       .catch((err) => {
         /** */
       });
   };
 
-  const messagePoll = pollingItem(fetch, 3000);
+  const messagePoll = pollingItem(fetch, 5000);
 
   useEffect(() => {
     pollingLog.debug(`Starting polling for chat ${chat_id}...`);
@@ -122,9 +125,9 @@ function ChatViewContainer(props: { chat_id: number }) {
   useEffect(() => {
     const setCache = async () => setCachedData<TSingleMessage[]>(CACHE_URL, messageList);
 
-    // if (messageList.length > 0) {
-    //   setCache();
-    // }
+    if (messageList && messageList.length > 0) {
+      setCache();
+    }
   }, [messageList]);
 
   const handleSend = async (inputValue: string) => {
@@ -176,6 +179,11 @@ function ChatViewContainer(props: { chat_id: number }) {
   return (
     <>
       <Appbar.Header>
+        <Appbar.BackAction
+          onPress={() => {
+            navigation.goBack();
+          }}
+        />
         <Appbar.Content title="Chat" />
         <SettingsMenu items={items} />
       </Appbar.Header>

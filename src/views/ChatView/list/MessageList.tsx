@@ -9,7 +9,7 @@ interface IMessageList {
   messages: TSingleMessage[];
 }
 
-function MessageList({ messages }: IMessageList) {
+function MessageList({ messages, onDelete }) {
   const flatListRef = useRef<FlatList<TSingleMessage>>(null);
   if (!messages || messages.length === 0) return null;
 
@@ -20,7 +20,7 @@ function MessageList({ messages }: IMessageList) {
           ref={flatListRef}
           data={messages ? messages.sort((a, b) => a.timestamp - b.timestamp) : []}
           keyExtractor={(item) => item.timestamp.toString()}
-          renderItem={({ item }) => <MessageContainer message={item} />}
+          renderItem={({ item }) => <MessageContainer message={item} onDelete={onDelete} />}
           onContentSizeChange={() => flatListRef.current?.scrollToEnd()}
         />
       </SafeAreaView>

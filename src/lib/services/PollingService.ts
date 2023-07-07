@@ -1,4 +1,4 @@
-const pollingItem = (method: () => void, interval: number | undefined) => {
+export const pollingItem = (method: () => void, interval: number | undefined) => {
   let poll: string | number | NodeJS.Timer | undefined;
 
   function startPolling() {

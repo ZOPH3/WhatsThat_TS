@@ -1,11 +1,10 @@
 /* eslint-disable camelcase */
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView, View } from 'react-native';
-import { Portal, ProgressBar, Text } from 'react-native-paper';
+import { Appbar, Portal, ProgressBar, Text } from 'react-native-paper';
 
 import useFetchHook from '../../lib/hooks/useFetchHook';
-import { TChatInfo } from '../../lib/context/chats/types';
 import { useAuth } from '../../lib/context/auth';
 import { useService } from '../../lib/context/services';
 
@@ -14,21 +13,29 @@ import MessageList from './list/MessageList';
 import MessageInput from './components/MessageInput';
 import SettingsMenu, { IMenuItem } from '../../components/SettingsMenu';
 
+import { TSingleMessage } from '../../lib/types/TSchema';
+
 import styles from '../../styles/GlobalStyle';
+import { getCachedData, setCachedData } from '../../lib/services/CacheService';
+import { useNotification } from '../../lib/context/notification';
+import { pollingItem } from '../../lib/services/PollingService';
+import { apiLog, pollingLog } from '../../lib/util/LoggerUtil';
+import { useApi } from '../../lib/context/api';
 
-// FIXME: Loading from cache for messages is malformed, it loses the .messages property and needs [3] to access the messages
+function ChatViewContainer(props: { chat_id: number }) {
+  const [messageList, setMessageList] = useState<Partial<TSingleMessage>[]>([]);
+  const [buttonLoading, setButtonLoading] = useState(false);
 
-/**
- * TODO: I think using MessageContext and copying the messages from the context is better for performance. Deleting a message from the chat context doesnt update the UI.
- */
-function ChatViewContainer(props: { chat_id: number; title: string; chat: TChatInfo }) {
-  const { chat_id, title, chat } = props;
-
+  const n = useNotification();
   const navigation = useNavigation();
   const service = useService();
+  const { apiCaller } = useApi();
+
+  const { chat_id } = props;
   const { current_user } = useAuth().authState;
-  const { dispatchMessages, sendMessage } = MessageInteractions(chat_id);
-  // const { chatSummaryList } = useChatContext();
+  const m = MessageInteractions(chat_id);
+
+  const CACHE_URL = `/chat/${chat_id}`;
 
   const { isLoading, onFetch, onError, getFresh, fetchCacheorFresh } = useFetchHook(
     { url: `/chat/${chat_id}`, method: 'GET' },
@@ -39,17 +46,21 @@ function ChatViewContainer(props: { chat_id: number; title: string; chat: TChatI
     {
       title: 'Refresh',
       onPress: () => {
-        onFetch(async () => getFresh()).then((res) => {
-          if (res) {
-            dispatchMessages(res.messages);
-          } else {
-            fetchCacheorFresh().then((res) => {
-              if (res) {
-                dispatchMessages(res.messages);
-              }
-            });
-          }
-        });
+        onFetch(async () => getFresh())
+          .then((res) => {
+            if (res) {
+              setMessageList(res.messages);
+            } else {
+              fetchCacheorFresh().then((res) => {
+                if (res) {
+                  setMessageList(res.messages);
+                }
+              });
+            }
+          })
+          .catch((err) => {
+            n.dispatcher.addNotification({ type: 'warn', message: 'Unable to refresh...' });
+          });
       },
     },
     {
@@ -67,20 +78,88 @@ function ChatViewContainer(props: { chat_id: number; title: string; chat: TChatI
     },
   ];
 
-  useEffect(() => {
-    navigation.setOptions({
-      title: `${title}`,
-      headerRight: () => <SettingsMenu items={items} />,
-    });
+  const fetch = () => {
+    if (!apiCaller) return;
+    apiCaller({ url: `/chat/${chat_id}`, method: 'GET' }, true)
+      .then((res) => {
+        if (!res) throw new Error('No data');
+        if (res.data.messages.length !== messageList.length) {
+          apiLog.info(`Updating message list...`);
+        }
+        return res.data.messages as TSingleMessage[];
+      })
+      .then((res) => {
+        setMessageList(res as TSingleMessage[]);
+      })
+      .catch((err) => {
+        /** */
+      });
+  };
 
-    onFetch(async () => getFresh()).then((data) => {
-      if (!data) return;
-      dispatchMessages(data.messages);
-    });
+  const messagePoll = pollingItem(fetch, 5000);
+
+  useEffect(() => {
+    pollingLog.debug(`Starting polling for chat ${chat_id}...`);
+    messagePoll.startPolling();
+    return () => {
+      pollingLog.debug(`Clear polling for chat ${chat_id}...`);
+      messagePoll.clearPolling();
+    };
+  }, []);
+
+  useEffect(() => {
+    onFetch(async () => getFresh())
+      .then((data) => {
+        if (!data) throw new Error('No data');
+        setMessageList(data.messages);
+      })
+      .catch((err) => {
+        getCachedData<TSingleMessage[]>(CACHE_URL).then((res) => {
+          if (res) {
+            setMessageList(res);
+          }
+        });
+      });
   }, [chat_id]);
 
-  const handleSend = (inputValue: string) => {
-    if (inputValue !== '') sendMessage(inputValue);
+  useEffect(() => {
+    const setCache = async () => setCachedData<TSingleMessage[]>(CACHE_URL, messageList);
+
+    if (messageList && messageList.length > 0) {
+      setCache();
+    }
+  }, [messageList]);
+
+  const handleSend = async (inputValue: string) => {
+    if (inputValue !== '') {
+      setButtonLoading(true);
+      m.sendMessage(inputValue)
+        .then((res) => {
+          if (res) {
+            setMessageList([...messageList, res]);
+          }
+        })
+        .catch((err) => {
+          n.dispatcher.addNotification({ type: 'warn', message: 'Unable to send message...' });
+        })
+        .finally(() => setButtonLoading(false));
+    }
+  };
+
+  const handleDelete = (message_id: number) => {
+    if (!message_id) return;
+    setButtonLoading(true);
+    m.deleteMessage(message_id)
+      .then((res) => {
+        if (res) {
+          const newMessages = messageList.filter((message) => message.message_id !== message_id);
+          setMessageList(newMessages);
+        }
+      })
+      .catch((err) => {
+        n.dispatcher.addNotification({ type: 'warn', message: 'Unable to delete...' });
+      })
+      .finally(() => setButtonLoading(false));
   };
 
   const handleDraft = (inputValue: string, date: string) => {
@@ -98,17 +177,28 @@ function ChatViewContainer(props: { chat_id: number; title: string; chat: TChatI
   };
 
   return (
-    <View style={styles.container}>
-      <Portal.Host>
-        <ProgressBar indeterminate visible={isLoading} />
-        <SafeAreaView style={{ flex: 10, paddingBottom: 75 }}>
-          {!!onError && <Text>{onError}</Text>}
-          {!chat.messages && <Text>No Messages</Text>}
-          {!!chat.messages && <MessageList messages={chat.messages} />}
-        </SafeAreaView>
-        <MessageInput onSend={handleSend} onDraft={handleDraft} />
-      </Portal.Host>
-    </View>
+    <>
+      <Appbar.Header>
+        <Appbar.BackAction
+          onPress={() => {
+            navigation.goBack();
+          }}
+        />
+        <Appbar.Content title="Chat" />
+        <SettingsMenu items={items} />
+      </Appbar.Header>
+      <View style={styles.container}>
+        <Portal.Host>
+          <ProgressBar indeterminate visible={isLoading || buttonLoading} />
+          <SafeAreaView style={{ flex: 10, paddingBottom: 75 }}>
+            {!!onError && <Text>{onError}</Text>}
+            {!messageList && <Text>No Messages</Text>}
+            {!!messageList && <MessageList messages={messageList} onDelete={handleDelete} />}
+          </SafeAreaView>
+          <MessageInput onSend={handleSend} onDraft={handleDraft} />
+        </Portal.Host>
+      </View>
+    </>
   );
 }
 

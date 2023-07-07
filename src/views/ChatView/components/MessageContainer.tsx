@@ -5,24 +5,19 @@ import React, { memo } from 'react';
 import { List } from 'react-native-paper';
 
 import { useAuth } from '../../../lib/context/auth';
-import { useApi } from '../../../lib/context/api';
 
-import MessageServices from '../../../lib/services/MessageServices';
 import DialogComponent from '../../../components/Dialog';
 import MessageBubble from './MessageBubble';
 
 import { TSingleMessage } from '../../../lib/types/TSchema';
-import { useMessages } from '../../../lib/context/messages';
 
 interface IMessageContainer {
   message: TSingleMessage;
 }
 
-function MessageContainer({ message }: IMessageContainer) {
+function MessageContainer({ message, onDelete }) {
   const currentUser = useAuth().authState.id;
   const { DialogBlock, showDialog, hideDialog } = DialogComponent();
-  const { chat_id } = useMessages();
-  const { apiCaller } = useApi();
 
   const dialogContent = [
     {
@@ -44,10 +39,11 @@ function MessageContainer({ message }: IMessageContainer) {
           description="Delete your message"
           left={(props) => <List.Icon {...props} icon="folder" />}
           onPress={() => {
-            if (chat_id)
-              MessageServices(apiCaller)
-                .deleteMessage(chat_id, message.message_id)
-                .then(() => hideDialog());
+            if (message.message_id) {
+              console.log('Delete', message.message_id);
+              onDelete(message.message_id);
+              hideDialog();
+            }
           }}
         />
       ),
@@ -76,8 +72,6 @@ function MessageContainer({ message }: IMessageContainer) {
         isSelf={isSelf}
         actions={{
           onLongPress: showDialog,
-          onTouchStart: () =>
-            console.log(`chat_id ${chat_id}, message id: ${message.message_id ?? 'not defined'}`),
         }}
       />
       <DialogBlock title="Actions" content={dialogContent} />

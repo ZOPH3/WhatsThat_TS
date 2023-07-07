@@ -51,20 +51,8 @@ function ContactTopTabNavigator() {
 }
 
 function ContactStackNavigator({ navigation }) {
-  const headerRight = () => (
-    <IconButton icon="plus" size={20} onPress={() => navigation.navigate('SearchUsersView')} />
-  );
-
   return (
     <InsideStack.Navigator>
-      <InsideStack.Screen
-        name="ContactTopTabNavigator"
-        component={ContactTopTabNavigator}
-        options={{
-          title: 'Contacts',
-          headerRight,
-        }}
-      />
       <InsideStack.Screen
         name="SearchUsersView"
         component={SearchUsersView}

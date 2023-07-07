@@ -1,4 +1,5 @@
 import React, { useRef } from 'react';
+import { View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Appbar } from 'react-native-paper';
 
@@ -53,8 +54,8 @@ function ChatSummaryView() {
         />
         <SettingsMenu items={items} onPress={() => navigation.navigate('ProfileStackNavigator')} />
       </Appbar.Header>
-      <CreateChatDialog ref={dialogRef} />
       <ChatSummaryViewContainer />
+      <CreateChatDialog ref={dialogRef} />
     </>
   );
 }

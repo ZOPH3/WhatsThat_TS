@@ -21,6 +21,7 @@ function ChatSummaryItemWrapper({ chatSummary, actions }: IChatSummaryContainer)
     <AvatarComponent
       label={`${chatSummary.name !== '' ? chatSummary.name : chatSummary.creator.first_name}`}
       color={avatarColour}
+      size={50}
     />
   );
 
@@ -29,7 +30,7 @@ function ChatSummaryItemWrapper({ chatSummary, actions }: IChatSummaryContainer)
       title={`${chatSummary.name !== '' ? chatSummary.name : chatSummary.creator.first_name}`}
       description={`${chatSummary.last_message?.message ?? 'No Messages'}`}
       left={avatar}
-      right={props => null}
+      right={(props) => null}
       onPress={actions.goTo}
       onLongPress={actions.edit}
     />

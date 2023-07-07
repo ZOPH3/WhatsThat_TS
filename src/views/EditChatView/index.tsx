@@ -1,21 +1,18 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable camelcase */
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, SafeAreaView } from 'react-native';
 import {
   Appbar,
   Button,
-  Card,
-  Chip,
   Dialog,
   FAB,
-  IconButton,
-  Modal,
   Portal,
   ProgressBar,
   Text,
   TextInput,
-  Tooltip,
+  Modal,
+  useTheme,
 } from 'react-native-paper';
 
 import useFetchHook from '../../lib/hooks/useFetchHook';
@@ -38,24 +35,27 @@ function Members(props: { members: TUser[] }) {
 }
 
 function EditChatView({ route, navigation }) {
+  const theme = useTheme();
   const { chat_id } = route.params;
   const { apiCaller } = useApi();
   const current_user = useAuth().authState.id;
   const c = ChatServices(apiCaller);
 
-  const [chatDetails, setChatDetails] = React.useState<TChat | undefined>(undefined);
-  const [isOwner, setIsOwner] = React.useState<boolean>(false);
-  const [titleEdit, setTitleEdit] = React.useState<string>('');
-  const [isEditing, setIsEditing] = React.useState<boolean>(false);
-  const [handleEditLoad, setHandleEditLoad] = React.useState<boolean>(false);
+  const [chatDetails, setChatDetails] = useState<TChat | undefined>(undefined);
+  const [members, setMembers] = useState<TUser[]>([]);
+  const [isOwner, setIsOwner] = useState<boolean>(false);
+  const [titleEdit, setTitleEdit] = useState<string>('');
+  const [handleEditLoad, setHandleEditLoad] = useState<boolean>(false);
 
-  const [visible, setVisible] = React.useState(false);
+  const [visible, setVisible] = useState(false);
   const showDialog = () => setVisible(true);
   const hideDialog = () => setVisible(false);
 
-  const [state, setState] = React.useState({ open: false });
+  const [state, setState] = useState({ open: false });
   const onStateChange = ({ open }) => setState({ open });
   const { open } = state;
+
+  const [modalVisible, setModalVisible] = useState(false);
 
   const { isLoading, onError, onFetch, getFresh } = useFetchHook(
     { url: `/chat/${chat_id}`, method: 'GET' },
@@ -88,6 +88,7 @@ function EditChatView({ route, navigation }) {
       if (res) {
         // console.log(res);
         setChatDetails(res as TChat);
+        setMembers(res.members);
         setTitleEdit(res.name);
       }
     });
@@ -111,31 +112,15 @@ function EditChatView({ route, navigation }) {
           }}
         />
         <Appbar.Content title="Chat Details" />
-        {/* <Tooltip title="Invite user">
-          <IconButton
-            icon="account-plus"
-            selected={isEditing}
-            size={24}
-            onPress={() => setIsEditing(!isEditing)}
-          />
-        </Tooltip> */}
-        <Tooltip title="Show Contacts">
-          <IconButton
-            icon="content-save-edit"
-            selected={isEditing}
-            size={24}
-            onPress={() => setIsEditing(!isEditing)}
-          />
-        </Tooltip>
       </Appbar.Header>
 
       <ProgressBar indeterminate visible={isLoading || handleEditLoad} />
       <SafeAreaView style={{ flex: 10, margin: 10 }}>
         {!!onError && <Text>{onError}</Text>}
         {!chatDetails && <Text>Unable to find details</Text>}
-        {!!chatDetails && <Members members={chatDetails.members} />}
+        {!!members && <Members members={members} />}
         {!!isOwner && <Text>Owner</Text>}
-
+        <Button onPress={() => setModalVisible(true)}>Add Members</Button>
         <Portal>
           <FAB.Group
             style={{ position: 'absolute', bottom: 50, right: 0 }}
@@ -143,7 +128,6 @@ function EditChatView({ route, navigation }) {
             visible
             icon={open ? 'pencil' : 'dots-vertical'}
             actions={[
-              //   { icon: 'plus', onPress: () => console.log('Pressed add') },
               {
                 icon: 'account-multiple-plus',
                 label: 'Invite user',
@@ -184,6 +168,19 @@ function EditChatView({ route, navigation }) {
               </Button>
             </Dialog.Actions>
           </Dialog>
+        </Portal>
+
+        <Portal>
+          <Modal
+            visible={modalVisible}
+            onDismiss={() => setModalVisible(false)}
+            style={{ backgroundColor: theme.colors.background, padding: 20 }}
+          >
+            <View>
+              <Text>Modal</Text>
+              <ContactList contacts={members} listType="contacts" />
+            </View>
+          </Modal>
         </Portal>
       </SafeAreaView>
     </View>

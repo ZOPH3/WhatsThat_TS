@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView, View } from 'react-native';
-import { Appbar, Portal, ProgressBar, Text } from 'react-native-paper';
+import { Appbar, List, Modal, Portal, ProgressBar, Text, useTheme } from 'react-native-paper';
 
 import useFetchHook from '../../lib/hooks/useFetchHook';
 import { useAuth } from '../../lib/context/auth';
@@ -21,11 +21,47 @@ import { useNotification } from '../../lib/context/notification';
 import { pollingItem } from '../../lib/services/PollingService';
 import { apiLog, pollingLog } from '../../lib/util/LoggerUtil';
 import { useApi } from '../../lib/context/api';
+import { TDraftMessage } from '../../lib/context/services/types';
+
+function DraftList({ chat_id, service, actions }) {
+  const [draftList, setDraftList] = useState<TDraftMessage[]>([]);
+
+  useEffect(() => {
+    const d = service.draftMessageList.filter((draft) => draft.chat_id === chat_id);
+    setDraftList(d);
+  }, [chat_id, service.draftMessageList]);
+
+  return (
+    <View>
+      <ListDrafts draftList={draftList} actions={actions} />
+    </View>
+  );
+}
+
+function ListDrafts({ draftList, actions }: { draftList: TDraftMessage[]; actions: any }) {
+  return draftList.map((draft, index) => (
+    <List.Item
+      key={draft.draft_id}
+      title={draft.message?.message}
+      description={
+        <View>
+          <Text>{`Created: ${new Date(draft.created_at || Date.now()).toLocaleString()}`}</Text>
+          <Text>{`Scheduled: ${new Date(draft.scheduled || Date.now()).toLocaleString()}`}</Text>
+        </View>
+      }
+      left={(props) => <List.Icon {...props} icon={draft.sent ? 'send-check' : 'send-clock'} />}
+      right={(props) => !draft.sent && <List.Icon {...props} icon="send" />}
+      onPress={(draft) => actions?.onPress(draft) ?? null}
+    />
+  ));
+}
 
 function ChatViewContainer(props: { chat_id: number }) {
   const [messageList, setMessageList] = useState<Partial<TSingleMessage>[]>([]);
   const [buttonLoading, setButtonLoading] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
 
+  const theme = useTheme();
   const n = useNotification();
   const navigation = useNavigation();
   const service = useService();
@@ -195,8 +231,26 @@ function ChatViewContainer(props: { chat_id: number }) {
             {!messageList && <Text>No Messages</Text>}
             {!!messageList && <MessageList messages={messageList} onDelete={handleDelete} />}
           </SafeAreaView>
-          <MessageInput onSend={handleSend} onDraft={handleDraft} />
+          <MessageInput
+            onSend={handleSend}
+            onDraft={handleDraft}
+            openDraft={() => setModalVisible(true)}
+          />
         </Portal.Host>
+
+        {/* Draft List */}
+        <Portal>
+          <Modal
+            visible={modalVisible}
+            onDismiss={() => setModalVisible(false)}
+            style={{ backgroundColor: theme.colors.background, padding: 20 }}
+          >
+            <View>
+              <Text>Draft Messages</Text>
+              <DraftList chat_id={chat_id} service={service} actions={undefined} />
+            </View>
+          </Modal>
+        </Portal>
       </View>
     </>
   );

@@ -15,7 +15,7 @@ function convertStringToDate(dateString) {
   return date;
 }
 
-function MessageInput({ onSend, onDraft }) {
+function MessageInput({ onSend, onDraft, openDraft }) {
   const [inputValue, setInputValue] = useState('');
 
   const [isModalVisible, setModalVisible] = useState(false);
@@ -98,7 +98,7 @@ function MessageInput({ onSend, onDraft }) {
         onChangeText={handleInputChange}
         style={{ flex: 10, bottom: 10, marginLeft: 10 }}
       />
-
+      {/* FAB Butons */}
       <Portal>
         <FAB.Group
           style={{ position: 'absolute', right: 2, bottom: -2 }}
@@ -110,7 +110,7 @@ function MessageInput({ onSend, onDraft }) {
             {
               icon: 'archive',
               label: 'View Drafts',
-              onPress: () => console.log('Pressed view drafts'),
+              onPress: openDraft,
             },
             {
               icon: 'file-document-edit',
@@ -126,6 +126,7 @@ function MessageInput({ onSend, onDraft }) {
         />
       </Portal>
 
+      {/* Dialog for adding draft */}
       <Portal>
         <Dialog visible={isModalVisible} onDismiss={toggleModal}>
           <Dialog.Title>Schedule Draft</Dialog.Title>

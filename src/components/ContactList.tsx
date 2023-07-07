@@ -19,7 +19,7 @@ function ContactList({ contacts, actions }) {
         left={() => avatar(_.item)}
         right={() => null}
         onPress={() => actions?.onPress(_.item)}
-        onLongPress={() => actions?.onLongPress(_.item)}
+        onLongPress={() => actions?.onLongPress(_.item) ?? null}
       />
     );
   };

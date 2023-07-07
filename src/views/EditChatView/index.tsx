@@ -192,7 +192,7 @@ function EditChatView({ route, navigation }) {
           <Members members={members} actions={{ onPress: (user) => _handleRemove(user) }} />
         )}
         {!!isOwner && <Text>Owner</Text>}
-        <Button onPress={() => setModalVisible(true)}>Add Members</Button>
+        {/* FAB Buttons */}
         <Portal>
           <FAB.Group
             style={{ position: 'absolute', bottom: 50, right: 0 }}
@@ -203,7 +203,7 @@ function EditChatView({ route, navigation }) {
               {
                 icon: 'account-multiple-plus',
                 label: 'Invite user',
-                onPress: () => console.log('Pressed star'),
+                onPress: () => setModalVisible(true),
               },
               {
                 icon: 'file-document-edit',
@@ -224,7 +224,7 @@ function EditChatView({ route, navigation }) {
             }}
           />
         </Portal>
-
+        {/* Dialog to edit the chat title */}
         <Portal>
           <Dialog visible={visible} onDismiss={hideDialog}>
             <Dialog.Title>Edit Chat Name</Dialog.Title>
@@ -241,6 +241,7 @@ function EditChatView({ route, navigation }) {
             </Dialog.Actions>
           </Dialog>
         </Portal>
+        {/* Modal to invite user */}
         <Portal>
           <Modal
             visible={modalVisible}
@@ -248,7 +249,7 @@ function EditChatView({ route, navigation }) {
             style={{ backgroundColor: theme.colors.background, padding: 20 }}
           >
             <View>
-              <Text>Modal</Text>
+              <Text>Add to Chat</Text>
               <Contacts
                 apiCaller={apiCaller}
                 actions={{
@@ -259,13 +260,6 @@ function EditChatView({ route, navigation }) {
                 }}
                 existing={members}
               />
-              {/* <ContactList
-                contacts={members}
-                actions={{
-                  onPress: (user) => _handleInvite(user),
-                  // onLongPress: (user) => _handleRemove(user),
-                }}
-              /> */}
             </View>
           </Modal>
         </Portal>

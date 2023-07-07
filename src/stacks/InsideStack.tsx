@@ -24,6 +24,10 @@ import { useAuth } from '../lib/context/auth';
 import useChatController from '../lib/controller/ChatController';
 
 import log, { apiLog, pollingLog, rootLog } from '../lib/util/LoggerUtil';
+import { getCachedData } from '../lib/services/CacheService';
+import { TDraftMessage } from '../lib/context/services/types';
+import PollingService, { pollingItem } from '../lib/services/PollingService';
+import DraftController from '../lib/controller/DraftController';
 
 const ChatStack = createNativeStackNavigator();
 const ProfileStack = createNativeStackNavigator();
@@ -132,30 +136,31 @@ function InsideTabNavigator() {
 function InsideStackNavigator() {
   const { authState } = useAuth();
   const { fetchChatDetails, fetchChatSummary } = useChatController();
-
-  let pollId: string | number | NodeJS.Timer | undefined;
-  const pollTest = () => {
-    if (!pollId) {
-      pollId = setInterval(() => {
-        fetchChatSummary().then((data) => {
-          if (data) {
-            if (data.length > 0) {
-              fetchChatDetails(data);
-            }
-          }
-        });
-      }, 50000);
-    }
+  const { addPolling, clearAllPolling, startAllPolling } = PollingService();
+  const d = DraftController();
+  const fetch = () => {
+    fetchChatSummary().then((data) => {
+      if (data) {
+        if (data.length > 0) {
+          fetchChatDetails(data);
+        }
+      }
+    });
   };
 
-  const clearPoll = () => {
-    pollingLog.debug('Clearing Interval...');
-    clearInterval(pollId);
+  const queuePolling = () => {
+    pollingLog.debug('Queueing Polling...');
+    addPolling(fetch, 50000);
+    addPolling(d.checkDraft, 50000);
   };
 
   useEffect(() => {
-    if (authState.authenticated === true) pollTest();
-    return () => clearPoll();
+    if (authState.authenticated === true) {
+      queuePolling();
+      startAllPolling();
+    }
+
+    return () => clearAllPolling();
   }, [authState.authenticated]);
 
   return (

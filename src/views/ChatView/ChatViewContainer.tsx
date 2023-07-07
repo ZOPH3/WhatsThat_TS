@@ -57,6 +57,7 @@ function ListDrafts({ draftList, actions }: { draftList: TDraftMessage[]; action
 }
 
 function ChatViewContainer(props: { chat_id: number }) {
+  const [chatName, setChatName] = useState<string>('');
   const [messageList, setMessageList] = useState<Partial<TSingleMessage>[]>([]);
   const [buttonLoading, setButtonLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -119,6 +120,7 @@ function ChatViewContainer(props: { chat_id: number }) {
     apiCaller({ url: `/chat/${chat_id}`, method: 'GET' }, true)
       .then((res) => {
         if (!res) throw new Error('No data');
+        if (res.data) setChatName(res.data.name);
         if (res.data.messages.length !== messageList.length) {
           apiLog.info(`Updating message list...`);
         }
@@ -147,6 +149,7 @@ function ChatViewContainer(props: { chat_id: number }) {
     onFetch(async () => getFresh())
       .then((data) => {
         if (!data) throw new Error('No data');
+        setChatName(data.name);
         setMessageList(data.messages);
       })
       .catch((err) => {
@@ -220,7 +223,7 @@ function ChatViewContainer(props: { chat_id: number }) {
             navigation.goBack();
           }}
         />
-        <Appbar.Content title="Chat" />
+        <Appbar.Content title={chatName} />
         <SettingsMenu items={items} />
       </Appbar.Header>
       <View style={styles.container}>

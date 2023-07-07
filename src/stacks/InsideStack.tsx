@@ -83,9 +83,17 @@ function ChatStackNavigator() {
       <ChatStack.Screen
         name="ChatSummaryView"
         component={ChatSummaryView}
-        options={{ title: 'Chat' }}
+        options={{
+          headerShown: false,
+        }}
       />
-      <ChatStack.Screen name="ChatView" component={ChatView} />
+      <ChatStack.Screen
+        name="ChatView"
+        component={ChatView}
+        options={{
+          headerShown: false,
+        }}
+      />
 
       <ChatStack.Screen
         name="EditChatView"

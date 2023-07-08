@@ -16,11 +16,11 @@ const DraftController = () => {
 
   const _send = (draft: TDraftMessage) => {
     if (!draft || !draft.message || !draft.message.message) return;
-    const chat = c.chatSummaryList.find((c) => c.chat_id === draft.chat_id);
-    if (!chat) {
-      s.dispatcher.deleteDraftMessage(draft.draft_id);
-      return;
-    }
+    // const chat = c.chatSummaryList.find((c) => c.chat_id === draft.chat_id);
+    // if (!chat) {
+    //   s.dispatcher.deleteDraftMessage(draft.draft_id);
+    //   return;
+    // }
     m.sendMessage(draft.chat_id, draft.message?.message)
       .then((res) => {
         if (!res) return;

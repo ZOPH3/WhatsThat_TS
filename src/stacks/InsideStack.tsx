@@ -114,6 +114,8 @@ function InsideStackNavigator() {
   const { fetchChatDetails, fetchChatSummary } = useChatController();
   const { addPolling, clearAllPolling, startAllPolling } = PollingService();
   const d = DraftController();
+
+  //FIXME: Duplicate code that can be refactored
   const fetch = () => {
     fetchChatSummary().then((data) => {
       if (data) {

@@ -79,7 +79,13 @@ function ChatStackNavigator() {
 function ProfileStackNavigator() {
   return (
     <ProfileStack.Navigator>
-      <ProfileStack.Screen name="ProfileView" component={ProfileView} />
+      <ProfileStack.Screen
+        name="ProfileView"
+        component={ProfileView}
+        options={{
+          headerShown: false,
+        }}
+      />
     </ProfileStack.Navigator>
   );
 }

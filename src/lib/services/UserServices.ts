@@ -7,7 +7,7 @@ interface IUserServices {
   logout: () => Promise<Response | undefined>;
   register: (input: TAddUser) => Promise<TSignUpResponse | undefined>;
   getUserInfo: (user_id: number) => Promise<TUser | undefined>;
-  updateUserInfo: (user_id: number, payload: Partial<TUser>) => Promise<Response | undefined>;
+  updateUserInfo: (user_id: number, payload: any) => Promise<string | undefined>;
 }
 const UserServices = (apiCaller: any): IUserServices => {
   const login = async (email: string, password: string): Promise<TLoginResponse | undefined> => {
@@ -33,12 +33,9 @@ const UserServices = (apiCaller: any): IUserServices => {
     return response.data as TUser;
   };
 
-  const updateUserInfo = async (
-    user_id: number,
-    payload: Partial<TUser>
-  ): Promise<Response | undefined> => {
+  const updateUserInfo = async (user_id: number, payload: any) => {
     const response = await apiCaller(
-      { url: `/user/${user_id}`, method: 'POST', data: payload },
+      { url: `/user/${user_id}`, method: 'PATCH', data: payload },
       true
     );
     return response.data;

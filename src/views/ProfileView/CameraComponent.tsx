@@ -147,8 +147,8 @@ function CameraComponent(props: { trigger: (data: CameraCapturedPicture) => void
         {!!permission && (
           <View>
             <Button
+              mode="outlined"
               icon="camera"
-              mode="contained"
               onPress={() => {
                 setShowCamera(true);
               }}

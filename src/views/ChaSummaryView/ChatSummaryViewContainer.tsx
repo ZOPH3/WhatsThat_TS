@@ -9,7 +9,7 @@ import { useChat } from '../../lib/context/chats';
 
 import ChatSummaryList from './list/ChatSummaryList';
 
-function ChatSummaryViewContainer() {
+function ChatSummaryViewContainer({ reload }) {
   const { chatSummaryList } = useChat();
 
   const { isLoading, onError } = useFetchHook({ url: '/chat', method: 'GET' }, true);

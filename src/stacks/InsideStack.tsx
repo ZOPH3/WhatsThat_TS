@@ -115,7 +115,7 @@ function InsideStackNavigator() {
   const { addPolling, clearAllPolling, startAllPolling } = PollingService();
   const d = DraftController();
 
-  //FIXME: Duplicate code that can be refactored
+  // FIXME: Duplicate code that can be refactored
   const fetch = () => {
     fetchChatSummary().then((data) => {
       if (data) {
@@ -134,6 +134,7 @@ function InsideStackNavigator() {
 
   useEffect(() => {
     if (authState.authenticated === true) {
+      fetch();
       queuePolling();
       startAllPolling();
     }

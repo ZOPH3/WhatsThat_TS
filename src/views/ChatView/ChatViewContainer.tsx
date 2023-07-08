@@ -122,7 +122,7 @@ function ChatViewContainer(props: { chat_id: number }) {
         if (!res) throw new Error('No data');
         if (res.data) setChatName(res.data.name);
         if (res.data.messages.length !== messageList.length) {
-          apiLog.info(`Updating message list...`);
+          // apiLog.info(`Updating message list...`);
         }
         return res.data.messages as TSingleMessage[];
       })

@@ -140,6 +140,7 @@ function EditChatView({ route, navigation }) {
   }
 
   function _handleRemove(user: TUser) {
+    if (user.user_id === current_user) return;
     setHandleEditLoad(true);
     c.removeUserFromConversation(chat_id, user.user_id)
       .then((res) => {
@@ -188,11 +189,11 @@ function EditChatView({ route, navigation }) {
       <ProgressBar indeterminate visible={isLoading || handleEditLoad} />
       <SafeAreaView style={{ flex: 10, margin: 10 }}>
         {!!onError && <Text>{onError}</Text>}
-        {!chatDetails && <Text>Unable to find details</Text>}
+        {!chatDetails && !isLoading && <Text>Unable to find details</Text>}
         {!!members && (
           <Members members={members} actions={{ onPress: (user) => _handleRemove(user) }} />
         )}
-        {!!isOwner && <Text>Owner</Text>}
+        {/* {!!isOwner && <Text>Owner</Text>} */}
         {/* FAB Buttons */}
         <Portal>
           <FAB.Group

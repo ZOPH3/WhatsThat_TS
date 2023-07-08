@@ -19,6 +19,14 @@ function ChatSummaryView() {
   const { handleCache, handleState } = HandleLogout();
   // Issue with re rendering closing the keyboard -> dispatcher function seems to be the issue as context is updated, forcing a re render
 
+  function reload() {
+    fetchChatSummary().then((data) => {
+      if (data) {
+        // dispatcher.setChatSummaryList(data);
+        if (data.length > 0) fetchChatDetails(data);
+      }
+    });
+  }
   const items: IMenuItem[] = [
     {
       title: 'Profile',
@@ -27,12 +35,7 @@ function ChatSummaryView() {
     {
       title: 'Reload',
       onPress: () => {
-        fetchChatSummary().then((data) => {
-          if (data) {
-            // dispatcher.setChatSummaryList(data);
-            if (data.length > 0) fetchChatDetails(data);
-          }
-        });
+        reload();
       },
     },
     {
@@ -62,7 +65,7 @@ function ChatSummaryView() {
         />
         <SettingsMenu items={items} onPress={() => navigation.navigate('ProfileStackNavigator')} />
       </Appbar.Header>
-      <ChatSummaryViewContainer />
+      <ChatSummaryViewContainer reload={reload} />
       <CreateChatDialog ref={dialogRef} />
     </>
   );

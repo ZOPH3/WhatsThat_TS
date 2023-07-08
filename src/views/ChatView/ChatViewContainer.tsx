@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView, View } from 'react-native';
 import { Appbar, List, Modal, Portal, ProgressBar, Text, useTheme } from 'react-native-paper';
@@ -57,6 +57,10 @@ function ListDrafts({ draftList, actions }: { draftList: TDraftMessage[]; action
 }
 
 function ChatViewContainer(props: { chat_id: number }) {
+  const editText = useRef<string | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editId, setEditId] = useState<number | null>(null);
+
   const [chatName, setChatName] = useState<string>('');
   const [messageList, setMessageList] = useState<Partial<TSingleMessage>[]>([]);
   const [buttonLoading, setButtonLoading] = useState(false);
@@ -169,7 +173,7 @@ function ChatViewContainer(props: { chat_id: number }) {
     }
   }, [messageList]);
 
-  const handleSend = async (inputValue: string) => {
+  const doSend = async (inputValue: string) => {
     if (inputValue !== '') {
       setButtonLoading(true);
       m.sendMessage(inputValue)
@@ -182,6 +186,59 @@ function ChatViewContainer(props: { chat_id: number }) {
           n.dispatcher.addNotification({ type: 'warn', message: 'Unable to send message...' });
         })
         .finally(() => setButtonLoading(false));
+    }
+  };
+
+  const doUpdate = async (inputValue: string, message_id: number) => {
+    const toEdit = messageList.find((m) => m.message_id === message_id) as
+      | TSingleMessage
+      | undefined;
+
+    if (toEdit && toEdit.message_id !== undefined) {
+      setButtonLoading(true);
+      const updated = { ...toEdit, message: inputValue };
+      m.updateMessage(toEdit.message_id, inputValue)
+        .then((res) => {
+          if (res === 'OK') {
+            const newMessages = messageList.map((message) => {
+              if (message.message_id === toEdit.message_id) {
+                return updated;
+              }
+              return message;
+            });
+
+            setMessageList(newMessages);
+          }
+        })
+        .catch((err) => {
+          n.dispatcher.addNotification({ type: 'warn', message: 'Unable to update message...' });
+        })
+        .finally(() => setButtonLoading(false));
+    }
+  };
+
+  const setEdit = (message: TSingleMessage) => {
+    setEditId(null);
+    console.log('Edit message triggered', message.message_id);
+    editText.current = messageList.find((m) => m.message_id === message.message_id).message ?? null;
+
+    if (!editText.current) return;
+
+    if (editText.current !== '') {
+      setIsEditing(true);
+      setEditId(message.message_id);
+    }
+  };
+
+  const handleSend = (inputValue: string) => {
+    if (isEditing) {
+      if (editId === null) {
+        console.log('Edit id is null');
+        return;
+      }
+      doUpdate(inputValue, editId);
+    } else {
+      doSend(inputValue);
     }
   };
 
@@ -232,12 +289,17 @@ function ChatViewContainer(props: { chat_id: number }) {
           <SafeAreaView style={{ flex: 10, paddingBottom: 75 }}>
             {!!onError && <Text>{onError}</Text>}
             {!messageList && <Text>No Messages</Text>}
-            {!!messageList && <MessageList messages={messageList} onDelete={handleDelete} />}
+            {!!messageList && (
+              <MessageList messages={messageList} onDelete={handleDelete} onEdit={setEdit} />
+            )}
           </SafeAreaView>
           <MessageInput
             onSend={handleSend}
             onDraft={handleDraft}
+            isEditing={isEditing}
             openDraft={() => setModalVisible(true)}
+            editText={editText.current}
+            setIsEditing={setIsEditing}
           />
         </Portal.Host>
 

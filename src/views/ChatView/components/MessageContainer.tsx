@@ -15,7 +15,7 @@ interface IMessageContainer {
   message: TSingleMessage;
 }
 
-function MessageContainer({ message, onDelete }) {
+function MessageContainer({ message, onDelete, onEdit }) {
   const currentUser = useAuth().authState.id;
   const { DialogBlock, showDialog, hideDialog } = DialogComponent();
 
@@ -28,6 +28,8 @@ function MessageContainer({ message, onDelete }) {
           left={(props) => <List.Icon {...props} icon="folder" />}
           onPress={() => {
             console.log('Edit', message.message_id);
+            onEdit(message);
+            hideDialog();
           }}
         />
       ),

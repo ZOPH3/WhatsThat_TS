@@ -23,7 +23,11 @@ function StackNavigator() {
   function SplashNavigator() {
     return (
       <stack.Navigator>
-        <stack.Screen name="SplashView" component={SplashView} options={{ headerShown: false }} />
+        <stack.Screen
+          name="SplashView"
+          component={SplashView}
+          options={{ headerShown: false, title: 'WhatsThat!' }}
+        />
       </stack.Navigator>
     );
   }

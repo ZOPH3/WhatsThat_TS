@@ -50,16 +50,12 @@ function ChatStackNavigator() {
       <ChatStack.Screen
         name="ChatSummaryView"
         component={ChatSummaryView}
-        options={{
-          headerShown: false,
-        }}
+        options={{ headerShown: false, title: 'Chat List' }}
       />
       <ChatStack.Screen
         name="ChatView"
         component={ChatView}
-        options={{
-          headerShown: false,
-        }}
+        options={{ headerShown: false, title: 'Chat' }}
       />
 
       <ChatStack.Screen
@@ -80,9 +76,7 @@ function ProfileStackNavigator() {
       <ProfileStack.Screen
         name="ProfileView"
         component={ProfileView}
-        options={{
-          headerShown: false,
-        }}
+        options={{ headerShown: false, title: 'Profile' }}
       />
     </ProfileStack.Navigator>
   );

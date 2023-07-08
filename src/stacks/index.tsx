@@ -13,7 +13,6 @@ import MasterStackNavigator from './MasterStack';
 import SplashView from '../views/SplashView';
 import NotificationContainer from '../components/Notification';
 
-// TODO Add the splash screen here and the state such as loading can be dealt with at this level.
 function StackNavigator() {
   const { theme, init } = useGlobal();
   const { authState } = useAuth();

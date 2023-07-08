@@ -126,8 +126,8 @@ function InsideStackNavigator() {
 
   const queuePolling = () => {
     pollingLog.debug('Queueing Polling...');
-    addPolling(fetch, 50000);
-    addPolling(d.checkDraft, 50000);
+    addPolling(fetch, 10000);
+    addPolling(d.checkDraft, 10000);
   };
 
   useEffect(() => {

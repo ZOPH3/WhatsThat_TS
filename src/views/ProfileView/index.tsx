@@ -89,7 +89,7 @@ function ProfileView({ navigation }) {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const response: AxiosResponse = await apiCaller(
       {
-        url: `user/${user_id}/photo`,
+        url: `user/${current_user.user_id}/photo`,
         method: 'POST',
         data: blob,
         headers: { 'Content-Type': 'image/png' },

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Dialog, FAB, HelperText, Portal, TextInput } from 'react-native-paper';
 import { View } from 'react-native';
 
@@ -15,9 +15,8 @@ function convertStringToDate(dateString) {
   return date;
 }
 
-function MessageInput({ onSend, onDraft, openDraft }) {
+function MessageInput({ onSend, onDraft, openDraft, isEditing = false, setIsEditing, editText }) {
   const [inputValue, setInputValue] = useState('');
-
   const [isModalVisible, setModalVisible] = useState(false);
   const [selectedDate, setSelectedDate] = useState('');
   const [state, setState] = React.useState({ open: false });
@@ -30,11 +29,13 @@ function MessageInput({ onSend, onDraft, openDraft }) {
 
   const handleInputChange = (text) => {
     setInputValue(text);
+    console.log(inputValue);
   };
 
   const handleSendButtonPress = () => {
     onSend(inputValue);
     setInputValue('');
+    setIsEditing(false);
   };
 
   const handleDraftButtonPress = () => {
@@ -73,6 +74,10 @@ function MessageInput({ onSend, onDraft, openDraft }) {
     setSelectedDate(date);
   };
 
+  useEffect(() => {
+    if (isEditing) setInputValue(editText);
+  }, [isEditing]);
+
   return (
     <View
       style={{
@@ -97,6 +102,20 @@ function MessageInput({ onSend, onDraft, openDraft }) {
         }}
         onChangeText={handleInputChange}
         style={{ flex: 10, bottom: 10, marginLeft: 10 }}
+        right={
+          !isEditing ? (
+            <TextInput.Icon icon="pencil" disabled={!isEditing} />
+          ) : (
+            <TextInput.Icon
+              icon="close"
+              disabled={!isEditing}
+              onPress={() => {
+                setInputValue('');
+                setIsEditing(false);
+              }}
+            />
+          )
+        }
       />
       {/* FAB Butons */}
       <Portal>

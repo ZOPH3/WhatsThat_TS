@@ -10,11 +10,10 @@ interface IMessageServices {
     chat_id: number,
     message_id: number,
     message: string
-  ) => Promise<Response | undefined>;
+  ) => Promise<string | undefined>;
 }
 
 const MessageServices = (apiCaller: any): IMessageServices => {
-
   const getMessages = async (chat_id: number): Promise<TSingleMessage[] | undefined> => {
     const response = await apiCaller({ url: `/chat/${chat_id}`, method: 'GET' }, true);
     return response.data.messages as TSingleMessage[];
@@ -58,13 +57,9 @@ const MessageServices = (apiCaller: any): IMessageServices => {
    * @param message
    * @returns
    */
-  const updateMessage = async (
-    chat_id: number,
-    message_id: number,
-    message: string
-  ): Promise<Response | undefined> => {
+  const updateMessage = async (chat_id: number, message_id: number, message: string) => {
     const response = await apiCaller(
-      { url: `/chat/${chat_id}/message/${message_id}`, method: 'PUT', data: { message } },
+      { url: `/chat/${chat_id}/message/${message_id}`, method: 'PATCH', data: { message } },
       true
     );
     return response.data;

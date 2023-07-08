@@ -45,10 +45,8 @@ const MessageInteractions = (chat_id: number) => {
     return m.deleteMessage(chat_id, message_id).then((response) => message_id);
   };
 
-  const updateMessage = async (obj: TSingleMessage) => {
-    return m
-      .updateMessage(chat_id, obj.message_id, obj.message)
-      .then((response) => dispatcher.updateMessage({ chat_id, ...obj }));
+  const updateMessage = async (message_id: number, message: string) => {
+    return m.updateMessage(chat_id, message_id, message).then((response) => response);
   };
 
   function getLatestMessageId(messages: TSingleMessage[]): number {

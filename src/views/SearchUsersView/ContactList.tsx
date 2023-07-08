@@ -156,6 +156,7 @@ function ContactList({ contacts, listType }: IContactList) {
   const hideDialog = () => setVisible(false);
 
   const { handleAdd, handleUnblock } = ContactListActions();
+
   const _handleUnblock = async (user_id: number, title: string, message: string) => {
     unblock.setConfirm(title, message);
     const res = await unblock.confirm();

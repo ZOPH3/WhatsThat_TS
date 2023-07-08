@@ -14,7 +14,6 @@ import ProfileView from '../views/ProfileView';
 import ChatSummaryView from '../views/ChaSummaryView';
 import ChatView from '../views/ChatView';
 import EditChatView from '../views/EditChatView';
-import InviteUserView from '../views/InviteUserView';
 import SearchUsersView from '../views/SearchUsersView';
 
 import { useAuth } from '../lib/context/auth';
@@ -71,7 +70,6 @@ function ChatStackNavigator() {
           headerShown: false,
         }}
       />
-      <ChatStack.Screen name="InviteUserView" component={InviteUserView} />
     </ChatStack.Navigator>
   );
 }

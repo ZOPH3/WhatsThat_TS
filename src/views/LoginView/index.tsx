@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { HelperText, TextInput } from 'react-native-paper';
+import { Appbar, HelperText, TextInput } from 'react-native-paper';
 import { View } from 'react-native';
 
 import { useAuth } from '../../lib/context/auth';
@@ -7,6 +7,7 @@ import useFetchHook from '../../lib/hooks/useFetchHook';
 import ButtonComponent from '../../components/Button';
 
 function LoginView() {
+  const [seePass, setSeePass] = React.useState(false);
   const [text, setText] = React.useState({ email: '', password: '' });
   const { authState, setAuthState } = useAuth();
 
@@ -68,7 +69,10 @@ function LoginView() {
   }, [authState]);
 
   return (
-    <View style={{ margin: 10 }}>
+    <View style={{ margin: 10, justifyContent: 'center', alignContent: 'center' }}>
+      <Appbar.Header>
+        <Appbar.Content title="Login" />
+      </Appbar.Header>
       <TextInput
         mode="outlined"
         label="Email"
@@ -83,6 +87,8 @@ function LoginView() {
         label="Password"
         value={text.password}
         onChangeText={(e) => setText({ ...text, password: e })}
+        secureTextEntry={!seePass}
+        right={<TextInput.Icon onPress={() => setSeePass(!seePass)} icon="eye" />}
       />
       <HelperText type="error" visible={passwordErrors()}>
         Password must be 8 characters, contain 1 uppercase, 1 lowercase and 1 number!

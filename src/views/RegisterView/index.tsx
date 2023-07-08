@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { HelperText, TextInput } from 'react-native-paper';
+import { Appbar, HelperText, TextInput } from 'react-native-paper';
 import { View } from 'react-native';
 import ButtonComponent from '../../components/Button';
 
@@ -20,6 +20,7 @@ const defaultText = {
 function RegisterView({ navigation }) {
   const n = useNotification();
 
+  const [seePass, setSeePass] = React.useState(false);
   const [text, setText] = React.useState({
     email: '',
     password: '',
@@ -76,7 +77,10 @@ function RegisterView({ navigation }) {
   };
 
   return (
-    <View style={{ margin: 10 }}>
+    <View style={{ margin: 10, justifyContent: 'center', alignContent: 'center' }}>
+      <Appbar.Header>
+        <Appbar.Content title="Register" />
+      </Appbar.Header>
       <TextInput
         mode="outlined"
         label="First Name"
@@ -108,6 +112,8 @@ function RegisterView({ navigation }) {
         mode="outlined"
         label="Password"
         value={text.password}
+        secureTextEntry={!seePass}
+        right={<TextInput.Icon onPress={() => setSeePass(!seePass)} icon="eye" />}
         onChangeText={(e) => setText({ ...text, password: e })}
       />
       <HelperText type="error" visible={passwordErrors()}>

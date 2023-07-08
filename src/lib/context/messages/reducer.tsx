@@ -12,7 +12,7 @@ const MessageReducer = (state: IMessageContext, action: any) => {
         messageList: state.messageList.filter((item: any) => item.id !== payload),
       };
     case 'SEND_MESSAGE':
-      console.log('payload', payload);
+      // console.log('payload', payload);
       return { ...state, messageList: [...state.messageList, payload] };
     case 'UPDATE_MESSAGE':
       return {

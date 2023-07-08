@@ -57,7 +57,7 @@ function LoginView() {
     if (authState.id && authState.token) {
       getUser.getFresh().then((data) => {
         if (data) {
-          console.log('data', data);
+          // console.log('data', data);
           setAuthState({
             ...authState,
             current_user: data,

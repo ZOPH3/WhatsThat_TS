@@ -20,7 +20,6 @@ import ContactList from './ContactList';
 
 import { TUser } from '../../lib/types/TSchema';
 import { useAuth } from '../../lib/context/auth';
-import useConfirm from '../../lib/hooks/useConfirm';
 
 const styles = StyleSheet.create({
   container: {

@@ -11,6 +11,7 @@ import ProfileAvatar from './ProfileAvatar';
 import { TUser } from '../../lib/types/TSchema';
 import { intLog } from '../../lib/util/LoggerUtil';
 import useConfirm from '../../lib/hooks/useConfirm';
+import { useNotification } from '../../lib/context/notification';
 
 interface IContactList {
   contacts: TUser[];
@@ -18,6 +19,7 @@ interface IContactList {
 }
 
 function ContactListActions() {
+  const n = useNotification();
   const { apiCaller } = useApi();
   if (!apiCaller) throw new Error('useFetch is null');
   const c = ContactServices(apiCaller);
@@ -26,23 +28,32 @@ function ContactListActions() {
     c.deleteContact(user_id)
       .then((res) => {
         intLog.success('[Remove User]', res);
+        n.dispatcher.addNotification({
+          type: 'success',
+          message: res === 'OK' ? 'User removed' : res,
+        });
       })
       .catch((err) => {
         intLog.error('[Remove User]', err);
+        n.dispatcher.addNotification({ type: 'Error', message: err });
       });
   };
 
   const handleBlock = (user_id: number | undefined) => {
     if (!user_id) return;
     c.unblockUser(user_id)
-      .then(
-        (res) => {
-          if (res) intLog.success('[Block User]', res);
-        },
-        (err) => intLog.error('[Block User]', err)
-      )
+      .then((res) => {
+        if (res) {
+          intLog.success('[Block User]', res);
+          n.dispatcher.addNotification({
+            type: 'success',
+            message: res === 'OK' ? 'User blocked' : res,
+          });
+        }
+      })
       .catch((err) => {
         intLog.error('[Block User]', err);
+        n.dispatcher.addNotification({ type: 'Error', message: 'Something went wrong...' });
       });
   };
 
@@ -51,12 +62,19 @@ function ContactListActions() {
     c.unblockUser(user_id)
       .then(
         (res) => {
-          if (res) intLog.success('[Unblock User]', res);
+          if (res) {
+            intLog.success('[Unblock User]', res);
+            n.dispatcher.addNotification({
+              type: 'success',
+              message: res === 'OK' ? 'User unblocked' : res,
+            });
+          }
         },
         (err) => intLog.error('[Unblock User]', err)
       )
       .catch((err) => {
         intLog.error('[Unblock User]', err);
+        n.dispatcher.addNotification({ type: 'Error', message: 'Something went wrong...' });
       });
   };
 
@@ -65,12 +83,19 @@ function ContactListActions() {
     c.addContact(user_id)
       .then(
         (res) => {
-          if (res) intLog.success('[Add User]', res);
+          if (res) {
+            intLog.success('[Add User]', res);
+            n.dispatcher.addNotification({
+              type: 'success',
+              message: res === 'OK' ? 'User Added' : res,
+            });
+          }
         },
         (err) => intLog.error('[Add User]', err)
       )
       .catch((err) => {
         intLog.error('[Add User]', err);
+        n.dispatcher.addNotification({ type: 'Error', message: err });
       });
   };
 

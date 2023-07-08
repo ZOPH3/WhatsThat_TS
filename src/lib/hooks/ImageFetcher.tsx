@@ -98,7 +98,7 @@ function ImageFetcher(url: string) {
     } catch (error) {
       setData(undefined);
       setIsLoading(false);
-      console.log(error);
+      // console.log(error);
     }
   };
 
@@ -112,7 +112,7 @@ function ImageFetcher(url: string) {
     } catch (error) {
       setData(undefined);
       setIsLoading(false);
-      console.log(error);
+      // console.log(error);
     }
   };
 

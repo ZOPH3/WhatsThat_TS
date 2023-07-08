@@ -219,7 +219,6 @@ function ChatViewContainer(props: { chat_id: number }) {
 
   const setEdit = (message: TSingleMessage) => {
     setEditId(null);
-    console.log('Edit message triggered', message.message_id);
     editText.current = messageList.find((m) => m.message_id === message.message_id).message ?? null;
 
     if (!editText.current) return;

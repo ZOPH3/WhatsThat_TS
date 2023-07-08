@@ -27,7 +27,6 @@ function MessageContainer({ message, onDelete, onEdit }) {
           description="Edit your message"
           left={(props) => <List.Icon {...props} icon="folder" />}
           onPress={() => {
-            console.log('Edit', message.message_id);
             onEdit(message);
             hideDialog();
           }}

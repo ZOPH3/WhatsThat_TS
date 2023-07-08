@@ -33,7 +33,6 @@ function MessageBubble({
               }
         }
       >
-        {/* removed onTouchStart={() => console.log(date) */}
         <Text>{author}</Text>
         <View onTouchStart={actions.onTouchStart}>
           <Text style={styles.date}>{date}</Text>

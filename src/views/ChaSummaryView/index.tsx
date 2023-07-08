@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-bind */
 import React, { useRef } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { Appbar } from 'react-native-paper';

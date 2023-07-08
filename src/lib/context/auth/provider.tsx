@@ -29,13 +29,6 @@ function AuthProvider({ children }: Props) {
   };
 
   const logout = async () => {
-    clearCachedData('/login');
-    clearCachedData(`/user/${authState.id}`);
-    clearCachedData('/chat');
-    clearCachedData('/contacts');
-    clearCachedData('/blocked');
-    clearCachedData('/drafts');
-    clearCachedData('IMG_CACHE');
     setAuthState({
       ...AuthStateDefault,
       authenticated: false,

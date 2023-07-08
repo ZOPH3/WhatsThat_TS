@@ -4,19 +4,9 @@ import { View } from 'react-native';
 
 import { useAuth } from '../../lib/context/auth';
 import useFetchHook from '../../lib/hooks/useFetchHook';
-
 import ButtonComponent from '../../components/Button';
 
-import styles from '../../styles/GlobalStyle';
-
 function LoginView() {
-  const user = {
-    email: 'newwilliams@mmu.ac.uk',
-    password: 'Characters1*',
-    // email: 'ashley.williams@mmu.ac.uk',
-    // password: 'Wr3xh4m!',
-  };
-
   const [text, setText] = React.useState({ email: '', password: '' });
   const { authState, setAuthState } = useAuth();
 
@@ -49,7 +39,6 @@ function LoginView() {
             token: data.token,
             authenticated: false,
           });
-          return data;
         }
       })
       .catch((err) => {

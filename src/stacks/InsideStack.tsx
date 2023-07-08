@@ -5,7 +5,6 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import Icons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { IconButton } from 'react-native-paper';
 
 /**
  * Navigation responsible for authorised users
@@ -16,43 +15,20 @@ import ChatSummaryView from '../views/ChaSummaryView';
 import ChatView from '../views/ChatView';
 import EditChatView from '../views/EditChatView';
 import InviteUserView from '../views/InviteUserView';
-import AddedUsersView from '../views/AddedUsersView';
 import SearchUsersView from '../views/SearchUsersView';
-import BlockedUsersView from '../views/BlockedUsersView';
 
 import { useAuth } from '../lib/context/auth';
 import useChatController from '../lib/controller/ChatController';
-
-import log, { apiLog, pollingLog, rootLog } from '../lib/util/LoggerUtil';
-import { getCachedData } from '../lib/services/CacheService';
-import { TDraftMessage } from '../lib/context/services/types';
-import PollingService, { pollingItem } from '../lib/services/PollingService';
+import PollingService from '../lib/services/PollingService';
 import DraftController from '../lib/controller/DraftController';
+
+import { pollingLog } from '../lib/util/LoggerUtil';
 
 const ChatStack = createNativeStackNavigator();
 const ProfileStack = createNativeStackNavigator();
-const ContactTab = createMaterialTopTabNavigator();
 
 const InsideStack = createNativeStackNavigator();
 const InsideTab = createBottomTabNavigator();
-
-function ContactTopTabNavigator() {
-  return (
-    <ContactTab.Navigator>
-      <ContactTab.Screen
-        name="AddedUsersView"
-        component={AddedUsersView}
-        options={{ title: 'Contacts' }}
-      />
-
-      <ContactTab.Screen
-        name="BlockedUsersView"
-        component={BlockedUsersView}
-        options={{ title: 'Blocked' }}
-      />
-    </ContactTab.Navigator>
-  );
-}
 
 function ContactStackNavigator({ navigation }) {
   return (

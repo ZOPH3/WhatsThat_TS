@@ -6,7 +6,7 @@ import { useApi } from '../../lib/context/api';
 import { useAuth } from '../../lib/context/auth';
 import useFetchHook from '../../lib/hooks/useFetchHook';
 
-import ContactList from './list/ContactList';
+import ContactList from '../SearchUsersView/ContactList';
 import ButtonComponent from '../../components/Button';
 import DialogComponent from '../../components/Dialog';
 
@@ -15,9 +15,8 @@ import log from '../../lib/util/LoggerUtil';
 
 function AddedUsersView() {
   const { apiCaller } = useApi();
-  const { logout } = useAuth();
 
-  if (!apiCaller || !logout) {
+  if (!apiCaller) {
     log.error('Unable to find Auth API...');
     throw new Error('Unable to find Auth API...');
   }

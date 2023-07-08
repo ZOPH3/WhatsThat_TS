@@ -34,6 +34,7 @@ const HandleLogout = () => {
     clearCachedData('/blocked');
     clearCachedData('/drafts');
     clearCachedData('IMG_CACHE');
+    clearCachedData('/theme');
   };
 
   return { handleState, handleCache };

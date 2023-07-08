@@ -2,6 +2,6 @@ export interface IGlobalState {
   isMobile?: boolean;
   theme?: string;
   init?: boolean;
-  initialise?: () => void;
+  initialise?: (theme?: string) => void;
   toggleTheme?: () => void;
 }

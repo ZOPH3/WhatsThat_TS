@@ -29,7 +29,6 @@ function SplashView() {
 
     try {
       const login = (await getCachedData('/login')) as TLoginResponse;
-
       if (login && login.id && login.token) {
         const user = (await getCachedData(`/user/${login.id}`)) as TUser;
 

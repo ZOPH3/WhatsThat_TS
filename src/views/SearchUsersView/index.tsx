@@ -19,6 +19,7 @@ import { useApi } from '../../lib/context/api';
 import ContactList from './ContactList';
 
 import { TUser } from '../../lib/types/TSchema';
+import { useAuth } from '../../lib/context/auth';
 
 const styles = StyleSheet.create({
   container: {
@@ -43,9 +44,10 @@ const styles = StyleSheet.create({
  * TODO: Load from cache for contacts?
  */
 function SearchUsersView({ navigation }) {
+  const { authState } = useAuth();
   const [isLoading, setIsLoading] = React.useState(false);
   const [data, setData] = React.useState<TUser[] | null>(null);
-
+  const filtered = data?.filter((contact) => contact.user_id !== authState.id);
   const { blocked, dispatcher } = useContactContext();
   const { apiCaller } = useApi();
   const c = ContactServices(apiCaller);
@@ -145,7 +147,7 @@ function SearchUsersView({ navigation }) {
             onPress={() => setListType(listType === 'blocked' ? 'all' : 'blocked')}
           />
         </Tooltip>
-        <Appbar.Action icon="dots-vertical" onPress={_handleMore} />
+        {/* <Appbar.Action icon="dots-vertical" onPress={_handleMore} /> */}
       </Appbar.Header>
 
       <ProgressBar indeterminate visible={isLoading} />
@@ -162,7 +164,7 @@ function SearchUsersView({ navigation }) {
             No {searchQuery !== '' ? searchQuery : 'user'} in {listType}.
           </Text>
         )}
-        {!!data && <ContactList contacts={data} listType={listType} />}
+        {!!(data && filtered) && <ContactList contacts={filtered} listType={listType} />}
       </View>
       <View style={styles.footer}>
         <SegmentedButtons

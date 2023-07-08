@@ -18,9 +18,16 @@ function NotificationContainer() {
 
   return (
     <Snackbar
+      elevation={5}
       wrapperStyle={{ bottom: 50 }}
       visible={showSnackbar}
       onDismiss={() => setShowSnackbar(false)}
+      action={{
+        label: 'Close',
+        onPress: () => {
+          setShowSnackbar(false);
+        },
+      }}
     >
       {notification && notification.message ? notification.message : 'Something went wrong...'}
     </Snackbar>

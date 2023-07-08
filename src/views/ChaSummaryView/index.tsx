@@ -1,5 +1,4 @@
 import React, { useRef } from 'react';
-import { View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Appbar } from 'react-native-paper';
 
@@ -10,13 +9,14 @@ import ChatSummaryViewContainer from './ChatSummaryViewContainer';
 import SettingsMenu, { IMenuItem } from '../../components/SettingsMenu';
 import CreateChatDialog from './components/Dialog';
 import ButtonComponent from '../../components/Button';
+import HandleLogout from '../../lib/hooks/HandleLogout';
 
 function ChatSummaryView() {
   const navigation = useNavigation();
   const { logout } = useAuth();
   const dialogRef = useRef<{ show: () => void }>();
   const { fetchChatDetails, fetchChatSummary } = useChatController();
-
+  const { handleCache, handleState } = HandleLogout();
   // Issue with re rendering closing the keyboard -> dispatcher function seems to be the issue as context is updated, forcing a re render
 
   const items: IMenuItem[] = [
@@ -37,7 +37,15 @@ function ChatSummaryView() {
     },
     {
       title: 'Logout',
-      onPress: () => (logout ? logout() : () => console.log('Unable to find Auth API...')),
+      onPress: () => {
+        if (logout) {
+          logout();
+          handleCache();
+          handleState();
+        } else {
+          console.log('Unable to find Auth API...');
+        }
+      },
       disabled: false,
     },
   ];

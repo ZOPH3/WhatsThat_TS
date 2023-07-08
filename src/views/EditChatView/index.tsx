@@ -115,7 +115,6 @@ function EditChatView({ route, navigation }) {
       setHandleEditLoad(true);
       c.updateChatDetails(chat_id, { name: titleEdit })
         .then((res) => {
-          // console.log(res);
           if (res !== undefined) {
             console.log('Edit done', res);
           }

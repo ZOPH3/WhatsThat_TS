@@ -14,7 +14,6 @@ import ProfileView from '../views/ProfileView';
 import ChatSummaryView from '../views/ChaSummaryView';
 import ChatView from '../views/ChatView';
 import EditChatView from '../views/EditChatView';
-import InviteUserView from '../views/InviteUserView';
 import SearchUsersView from '../views/SearchUsersView';
 
 import { useAuth } from '../lib/context/auth';
@@ -51,16 +50,12 @@ function ChatStackNavigator() {
       <ChatStack.Screen
         name="ChatSummaryView"
         component={ChatSummaryView}
-        options={{
-          headerShown: false,
-        }}
+        options={{ headerShown: false, title: 'Chat List' }}
       />
       <ChatStack.Screen
         name="ChatView"
         component={ChatView}
-        options={{
-          headerShown: false,
-        }}
+        options={{ headerShown: false, title: 'Chat' }}
       />
 
       <ChatStack.Screen
@@ -71,7 +66,6 @@ function ChatStackNavigator() {
           headerShown: false,
         }}
       />
-      <ChatStack.Screen name="InviteUserView" component={InviteUserView} />
     </ChatStack.Navigator>
   );
 }
@@ -82,9 +76,7 @@ function ProfileStackNavigator() {
       <ProfileStack.Screen
         name="ProfileView"
         component={ProfileView}
-        options={{
-          headerShown: false,
-        }}
+        options={{ headerShown: false, title: 'Profile' }}
       />
     </ProfileStack.Navigator>
   );
@@ -134,8 +126,8 @@ function InsideStackNavigator() {
 
   const queuePolling = () => {
     pollingLog.debug('Queueing Polling...');
-    addPolling(fetch, 50000);
-    addPolling(d.checkDraft, 50000);
+    addPolling(fetch, 10000);
+    addPolling(d.checkDraft, 10000);
   };
 
   useEffect(() => {

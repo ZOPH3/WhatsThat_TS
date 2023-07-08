@@ -98,7 +98,7 @@ function ImageFetcher(url: string) {
     } catch (error) {
       setData(undefined);
       setIsLoading(false);
-      console.log(error);
+      // console.log(error);
     }
   };
 
@@ -112,7 +112,7 @@ function ImageFetcher(url: string) {
     } catch (error) {
       setData(undefined);
       setIsLoading(false);
-      console.log(error);
+      // console.log(error);
     }
   };
 
@@ -136,7 +136,7 @@ function ImageFetcher(url: string) {
     if (!pollId) {
       pollId = setInterval(async () => {
         await makeRequest();
-      }, 50000);
+      }, 100000);
     }
   };
   const clear = () => clearInterval(pollId);

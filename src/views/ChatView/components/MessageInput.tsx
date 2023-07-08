@@ -29,7 +29,6 @@ function MessageInput({ onSend, onDraft, openDraft, isEditing = false, setIsEdit
 
   const handleInputChange = (text) => {
     setInputValue(text);
-    console.log(inputValue);
   };
 
   const handleSendButtonPress = () => {

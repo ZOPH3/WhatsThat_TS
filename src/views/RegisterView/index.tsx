@@ -103,7 +103,7 @@ function RegisterView({ navigation }) {
         mode="outlined"
         label="Email"
         value={text.email}
-        onChangeText={(e) => setText({ ...text, email: e })}
+        onChangeText={(e) => setText({ ...text, email: e.toLowerCase() })}
       />
       <HelperText type="error" visible={emailErrors()}>
         Email address is invalid!

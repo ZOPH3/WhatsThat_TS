@@ -41,7 +41,7 @@ function ContactListActions() {
 
   const handleBlock = (user_id: number | undefined) => {
     if (!user_id) return;
-    c.unblockUser(user_id)
+    c.blockUser(user_id)
       .then((res) => {
         if (res) {
           intLog.success('[Block User]', res);

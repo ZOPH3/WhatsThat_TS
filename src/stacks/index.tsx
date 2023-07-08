@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unstable-nested-components */
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -12,7 +13,6 @@ import MasterStackNavigator from './MasterStack';
 import SplashView from '../views/SplashView';
 import NotificationContainer from '../components/Notification';
 
-// TODO Add the splash screen here and the state such as loading can be dealt with at this level.
 function StackNavigator() {
   const { theme, init } = useGlobal();
   const { authState } = useAuth();
@@ -22,7 +22,11 @@ function StackNavigator() {
   function SplashNavigator() {
     return (
       <stack.Navigator>
-        <stack.Screen name="SplashView" component={SplashView} options={{ headerShown: false }} />
+        <stack.Screen
+          name="SplashView"
+          component={SplashView}
+          options={{ headerShown: false, title: 'WhatsThat!' }}
+        />
       </stack.Navigator>
     );
   }

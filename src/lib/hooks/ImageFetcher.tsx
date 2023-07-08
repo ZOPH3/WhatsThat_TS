@@ -136,7 +136,7 @@ function ImageFetcher(url: string) {
     if (!pollId) {
       pollId = setInterval(async () => {
         await makeRequest();
-      }, 50000);
+      }, 100000);
     }
   };
   const clear = () => clearInterval(pollId);

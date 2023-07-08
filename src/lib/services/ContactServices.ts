@@ -1,6 +1,7 @@
 /* eslint-disable camelcase */
 /* eslint-disable react-hooks/rules-of-hooks */
 import { TUser } from '../types/TSchema';
+import log from '../util/LoggerUtil';
 
 interface IContactServices {
   fetchContactList: () => Promise<TUser[] | undefined>;
@@ -35,14 +36,22 @@ const ContactServices = (apiCaller: any): IContactServices => {
     return response.data as Response;
   };
 
-  const blockUser = async (user_id: number) => {
+  const blockUser = async (user_id: number): Promise<Response | undefined> => {
     const response = await apiCaller({ url: `/user/${user_id}/block`, method: 'POST' }, true);
-    return response.data || null;
+    if (!response) throw new Error('Unable to block user');
+    if (response.status === 404) throw new Error('User not found');
+    if (response.status === 401) throw new Error('Unable to block user');
+    if (response.status === 400) throw new Error('You cannot block yourself');
+    return response?.data || undefined;
   };
 
-  const unblockUser = async (user_id: number): Promise<Response | undefined> => {
+  const unblockUser = async (user_id: number) => {
     const response = await apiCaller({ url: `/user/${user_id}/block`, method: 'DELETE' }, true);
-    return response.data as Response;
+    if (!response) throw new Error('Unable to block user');
+    if (response.status === 404) throw new Error('User not found');
+    if (response.status === 401) throw new Error('Unable to unblock user');
+    if (response.status === 400) throw new Error('You cannot unblock yourself');
+    return response?.data || null;
   };
 
   const fetchBlockedList = async (): Promise<TUser[] | undefined> => {

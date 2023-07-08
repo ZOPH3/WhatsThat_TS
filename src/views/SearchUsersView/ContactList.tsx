@@ -5,13 +5,12 @@ import { View, FlatList, SafeAreaView } from 'react-native';
 import { Button, Checkbox, Dialog, List, Portal, Text } from 'react-native-paper';
 
 import { useApi } from '../../lib/context/api';
-
 import ContactServices from '../../lib/services/ContactServices';
 import ProfileAvatar from './ProfileAvatar';
 
 import { TUser } from '../../lib/types/TSchema';
-
 import { intLog } from '../../lib/util/LoggerUtil';
+import useConfirm from '../../lib/hooks/useConfirm';
 
 interface IContactList {
   contacts: TUser[];
@@ -35,10 +34,13 @@ function ContactListActions() {
 
   const handleBlock = (user_id: number | undefined) => {
     if (!user_id) return;
-    c.blockUser(user_id)
-      .then((res) => {
-        if (res) intLog.success('[Block User]', res);
-      })
+    c.unblockUser(user_id)
+      .then(
+        (res) => {
+          if (res) intLog.success('[Block User]', res);
+        },
+        (err) => intLog.error('[Block User]', err)
+      )
       .catch((err) => {
         intLog.error('[Block User]', err);
       });
@@ -121,20 +123,30 @@ function RemoveContactDialog(props: {
 }
 
 function ContactList({ contacts, listType }: IContactList) {
+  const add = useConfirm();
+  const unblock = useConfirm();
+
   const [visible, setVisible] = React.useState(false);
   const [user, setUser] = React.useState<TUser | null>(null);
   const hideDialog = () => setVisible(false);
 
   const { handleAdd, handleUnblock } = ContactListActions();
-
-  const _handleUnblock = (user_id: number) => {
-    handleUnblock(user_id);
-    hideDialog();
+  const _handleUnblock = async (user_id: number, title: string, message: string) => {
+    unblock.setConfirm(title, message);
+    const res = await unblock.confirm();
+    if (res) {
+      handleUnblock(user_id);
+      hideDialog();
+    }
   };
 
-  const _handleAdd = (user_id: number) => {
-    handleAdd(user_id);
-    hideDialog();
+  const _handleAdd = async (user_id: number, title: string, message: string) => {
+    add.setConfirm(title, message);
+    const res = await add.confirm();
+    if (res) {
+      handleAdd(user_id);
+      hideDialog();
+    }
   };
 
   // eslint-disable-next-line @typescript-eslint/no-shadow
@@ -149,16 +161,26 @@ function ContactList({ contacts, listType }: IContactList) {
         title={`${_.item.first_name} ${_.item.last_name}`}
         left={() => avatar(_.item)}
         right={() => null}
-        onPress={() => {
+        onPress={async () => {
           if (listType === 'blocked') {
-            _handleUnblock(_.item.user_id);
+            await _handleUnblock(
+              _.item.user_id,
+              'Unblock User',
+              `Are you sure you want to Unblock ${_.item.first_name} ${_.item.last_name}?`
+            );
           } else {
-            _handleAdd(_.item.user_id);
+            await _handleAdd(
+              _.item.user_id,
+              'Add Contact',
+              `Are you sure you want to add ${_.item.first_name} ${_.item.last_name}?`
+            );
           }
         }}
         onLongPress={() => {
-          setUser(_.item);
-          setVisible(true);
+          if (listType !== 'blocked') {
+            setUser(_.item);
+            setVisible(true);
+          }
         }}
       />
     );
@@ -174,6 +196,10 @@ function ContactList({ contacts, listType }: IContactList) {
           renderItem={(_) => _renderItem(_)}
         />
         {!!user && <RemoveContactDialog visible={visible} user={user} hideDialog={hideDialog} />}
+        <Portal>
+          <add.ConfirmationDialog />
+          <unblock.ConfirmationDialog />
+        </Portal>
       </SafeAreaView>
     </View>
   );

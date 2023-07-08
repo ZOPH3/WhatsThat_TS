@@ -20,6 +20,7 @@ import ContactList from './ContactList';
 
 import { TUser } from '../../lib/types/TSchema';
 import { useAuth } from '../../lib/context/auth';
+import useConfirm from '../../lib/hooks/useConfirm';
 
 const styles = StyleSheet.create({
   container: {
@@ -47,6 +48,7 @@ function SearchUsersView({ navigation }) {
   const { authState } = useAuth();
   const [isLoading, setIsLoading] = React.useState(false);
   const [data, setData] = React.useState<TUser[] | null>(null);
+
   const filtered = data?.filter((contact) => contact.user_id !== authState.id);
   const { blocked, dispatcher } = useContactContext();
   const { apiCaller } = useApi();
@@ -59,7 +61,7 @@ function SearchUsersView({ navigation }) {
   const [currentPage, setCurrentPage] = React.useState(0);
 
   const onChangeSearch = (query) => setSearchQuery(query);
-  const _handleMore = () => console.log('Shown more');
+
   const _handleSearch = () => {
     setIsLoading(true);
 
@@ -116,6 +118,10 @@ function SearchUsersView({ navigation }) {
         setIsLoading(false);
       });
   };
+
+  useEffect(() => {
+    setCurrentPage(0);
+  }, [listType]);
 
   useEffect(() => {
     if (listType === 'all' || listType === 'contacts') _handleSearch();
@@ -182,7 +188,7 @@ function SearchUsersView({ navigation }) {
               value: 'next',
               label: 'Next',
               onPress: () => setCurrentPage(currentPage + 1),
-              disabled: !data || data?.length <= 6,
+              disabled: !data || data?.length < 6,
             },
           ]}
         />

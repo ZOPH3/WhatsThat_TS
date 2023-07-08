@@ -25,6 +25,7 @@ import ContactList from '../../components/ContactList';
 import { TChat, TUser } from '../../lib/types/TSchema';
 import styles from '../../styles/GlobalStyle';
 import ContactServices from '../../lib/services/ContactServices';
+import useConfirm from '../../lib/hooks/useConfirm';
 
 function Members({ members, actions }) {
   return (
@@ -100,12 +101,16 @@ function EditChatView({ route, navigation }) {
 
   const [modalVisible, setModalVisible] = useState(false);
 
+  const add = useConfirm();
+  const remove = useConfirm();
+
   const { isLoading, onError, onFetch, getFresh } = useFetchHook(
     { url: `/chat/${chat_id}`, method: 'GET' },
     true
   );
 
   function _handleEdit() {
+    if (!isOwner) return;
     if (titleEdit !== '' && titleEdit !== chatDetails?.name) {
       setHandleEditLoad(true);
       c.updateChatDetails(chat_id, { name: titleEdit })
@@ -125,34 +130,57 @@ function EditChatView({ route, navigation }) {
     hideDialog();
   }
 
-  function _handleInvite(user: TUser) {
-    setHandleEditLoad(true);
-    c.addUserToConversation(chat_id, user.user_id)
-      .then((res) => {
-        if (res) {
-          setMembers([...members, user]);
-        }
-      })
-      .catch((err) => {
-        n.dispatcher.addNotification({ type: 'warn', message: 'Unable to add user...' });
-      })
-      .finally(() => setHandleEditLoad(false));
+  async function _handleInvite(user: TUser) {
+    add.setConfirm(
+      'Are you sure?',
+      `Are you sure you want to invite ${user.first_name} ${user.last_name}?`
+    );
+    const res = await add.confirm();
+    if (res) {
+      setHandleEditLoad(true);
+      c.addUserToConversation(chat_id, user.user_id)
+        .then((res) => {
+          if (res) {
+            setMembers([...members, user]);
+            n.dispatcher.addNotification({
+              type: 'Success',
+              message: `${user.first_name} ${user.last_name} has been added.`,
+            });
+          }
+        })
+        .catch((err) => {
+          n.dispatcher.addNotification({ type: 'warn', message: 'Unable to add user...' });
+        })
+        .finally(() => setHandleEditLoad(false));
+    }
   }
 
-  function _handleRemove(user: TUser) {
+  async function _handleRemove(user: TUser) {
     if (user.user_id === current_user) return;
-    setHandleEditLoad(true);
-    c.removeUserFromConversation(chat_id, user.user_id)
-      .then((res) => {
-        if (res) {
-          const filtered = members.filter((m) => m.user_id !== user.user_id);
-          setMembers(filtered);
-        }
-      })
-      .catch((err) => {
-        n.dispatcher.addNotification({ type: 'warn', message: 'Unable to remove user...' });
-      })
-      .finally(() => setHandleEditLoad(false));
+    if (!isOwner) return;
+    remove.setConfirm(
+      'Are you sure?',
+      `Are you sure you want to remove ${user.first_name} ${user.last_name}?`
+    );
+    const res = await remove.confirm();
+    if (res) {
+      setHandleEditLoad(true);
+      c.removeUserFromConversation(chat_id, user.user_id)
+        .then((res) => {
+          if (res) {
+            const filtered = members.filter((m) => m.user_id !== user.user_id);
+            setMembers(filtered);
+            n.dispatcher.addNotification({
+              type: 'Success',
+              message: `${user.first_name} ${user.last_name} has been removed.`,
+            });
+          }
+        })
+        .catch((err) => {
+          n.dispatcher.addNotification({ type: 'warn', message: 'Unable to remove user...' });
+        })
+        .finally(() => setHandleEditLoad(false));
+    }
   }
   // Api call
   useEffect(() => {
@@ -193,33 +221,34 @@ function EditChatView({ route, navigation }) {
         {!!members && (
           <Members members={members} actions={{ onPress: (user) => _handleRemove(user) }} />
         )}
-        {/* {!!isOwner && <Text>Owner</Text>} */}
         {/* FAB Buttons */}
         <Portal>
-          <FAB.Group
-            style={{ position: 'absolute', bottom: 50, right: 0 }}
-            open={open}
-            visible
-            icon={open ? 'pencil' : 'dots-vertical'}
-            actions={[
-              {
-                icon: 'account-multiple-plus',
-                label: 'Invite user',
-                onPress: () => setModalVisible(true),
-              },
-              {
-                icon: 'file-document-edit',
-                label: 'Edit chat',
-                onPress: showDialog,
-              },
-            ]}
-            onStateChange={onStateChange}
-            onPress={() => {
-              if (open) {
-                // do something if the speed dial is open
-              }
-            }}
-          />
+          {!!isOwner && (
+            <FAB.Group
+              style={{ position: 'absolute', bottom: 50, right: 0 }}
+              open={open}
+              visible
+              icon={open ? 'pencil' : 'dots-vertical'}
+              actions={[
+                {
+                  icon: 'account-multiple-plus',
+                  label: 'Invite user',
+                  onPress: () => setModalVisible(true),
+                },
+                {
+                  icon: 'file-document-edit',
+                  label: 'Edit chat',
+                  onPress: showDialog,
+                },
+              ]}
+              onStateChange={onStateChange}
+              onPress={() => {
+                if (open) {
+                  // do something if the speed dial is open
+                }
+              }}
+            />
+          )}
         </Portal>
         {/* Dialog to edit the chat title */}
         <Portal>
@@ -258,6 +287,11 @@ function EditChatView({ route, navigation }) {
               />
             </View>
           </Modal>
+        </Portal>
+
+        <Portal>
+          <add.ConfirmationDialog />
+          <remove.ConfirmationDialog />
         </Portal>
       </SafeAreaView>
     </View>

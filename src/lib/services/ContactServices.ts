@@ -1,13 +1,14 @@
 /* eslint-disable camelcase */
 /* eslint-disable react-hooks/rules-of-hooks */
 import { TUser } from '../types/TSchema';
+import log from '../util/LoggerUtil';
 
 interface IContactServices {
   fetchContactList: () => Promise<TUser[] | undefined>;
-  addContact: (user_id: number) => Promise<Response | undefined>;
-  deleteContact: (user_id: number) => Promise<Response | undefined>;
-  blockUser: (user_id: number) => Promise<Response | undefined>;
-  unblockUser: (user_id: number) => Promise<Response | undefined>;
+  addContact: (user_id: number) => Promise<string | undefined>;
+  deleteContact: (user_id: number) => Promise<string | undefined>;
+  blockUser: (user_id: number) => Promise<string | undefined>;
+  unblockUser: (user_id: number) => Promise<string | undefined>;
   fetchBlockedList: () => Promise<TUser[] | undefined>;
   searchUsers: (params: TSearchParams) => Promise<TUser[] | undefined>;
 }
@@ -25,24 +26,32 @@ const ContactServices = (apiCaller: any): IContactServices => {
     return response.data as TUser[];
   };
 
-  const addContact = async (user_id: number): Promise<Response | undefined> => {
+  const addContact = async (user_id: number) => {
     const response = await apiCaller({ url: `/user/${user_id}/contact`, method: 'POST' }, true);
-    return response.data as Response;
+    return response.data;
   };
 
-  const deleteContact = async (user_id: number): Promise<Response | undefined> => {
+  const deleteContact = async (user_id: number) => {
     const response = await apiCaller({ url: `/user/${user_id}/contact`, method: 'DELETE' }, true);
-    return response.data as Response;
+    return response.data;
   };
 
   const blockUser = async (user_id: number) => {
     const response = await apiCaller({ url: `/user/${user_id}/block`, method: 'POST' }, true);
-    return response.data || null;
+    if (!response) throw new Error('Unable to block user');
+    if (response.status === 404) throw new Error('User not found');
+    if (response.status === 401) throw new Error('Unable to block user');
+    if (response.status === 400) throw new Error('You cannot block yourself');
+    return response?.data || undefined;
   };
 
-  const unblockUser = async (user_id: number): Promise<Response | undefined> => {
+  const unblockUser = async (user_id: number) => {
     const response = await apiCaller({ url: `/user/${user_id}/block`, method: 'DELETE' }, true);
-    return response.data as Response;
+    if (!response) throw new Error('Unable to block user');
+    if (response.status === 404) throw new Error('User not found');
+    if (response.status === 401) throw new Error('Unable to unblock user');
+    if (response.status === 400) throw new Error('You cannot unblock yourself');
+    return response?.data || null;
   };
 
   const fetchBlockedList = async (): Promise<TUser[] | undefined> => {

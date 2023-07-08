@@ -65,6 +65,7 @@ function Contacts({ apiCaller, existing, actions }) {
 
   if (isLoading) return <Text>Is Loading</Text>;
   if (!contacts) return <Text>No contacts</Text>;
+  if (contacts.length === 0) return <Text>No contacts to invite</Text>;
 
   return (
     <View>
@@ -210,11 +211,6 @@ function EditChatView({ route, navigation }) {
                 label: 'Edit chat',
                 onPress: showDialog,
               },
-              {
-                icon: 'archive',
-                label: 'View Drafts',
-                onPress: () => console.log('Pressed notifications'),
-              },
             ]}
             onStateChange={onStateChange}
             onPress={() => {
@@ -249,7 +245,6 @@ function EditChatView({ route, navigation }) {
             style={{ backgroundColor: theme.colors.background, padding: 20 }}
           >
             <View>
-              <Text>Add to Chat</Text>
               <Contacts
                 apiCaller={apiCaller}
                 actions={{

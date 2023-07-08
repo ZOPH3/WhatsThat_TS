@@ -16,7 +16,7 @@ import ContactServices, { TSearchParams } from '../../lib/services/ContactServic
 import { useContactContext } from '../../lib/context/contact/ContactContext';
 import { useApi } from '../../lib/context/api';
 
-import ContactList from '../AddedUsersView/list/ContactList';
+import ContactList from './ContactList';
 
 import { TUser } from '../../lib/types/TSchema';
 

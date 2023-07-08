@@ -4,14 +4,14 @@ import React from 'react';
 import { View, FlatList, SafeAreaView } from 'react-native';
 import { Button, Checkbox, Dialog, List, Portal, Text } from 'react-native-paper';
 
-import { useApi } from '../../../lib/context/api';
+import { useApi } from '../../lib/context/api';
 
-import ContactServices from '../../../lib/services/ContactServices';
-import ProfileAvatar from '../../SearchUsersView/ProfileAvatar';
+import ContactServices from '../../lib/services/ContactServices';
+import ProfileAvatar from './ProfileAvatar';
 
-import { TUser } from '../../../lib/types/TSchema';
+import { TUser } from '../../lib/types/TSchema';
 
-import { intLog } from '../../../lib/util/LoggerUtil';
+import { intLog } from '../../lib/util/LoggerUtil';
 
 interface IContactList {
   contacts: TUser[];

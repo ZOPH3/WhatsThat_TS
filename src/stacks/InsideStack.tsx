@@ -5,7 +5,6 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import Icons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { IconButton } from 'react-native-paper';
 
 /**
  * Navigation responsible for authorised users
@@ -16,39 +15,20 @@ import ChatSummaryView from '../views/ChaSummaryView';
 import ChatView from '../views/ChatView';
 import EditChatView from '../views/EditChatView';
 import InviteUserView from '../views/InviteUserView';
-import AddedUsersView from '../views/AddedUsersView';
 import SearchUsersView from '../views/SearchUsersView';
-import BlockedUsersView from '../views/BlockedUsersView';
 
 import { useAuth } from '../lib/context/auth';
 import useChatController from '../lib/controller/ChatController';
+import PollingService from '../lib/services/PollingService';
+import DraftController from '../lib/controller/DraftController';
 
-import log, { apiLog, pollingLog, rootLog } from '../lib/util/LoggerUtil';
+import { pollingLog } from '../lib/util/LoggerUtil';
 
 const ChatStack = createNativeStackNavigator();
 const ProfileStack = createNativeStackNavigator();
-const ContactTab = createMaterialTopTabNavigator();
 
 const InsideStack = createNativeStackNavigator();
 const InsideTab = createBottomTabNavigator();
-
-function ContactTopTabNavigator() {
-  return (
-    <ContactTab.Navigator>
-      <ContactTab.Screen
-        name="AddedUsersView"
-        component={AddedUsersView}
-        options={{ title: 'Contacts' }}
-      />
-
-      <ContactTab.Screen
-        name="BlockedUsersView"
-        component={BlockedUsersView}
-        options={{ title: 'Blocked' }}
-      />
-    </ContactTab.Navigator>
-  );
-}
 
 function ContactStackNavigator({ navigation }) {
   return (
@@ -132,30 +112,33 @@ function InsideTabNavigator() {
 function InsideStackNavigator() {
   const { authState } = useAuth();
   const { fetchChatDetails, fetchChatSummary } = useChatController();
+  const { addPolling, clearAllPolling, startAllPolling } = PollingService();
+  const d = DraftController();
 
-  let pollId: string | number | NodeJS.Timer | undefined;
-  const pollTest = () => {
-    if (!pollId) {
-      pollId = setInterval(() => {
-        fetchChatSummary().then((data) => {
-          if (data) {
-            if (data.length > 0) {
-              fetchChatDetails(data);
-            }
-          }
-        });
-      }, 50000);
-    }
+  //FIXME: Duplicate code that can be refactored
+  const fetch = () => {
+    fetchChatSummary().then((data) => {
+      if (data) {
+        if (data.length > 0) {
+          fetchChatDetails(data);
+        }
+      }
+    });
   };
 
-  const clearPoll = () => {
-    pollingLog.debug('Clearing Interval...');
-    clearInterval(pollId);
+  const queuePolling = () => {
+    pollingLog.debug('Queueing Polling...');
+    addPolling(fetch, 50000);
+    addPolling(d.checkDraft, 50000);
   };
 
   useEffect(() => {
-    if (authState.authenticated === true) pollTest();
-    return () => clearPoll();
+    if (authState.authenticated === true) {
+      queuePolling();
+      startAllPolling();
+    }
+
+    return () => clearAllPolling();
   }, [authState.authenticated]);
 
   return (

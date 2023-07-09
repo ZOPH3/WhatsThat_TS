@@ -1,3 +1,4 @@
+/* eslint-disable react/require-default-props */
 import React from 'react';
 import { StyleProp, TextStyle } from 'react-native';
 import { Button } from 'react-native-paper';
@@ -15,7 +16,7 @@ interface IButton {
   style?: any;
 }
 
-const ButtonComponent = ({
+function ButtonComponent({
   title,
   onPress,
   mode,
@@ -26,12 +27,12 @@ const ButtonComponent = ({
   fontSize,
   styleText,
   style,
-}: IButton): React.ReactElement => {
+}: IButton): React.ReactElement {
   return (
     <Button onPress={onPress} loading={loading} disabled={disabled} mode={mode} style={style}>
       {title}
     </Button>
   );
-};
+}
 
 export default ButtonComponent;

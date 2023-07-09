@@ -20,7 +20,7 @@ function MessageBubble({
   children,
   actions,
 }: IMessageBubble) {
-  // TODO: Add actions for other users
+
   return (
     <View>
       <TouchableOpacity

@@ -41,11 +41,6 @@ const UserServices = (apiCaller: any): IUserServices => {
     return response.data;
   };
 
-  // TODO: Below API things
-  // public static async getUserPhoto() {}
-  // public static async uploadUserPhoto() {}
-  // public static async searchForUser() {}
-
   return { login, logout, register, getUserInfo, updateUserInfo };
 };
 

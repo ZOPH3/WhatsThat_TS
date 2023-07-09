@@ -183,7 +183,6 @@ function ContactList({ contacts, listType }: IContactList) {
     return <ProfileAvatar user={user} />;
   };
 
-  // TODO: Add button to add instead of long clcking to make it more obvious
   const _renderItem = (_) => {
     return (
       <List.Item
@@ -215,7 +214,6 @@ function ContactList({ contacts, listType }: IContactList) {
     );
   };
 
-  // FIXME: For some reason, sorting the array here causes undefined function error
   return (
     <View>
       <SafeAreaView>

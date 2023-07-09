@@ -46,7 +46,6 @@ function ChatSummaryList({ chatSummaryList }) {
     return chatSummary;
   };
 
-  // FIXME: For some reason, sorting the array here causes undefined function error
   return (
     <View>
       <SafeAreaView>

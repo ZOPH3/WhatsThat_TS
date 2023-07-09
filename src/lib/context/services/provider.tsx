@@ -56,7 +56,7 @@ function ServiceProvider({ children }: any) {
     },
     [dispatch]
   );
-  // FIXME: Clear draft messages does not work
+
   const clearDraftMessageList = useCallback(() => {
     dispatch({ type: 'CLEAR_DRAFT_MESSAGE_LIST' });
   }, [dispatch]);

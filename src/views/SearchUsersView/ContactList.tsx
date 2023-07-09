@@ -20,9 +20,12 @@ interface IContactList {
 
 function ContactListActions() {
   const n = useNotification();
+
   const { apiCaller } = useApi();
   if (!apiCaller) throw new Error('useFetch is null');
+
   const c = ContactServices(apiCaller);
+
   const handleRemove = (user_id: number | undefined) => {
     if (!user_id) return;
     c.deleteContact(user_id)

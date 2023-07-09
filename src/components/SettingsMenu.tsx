@@ -1,6 +1,7 @@
+/* eslint-disable react/require-default-props */
 import * as React from 'react';
 import { View } from 'react-native';
-import { Menu, IconButton, Avatar, TouchableRipple } from 'react-native-paper';
+import { Menu, Avatar, TouchableRipple } from 'react-native-paper';
 import { IconSource } from 'react-native-paper/lib/typescript/src/components/Icon';
 
 import { useGlobal } from '../lib/context/global';
@@ -15,6 +16,10 @@ export interface IMenuItem {
   onPress?: () => any;
 }
 
+/**
+ * MenuItems is a component that renders a list of Menu.Item components,
+ * based on the items prop.
+ */
 function MenuItems(props: { items: IMenuItem[]; closeMenu: () => void }) {
   const { items, closeMenu } = props;
   return (
@@ -36,6 +41,9 @@ function MenuItems(props: { items: IMenuItem[]; closeMenu: () => void }) {
   );
 }
 
+/**
+ * SettingsMenu is a component that renders a Menu component with a list of Menu.Item components
+ */
 function SettingsMenu(props: { items: any; onPress?: () => any }) {
   const { toggleTheme } = useGlobal();
   const [visible, setVisible] = React.useState(false);

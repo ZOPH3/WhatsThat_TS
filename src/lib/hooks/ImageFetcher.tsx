@@ -17,6 +17,11 @@ type ImageCache = {
 
 const CACHE_URL = 'IMG_CACHE';
 
+/**
+ * @description ImageFetcher is a hook that provides the image data
+ * @param url - Image URL
+ * @returns - Returns the image data
+ */
 function ImageFetcher(url: string) {
   const [data, setData] = React.useState<any>(undefined);
   const [isLoading, setIsLoading] = React.useState(false);
@@ -30,6 +35,9 @@ function ImageFetcher(url: string) {
     throw new Error('Unable to find Auth API...');
   }
 
+  /**
+   * @description Fetch image data from cache
+   */
   const getCache = async () => {
     setOnError(undefined);
     setIsLoading(true);
@@ -71,6 +79,9 @@ function ImageFetcher(url: string) {
     await setCache(c);
   };
 
+  /**
+   * @description Fetch image data from server, update state
+   */
   const makeRequest = async () => {
     setIsLoading(true);
     try {
@@ -102,6 +113,9 @@ function ImageFetcher(url: string) {
     }
   };
 
+  /**
+   * @deprecated - Not used
+   */
   const postImage = async (image: string) => {
     setIsLoading(true);
     try {
@@ -141,16 +155,26 @@ function ImageFetcher(url: string) {
   };
   const clear = () => clearInterval(pollId);
 
+  /**
+   * @description Polling request, clear on unmount
+   */
   useEffect(() => {
     pollRequest();
     return () => clear();
   }, []);
 
+  /**
+   * @description Initial cache request
+   */
   useEffect(() => {
     const initialCache = async () => getCache();
     initialCache();
   }, []);
 
+  /**
+   * @description Fetch image data from server, update state
+   * @returns - Returns the image data
+   */
   const getFetch = async () => makeRequest();
   useEffect(() => {
     if (!data) {

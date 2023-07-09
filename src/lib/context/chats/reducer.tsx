@@ -2,6 +2,9 @@ import { TSingleMessage } from '../../types/TSchema';
 import chatActions from './actions';
 import { IChatContext } from './types';
 
+/**
+ * @description Reducer for ChatContext
+ */
 const ChatReducer = (state: IChatContext, action: { type: chatActions; payload: any }) => {
   const { type, payload } = action;
 

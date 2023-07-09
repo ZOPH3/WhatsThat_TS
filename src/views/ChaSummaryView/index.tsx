@@ -12,14 +12,20 @@ import CreateChatDialog from './components/Dialog';
 import ButtonComponent from '../../components/Button';
 import HandleLogout from '../../lib/hooks/HandleLogout';
 
+/**
+ * @description - Appbar, ChatSummaryViewContainer, CreateChatDialog, SettingsMenu are rendered here
+ * @returns - ChatSummaryView
+ */
 function ChatSummaryView() {
   const navigation = useNavigation();
   const { logout } = useAuth();
   const dialogRef = useRef<{ show: () => void }>();
   const { fetchChatDetails, fetchChatSummary } = useChatController();
   const { handleCache, handleState } = HandleLogout();
-  // Issue with re rendering closing the keyboard -> dispatcher function seems to be the issue as context is updated, forcing a re render
 
+  /**
+   * @description - Allows user to manually fetch the chat summary list and chat details
+   */
   function reload() {
     fetchChatSummary().then((data) => {
       if (data) {

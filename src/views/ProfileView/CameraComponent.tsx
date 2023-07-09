@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { View, Image, Modal, TouchableOpacity } from 'react-native';
+import { View, Modal, TouchableOpacity } from 'react-native';
 import { Button, Text } from 'react-native-paper';
 import { Camera, CameraCapturedPicture, CameraType, ImageType } from 'expo-camera';
-import log from '../../lib/util/LoggerUtil';
 
 function CameraComponent(props: { trigger: (data: CameraCapturedPicture) => void }) {
   const { trigger } = props;
@@ -12,6 +11,9 @@ function CameraComponent(props: { trigger: (data: CameraCapturedPicture) => void
   const [image, setImage] = useState<string | undefined>(undefined);
   const [permission, requestPermission] = Camera.useCameraPermissions();
 
+  /**
+   * @description - This useEffect is used to request for camera permission
+   */
   useEffect(() => {
     if (!permission?.granted) requestPermission();
   }, []);
@@ -139,11 +141,6 @@ function CameraComponent(props: { trigger: (data: CameraCapturedPicture) => void
         </Modal>
       )}
       <View>
-        <View>
-          {/* {!!image && (
-            <Image source={{ uri: image }} style={{ width: 120, height: 120, borderRadius: 100 }} />
-          )} */}
-        </View>
         {!!permission && (
           <View>
             <Button

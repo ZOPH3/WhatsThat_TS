@@ -7,15 +7,22 @@ import { TChatSummary, TChat } from '../types/TSchema';
 
 import log, { apiLog, pollingLog } from '../util/LoggerUtil';
 
+/**
+ * @description useChatController is a hook that provides the chat controller
+ * @returns {object} - Returns the chat controller
+ */
 const useChatController = () => {
   const { apiCaller } = useApi();
-  const { chatSummaryList: prevState, dispatcher } = useChat();
+  const { dispatcher } = useChat();
 
   if (!apiCaller) {
     log.error('Unable to find Auth API...');
     throw new Error('Unable to find Auth API...');
   }
 
+  /**
+   * @description Fetch chat summary
+   */
   const fetchChatSummary = async () => {
     try {
       const response = await apiCaller({ url: `/chat`, method: 'GET' }, true);
@@ -27,6 +34,10 @@ const useChatController = () => {
     }
   };
 
+  /**
+   * @description Fetch chat details, and merge with its chat summary
+   * @param chatSummaryList - List of chat summaries
+   */
   const fetchChatDetails = async (chatSummaryList: TChatSummary[]) => {
     const promises = [] as any[];
     try {

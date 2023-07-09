@@ -1,3 +1,7 @@
+/**
+ * @param str - string to be converted to hex color
+ * @returns - hex color
+ */
 export const stringToColour = (str: string) => {
   let hash = 0;
   for (let i = 0; i < str.length; i++) {

@@ -6,11 +6,19 @@ const useConfirm = () => {
   const [title, setTitle] = useState<string>('');
   const [message, setMessage] = useState<string>('');
 
+  /**
+   * @description setConfirm is a function that sets the title and message of the confirmation dialog.
+   * @param title - title is the title of the confirmation dialog.
+   * @param message - message is the message of the confirmation dialog.
+   */
   const setConfirm = (title: string, message: string) => {
     setTitle(title);
     setMessage(message);
   };
 
+  /**
+   * @returns - Returns a promise that resolves to true if the user confirms the dialog, otherwise false.
+   */
   const confirm = () =>
     new Promise((resolve, reject) => {
       setPromise({ resolve });

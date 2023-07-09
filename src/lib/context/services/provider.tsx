@@ -1,13 +1,19 @@
 import React, { useCallback, useEffect, useMemo, useReducer } from 'react';
-import { setCachedData } from '../../services/CacheService';
 import ServicesReducer from './reducer';
 import ServicesContext, { initialState } from './context';
 import { loadCachedData } from './utils';
+import { setCachedData } from '../../services/CacheService';
 import { TDraftMessage } from './types';
 
+/**
+ * @description ServiceProvider is a component that wraps the entire application and provides the services context.
+ */
 function ServiceProvider({ children }: any) {
   const [state, dispatch] = useReducer(ServicesReducer, initialState);
 
+  /**
+   * @description Load cached data of drafts on mount
+   */
   useEffect(() => {
     const getCache = async () => {
       const data = await loadCachedData();
@@ -17,6 +23,9 @@ function ServiceProvider({ children }: any) {
     getCache();
   }, []);
 
+  /**
+   * @description Set cached data of drafts on draftMessageList change
+   */
   useEffect(() => {
     // console.log('state.draftMessageList', state.draftMessageList);
     const setCache = async () => setCachedData<TDraftMessage[]>('/drafts', state.draftMessageList);

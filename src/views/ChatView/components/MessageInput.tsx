@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Button, Dialog, FAB, HelperText, Portal, TextInput } from 'react-native-paper';
 import { View } from 'react-native';
 
+/**
+ * @description Converts a string in the format "01/07/2023 12:34" to a Date object
+ */
 function convertStringToDate(dateString) {
   const pattern = /^(\d{2})\/(\d{2})\/(\d{4}) (\d{2}):(\d{2})$/;
   if (!pattern.test(dateString)) {
@@ -15,6 +18,9 @@ function convertStringToDate(dateString) {
   return date;
 }
 
+/**
+ * @description Component for the message input field
+ */
 function MessageInput({ onSend, onDraft, openDraft, isEditing = false, setIsEditing, editText }) {
   const [inputValue, setInputValue] = useState('');
   const [isModalVisible, setModalVisible] = useState(false);

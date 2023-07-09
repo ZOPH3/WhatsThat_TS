@@ -7,6 +7,9 @@ import MessageServices from '../../../lib/services/MessageServices';
 
 import { TSingleMessage } from '../../../lib/types/TSchema';
 
+/**
+ * @description - This hook will handle all the interactions with the messages
+ */
 const MessageInteractions = (chat_id: number) => {
   const { authState } = useAuth();
   const { dispatcher } = useChat();

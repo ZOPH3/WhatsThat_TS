@@ -19,13 +19,16 @@ import styles from '../../styles/GlobalStyle';
 import { getCachedData, setCachedData } from '../../lib/services/CacheService';
 import { useNotification } from '../../lib/context/notification';
 import { pollingItem } from '../../lib/services/PollingService';
-import { apiLog, pollingLog } from '../../lib/util/LoggerUtil';
+import { pollingLog } from '../../lib/util/LoggerUtil';
 import { useApi } from '../../lib/context/api';
 import { TDraftMessage } from '../../lib/context/services/types';
 
 function DraftList({ chat_id, service, actions }) {
   const [draftList, setDraftList] = useState<TDraftMessage[]>([]);
 
+  /**
+   * @description - Fetches the draft message list from the service that matches the chat_id
+   */
   useEffect(() => {
     const d = service.draftMessageList.filter((draft) => draft.chat_id === chat_id);
     setDraftList(d);
@@ -119,6 +122,9 @@ function ChatViewContainer(props: { chat_id: number }) {
     },
   ];
 
+  /**
+   * @description - Fetches the chat data from the api, and updates the message list
+   */
   const fetch = () => {
     if (!apiCaller) return;
     apiCaller({ url: `/chat/${chat_id}`, method: 'GET' }, true)
@@ -140,6 +146,9 @@ function ChatViewContainer(props: { chat_id: number }) {
 
   const messagePoll = pollingItem(fetch, 5000);
 
+  /**
+   * @description - Starts polling for new messages, and stops polling when the component unmounts
+   */
   useEffect(() => {
     pollingLog.debug(`Starting polling for chat ${chat_id}...`);
     messagePoll.startPolling();
@@ -149,6 +158,10 @@ function ChatViewContainer(props: { chat_id: number }) {
     };
   }, []);
 
+  /**
+   * @description - Fetches the chat data from the api, and updates the message list,
+   * if it fails, it will try to fetch from cache
+   */
   useEffect(() => {
     onFetch(async () => getFresh())
       .then((data) => {
@@ -165,6 +178,9 @@ function ChatViewContainer(props: { chat_id: number }) {
       });
   }, [chat_id]);
 
+  /**
+   * @description - Sets the cache for the message list when it changes
+   */
   useEffect(() => {
     const setCache = async () => setCachedData<TSingleMessage[]>(CACHE_URL, messageList);
 
@@ -173,6 +189,9 @@ function ChatViewContainer(props: { chat_id: number }) {
     }
   }, [messageList]);
 
+  /**
+   * @description - Api call to send a message
+   */
   const doSend = async (inputValue: string) => {
     if (inputValue !== '') {
       setButtonLoading(true);
@@ -189,6 +208,9 @@ function ChatViewContainer(props: { chat_id: number }) {
     }
   };
 
+  /**
+   * @description - Api call to update a message
+   */
   const doUpdate = async (inputValue: string, message_id: number) => {
     const toEdit = messageList.find((m) => m.message_id === message_id) as
       | TSingleMessage
@@ -217,6 +239,9 @@ function ChatViewContainer(props: { chat_id: number }) {
     }
   };
 
+  /**
+   * @description - Sets the edit state for a message
+   */
   const setEdit = (message: TSingleMessage) => {
     setEditId(null);
     editText.current = messageList.find((m) => m.message_id === message.message_id).message ?? null;
@@ -229,6 +254,9 @@ function ChatViewContainer(props: { chat_id: number }) {
     }
   };
 
+  /**
+   * @description - Handles the send button press, if editing, it will update the message, otherwise it will send a new message
+   */
   const handleSend = (inputValue: string) => {
     if (isEditing) {
       if (editId === null) {
@@ -257,6 +285,9 @@ function ChatViewContainer(props: { chat_id: number }) {
       .finally(() => setButtonLoading(false));
   };
 
+  /**
+   * @description - Handles the draft button press, and adds a draft message to the dispatcher
+   */
   const handleDraft = (inputValue: string, date: string) => {
     const draft = {
       message: {

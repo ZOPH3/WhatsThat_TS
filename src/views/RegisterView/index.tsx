@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Appbar, HelperText, TextInput } from 'react-native-paper';
 import { View } from 'react-native';
 import ButtonComponent from '../../components/Button';
@@ -6,7 +6,6 @@ import ButtonComponent from '../../components/Button';
 import { useAuth } from '../../lib/context/auth';
 import useFetchHook from '../../lib/hooks/useFetchHook';
 
-import styles from '../../styles/GlobalStyle';
 import { TSignUpResponse } from '../../lib/types/TSchema';
 import { useNotification } from '../../lib/context/notification';
 
@@ -32,6 +31,9 @@ function RegisterView({ navigation }) {
 
   const register = useFetchHook({ url: '/user', method: 'POST', data: { ...text } }, false);
 
+  /**
+   * @returns {boolean} - returns true if there are errors in the email or password
+   */
   const emailErrors = () => {
     if (text.email === '') return false;
     return !text.email.includes('@');

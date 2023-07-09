@@ -10,6 +10,10 @@ const useGlobalController = () => {
     throw new Error('Unable to find Auth API...');
   }
 
+  /**
+   * @description Check server connection
+   * @returns {boolean} - Returns true if server is up, false otherwise
+   */
   const checkServerConnection = async () => {
     try {
       const response = await apiCaller({ url: `/`, method: 'GET' }, false);

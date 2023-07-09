@@ -48,6 +48,9 @@ function SearchUsersView({ navigation }) {
   const [isLoading, setIsLoading] = React.useState(false);
   const [data, setData] = React.useState<TUser[] | null>(null);
 
+  /**
+   * Filter out the current user from the list
+   */
   const filtered = data?.filter((contact) => contact.user_id !== authState.id);
   const { blocked, dispatcher } = useContactContext();
   const { apiCaller } = useApi();
@@ -118,10 +121,16 @@ function SearchUsersView({ navigation }) {
       });
   };
 
+  /**
+   * Reset the current page when the list type changes
+   */
   useEffect(() => {
     setCurrentPage(0);
   }, [listType]);
 
+  /**
+   * Search for users when the search query changes
+   */
   useEffect(() => {
     if (listType === 'all' || listType === 'contacts') _handleSearch();
     if (listType === 'blocked') _handleBlocked();
@@ -152,7 +161,6 @@ function SearchUsersView({ navigation }) {
             onPress={() => setListType(listType === 'blocked' ? 'all' : 'blocked')}
           />
         </Tooltip>
-        {/* <Appbar.Action icon="dots-vertical" onPress={_handleMore} /> */}
       </Appbar.Header>
 
       <ProgressBar indeterminate visible={isLoading} />
@@ -163,6 +171,7 @@ function SearchUsersView({ navigation }) {
         mode="bar"
         style={{ margin: 10 }}
       />
+      {/* Contact List */}
       <View style={styles.contentContainer}>
         {(data?.length === 0 || data === null) && (
           <Text>
@@ -171,6 +180,7 @@ function SearchUsersView({ navigation }) {
         )}
         {!!(data && filtered) && <ContactList contacts={filtered} listType={listType} />}
       </View>
+      {/* Pagination buttons */}
       <View style={styles.footer}>
         <SegmentedButtons
           style={{ margin: 10, width: '50%' }}

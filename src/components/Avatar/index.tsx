@@ -1,9 +1,9 @@
 /* eslint-disable camelcase */
 /* eslint-disable react/require-default-props */
 
-import { Avatar } from '@react-native-material/core';
 import React from 'react';
 import { ViewStyle } from 'react-native';
+import { Avatar } from '@react-native-material/core';
 
 interface IAvatar {
   label?: string;

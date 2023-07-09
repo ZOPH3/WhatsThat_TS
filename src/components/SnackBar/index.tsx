@@ -1,6 +1,7 @@
+/* eslint-disable react/require-default-props */
 import * as React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Button, Snackbar, Text } from 'react-native-paper';
+import { Button, Snackbar } from 'react-native-paper';
 
 interface ISnackBar {
   text: string;

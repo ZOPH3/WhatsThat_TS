@@ -19,6 +19,9 @@ function SplashView() {
   const { setAuthState } = authContext;
   const { initialise } = useGlobal();
 
+  /**
+   * @description - gets the state from cache and sets the auth state
+   */
   const getState = async () => {
     let state: IAuthState = {
       id: undefined,

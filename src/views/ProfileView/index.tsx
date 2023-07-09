@@ -10,7 +10,6 @@ import {
   Card,
   HelperText,
   Portal,
-  Text,
   TextInput,
 } from 'react-native-paper';
 
@@ -46,6 +45,9 @@ function ProfileView({ navigation }) {
 
   const save = useConfirm();
 
+  /**
+   * Set the user state to the current user from authState
+   */
   useEffect(() => {
     setUser({ first_name: current_user.first_name, last_name: current_user.last_name });
   }, [authState]);
@@ -100,6 +102,9 @@ function ProfileView({ navigation }) {
     if (response && response.status === 200) setData(data.base64);
   };
 
+  /**
+   * @returns {boolean} true if there are errors
+   */
   const passwordErrors = () => {
     if (newPassword === '') return false;
 
@@ -171,12 +176,15 @@ function ProfileView({ navigation }) {
             </Card>
           </View>
         )}
+        {/* Displays image */}
         <Card style={{ padding: 20 }}>
           {isLoading ? <ActivityIndicator /> : <Card.Cover source={{ uri: data || null }} />}
         </Card>
+
         <View style={{ marginTop: 10 }}>
           <CameraComponent trigger={sendToServer} />
         </View>
+
         <Portal>
           <save.ConfirmationDialog />
         </Portal>

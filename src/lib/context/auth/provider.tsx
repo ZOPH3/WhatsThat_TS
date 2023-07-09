@@ -3,12 +3,14 @@
 import React, { ReactNode, useState } from 'react';
 import AuthContext, { AuthStateDefault } from './context';
 import { IAuthState } from './types';
-import { clearCachedData } from '../../services/CacheService';
 
 interface Props {
   children?: ReactNode;
 }
 
+/**
+ * @description AuthProvider is a component that wraps the entire application and provides the auth context.
+ */
 function AuthProvider({ children }: Props) {
   const { Provider } = AuthContext;
 
@@ -18,7 +20,7 @@ function AuthProvider({ children }: Props) {
   });
 
   const getCachedAuthState = async () => {
-    /** Do Nothing */
+    /** Do Nothing, Not implemented */
   };
 
   const setUserId = (id: number) => {

@@ -1,3 +1,10 @@
+/**
+ * @description - Polling service to start and stop polling
+ * @param method - method to be called on interval
+ * @param interval - interval in milliseconds
+ * @returns - { startPolling, clearPolling }
+ */
+
 export const pollingItem = (method: () => void, interval: number | undefined) => {
   let poll: string | number | NodeJS.Timer | undefined;
 

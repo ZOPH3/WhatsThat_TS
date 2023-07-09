@@ -3,6 +3,9 @@ import NotificationReducer from './reducer';
 import { INotification } from './types';
 import NotificationContext, { initialState } from './context';
 
+/**
+ * @description NotificationProvider is a component that wraps the entire application and provides the notification context.
+ */
 function NotificationProvider({ children }: any) {
   const [state, dispatch] = useReducer(NotificationReducer, initialState);
   const addNotification = (payload: INotification) => {

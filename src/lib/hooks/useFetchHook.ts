@@ -33,7 +33,9 @@ const useFetchHook = (config: any, auth = false) => {
   const [onError, setOnError] = React.useState<any | undefined>(undefined);
   const [dataState, setDataState] = useState<EState | undefined>(undefined); // State of the data
 
-  // TODO: Do i need a useeffect for this?
+  /**
+   * @description - This will be called when the error is set, and will dispatch a notification
+   */
   useEffect(() => {
     if (onError) {
       dispatcher.addNotification({ type: 'error', message: onError });
@@ -48,6 +50,9 @@ const useFetchHook = (config: any, auth = false) => {
     return Object.values(cachedData);
   }
 
+  /**
+   * @returns - Fresh data from the API
+   */
   const getFresh = async () => {
     /**
      * Fetch
@@ -67,6 +72,9 @@ const useFetchHook = (config: any, auth = false) => {
     throw new Error(msg);
   };
 
+  /**
+   * @description - Takes a promise and executes it, and sets the data, error and loading state.
+   */
   const onFetch = async (fn: () => Promise<any>) => {
     /**
      * Fetch
@@ -96,6 +104,9 @@ const useFetchHook = (config: any, auth = false) => {
     }
   };
 
+  /**
+   * @returns - Fresh data from the API or from the cache
+   */
   const fetchCacheorFresh = async () => {
     /**
      * Fetch

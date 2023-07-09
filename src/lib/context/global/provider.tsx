@@ -10,6 +10,9 @@ interface Props {
   children?: ReactNode;
 }
 
+/**
+ * @description GlobalProvider is a component that wraps the entire application and provides the global context.
+ */
 function GlobalProvider({ children }: Props) {
   const [GlobalState, setGlobalState] = useState<IGlobalState>(GlobalStateDefault);
   const toggleTheme = () => {
@@ -21,9 +24,13 @@ function GlobalProvider({ children }: Props) {
     });
   };
 
+  /**
+   * @description Set cached data for theme
+   */
   const setCache = async () => {
     await setCachedData('/theme', GlobalState.theme);
   };
+
 
   const initialise = () => {
     setGlobalState((prevState) => {
@@ -35,6 +42,9 @@ function GlobalProvider({ children }: Props) {
     });
   };
 
+  /**
+   * @description Load cached data on mount
+   */
   useEffect(() => {
     const setFromCache = async () => {
       const theme = await getCachedData<string>('/theme');
@@ -51,6 +61,9 @@ function GlobalProvider({ children }: Props) {
     setFromCache();
   }, []);
 
+  /**
+   * @description Set cached data on theme change
+   */
   useEffect(() => {
     if (GlobalState.theme && GlobalState.init) setCache();
   }, [GlobalState.theme]);

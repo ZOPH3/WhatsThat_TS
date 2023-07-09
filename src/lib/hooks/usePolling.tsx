@@ -1,5 +1,9 @@
 import React, { useRef, useEffect } from 'react';
 
+/**
+ * @param callback - callback is the function to be called on each interval.
+ * @param delay - delay is the interval in milliseconds.
+ */
 const usePolling = (callback: () => void, delay: number) => {
   const savedCallback = useRef<() => void>();
 

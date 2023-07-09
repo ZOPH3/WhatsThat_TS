@@ -1,8 +1,8 @@
-import { ActivityIndicator } from '@react-native-material/core';
 import React from 'react';
+import { ActivityIndicator } from '@react-native-material/core';
 
-const IsLoadingIndicator = () => {
+function IsLoadingIndicator() {
   return <ActivityIndicator size="large" />;
-};
+}
 
 export default IsLoadingIndicator;

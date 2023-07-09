@@ -1,5 +1,8 @@
 import { Platform } from 'react-native';
 
+/**
+ * @returns true if the platform is mobile
+ */
 function isMobile(): boolean {
   if (Platform.OS === 'ios' || Platform.OS === 'android') {
     return true;

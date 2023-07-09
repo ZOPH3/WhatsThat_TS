@@ -1,13 +1,17 @@
 import React, { useEffect } from 'react';
 import { Snackbar } from 'react-native-paper';
-import log from '../../lib/util/LoggerUtil';
 import { useNotification } from '../../lib/context/notification';
+import log from '../../lib/util/LoggerUtil';
 
 function NotificationContainer() {
   const { notifications, notificationCount, dispatcher } = useNotification();
   const [showSnackbar, setShowSnackbar] = React.useState(false);
   const [notification, setNotification] = React.useState({} as any);
 
+  /**
+   * When the notification count changes, we want to show the snackbar,
+   * and set the notification message.
+   */
   useEffect(() => {
     if (notificationCount && notificationCount > 0) {
       log.debug('[NOTIFICATION] Recieved: ', notifications);

@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import React, { View } from 'react-native';
+import React from 'react-native';
 import { Avatar } from '@react-native-material/core';
 import ImageFetcher from '../../lib/hooks/ImageFetcher';
 import { stringToColour } from '../../lib/util/ColorGeneratorUtil';

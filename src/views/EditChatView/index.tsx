@@ -75,6 +75,9 @@ function Contacts({ apiCaller, existing, actions }) {
   );
 }
 
+/**
+ * @description EditChatView is a view that allows the user to edit the chat details
+ */
 function EditChatView({ route, navigation }) {
   const theme = useTheme();
 
@@ -91,6 +94,9 @@ function EditChatView({ route, navigation }) {
   const [titleEdit, setTitleEdit] = useState<string>('');
   const [handleEditLoad, setHandleEditLoad] = useState<boolean>(false);
 
+  /**
+   * Show or hide the dialog
+   */
   const [visible, setVisible] = useState(false);
   const showDialog = () => setVisible(true);
   const hideDialog = () => setVisible(false);
@@ -101,6 +107,9 @@ function EditChatView({ route, navigation }) {
 
   const [modalVisible, setModalVisible] = useState(false);
 
+  /**
+   * useConfirm hook
+   */
   const add = useConfirm();
   const remove = useConfirm();
 
@@ -181,7 +190,9 @@ function EditChatView({ route, navigation }) {
         .finally(() => setHandleEditLoad(false));
     }
   }
-  // Api call
+  /**
+   * @description Fetch chat details
+   */
   useEffect(() => {
     onFetch(async () => getFresh()).then((res) => {
       if (res) {
@@ -287,7 +298,7 @@ function EditChatView({ route, navigation }) {
             </View>
           </Modal>
         </Portal>
-
+        {/* Confirmation Dialog */}
         <Portal>
           <add.ConfirmationDialog />
           <remove.ConfirmationDialog />

@@ -13,17 +13,26 @@ interface Props {
   // eslint-disable-next-line react/require-default-props
   children?: ReactNode;
 }
-
 const { Provider } = ApiContext;
 
+/**
+ * @description Provider for the API context, this is used to make API calls
+ */
 function ApiProvider({ children }: Props) {
   const globalContext = useGlobal();
   const { getToken } = useAuth();
 
+  /**
+   * Sets URL depending on platform, this can be changed to a config file
+   */
   const BASE_URL = globalContext.isMobile
     ? 'http://10.0.2.2:3333/api/1.0.0'
     : 'http://localhost:3333/api/1.0.0';
 
+  /**
+   * Creates two instances of axios, one for public and one for auth,
+   * this is to prevent the auth token from being sent to public endpoints
+   */
   const _authApi = axios.create({
     baseURL: BASE_URL,
     timeout: 5000,
@@ -44,6 +53,10 @@ function ApiProvider({ children }: Props) {
     return abortController.signal;
   }
 
+  /**
+   * This is the main function that is used to make API calls,
+   * it takes in a config object and an auth boolean to determine which instance to use
+   */
   const apiCaller = async (config: AxiosRequestConfig<any>, auth: any) => {
     const _apiInstance = auth ? _authApi : _publicApi;
     return _apiInstance
@@ -55,15 +68,16 @@ function ApiProvider({ children }: Props) {
       .catch((err) => null); // Had to add catch here to catch the abort error
   };
 
+  /**
+   * Interceptor used to add headers to requests before they are sent
+   */
   _authApi.interceptors.request.use(
     (config) => {
       // log.debug('[AUTH API] Intercepting: ' + config.url);
-
       if (!config.headers['X-Authorization'] && getToken) {
         // eslint-disable-next-line no-param-reassign
         config.headers['X-Authorization'] = `${getToken()}`;
       }
-
       return config;
     },
     (error) => {

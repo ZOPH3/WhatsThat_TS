@@ -18,6 +18,9 @@ function LoginView() {
 
   const getUser = useFetchHook({ url: `/user/${authState.id}` }, true);
 
+  /**
+   * @returns {boolean} - returns true if there are errors in the email or password
+   */
   const emailErrors = () => {
     if (text.email === '') return false;
     return !text.email.includes('@');
@@ -29,6 +32,10 @@ function LoginView() {
 
     return !(text.password.length > 8) || text.password.match(regex);
   };
+
+  /**
+   * @description - logs in the user and sets the auth state
+   */
   const onLogin = async () => {
     onFetch(async () => getFresh())
       .then((data) => {
@@ -53,6 +60,9 @@ function LoginView() {
       });
   };
 
+  /**
+   * @description - gets the user data if the user is authenticated
+   */
   useEffect(() => {
     if (authState.id && authState.token) {
       getUser.getFresh().then((data) => {

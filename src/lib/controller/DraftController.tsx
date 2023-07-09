@@ -14,13 +14,12 @@ const DraftController = () => {
   const c = useChat();
   const m = MessageServices(apiCaller);
 
+  /**
+   * @description Send draft message
+   * @param draft - Draft message
+   */
   const _send = (draft: TDraftMessage) => {
     if (!draft || !draft.message || !draft.message.message) return;
-    // const chat = c.chatSummaryList.find((c) => c.chat_id === draft.chat_id);
-    // if (!chat) {
-    //   s.dispatcher.deleteDraftMessage(draft.draft_id);
-    //   return;
-    // }
     m.sendMessage(draft.chat_id, draft.message?.message)
       .then((res) => {
         if (!res) return;
@@ -32,6 +31,10 @@ const DraftController = () => {
       });
   };
 
+  /**
+   * @description Check drafts to see if any of them are due to be sent,
+   * if so, send them and delete them from the state.
+   */
   const checkDraft = () => {
     pollingLog.debug('Checking Drafts...');
     getCachedData<TDraftMessage[]>('/drafts').then((data) => {

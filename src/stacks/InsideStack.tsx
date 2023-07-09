@@ -1,7 +1,6 @@
 /* eslint-disable camelcase */
 import React, { useEffect } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import Icons from 'react-native-vector-icons/MaterialCommunityIcons';

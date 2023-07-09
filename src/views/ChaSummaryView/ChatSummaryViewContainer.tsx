@@ -9,9 +9,11 @@ import { useChat } from '../../lib/context/chats';
 
 import ChatSummaryList from './list/ChatSummaryList';
 
+/**
+ * @description - Contains the api call to get the chat summary list which populates the chat summary list component
+ */
 function ChatSummaryViewContainer({ reload }) {
   const { chatSummaryList } = useChat();
-
   const { isLoading, onError } = useFetchHook({ url: '/chat', method: 'GET' }, true);
 
   return (

@@ -56,6 +56,9 @@ const ContactsReducer = (state: IContactsContext, action: any) => {
 
 const ContactsContext = createContext(initialState);
 
+/**
+ * @description Provider for ContactsContext
+ */
 function ContactsProvider({ children }: any) {
   const [state, dispatch] = useReducer(ContactsReducer, initialState);
 

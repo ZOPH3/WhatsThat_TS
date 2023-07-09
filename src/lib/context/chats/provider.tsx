@@ -15,9 +15,15 @@ const loadCachedData = async () => {
   return data;
 };
 
+/**
+ * @description ChatProvider is a component that wraps the entire application and provides the chat context.
+ */
 function ChatProvider({ children }: any) {
   const [state, dispatch] = useReducer(ChatReducer, initialState);
 
+  /**
+   * @description Load cached data on mount
+   */
   useEffect(() => {
     const getCache = async () => {
       const data = await loadCachedData();
@@ -27,6 +33,9 @@ function ChatProvider({ children }: any) {
     getCache();
   }, []);
 
+  /**
+   * @description Set cached data on chatSummaryList change
+   */
   useEffect(() => {
     if (!state.chatSummaryList.length) return;
     const setCache = async () => {
@@ -41,6 +50,7 @@ function ChatProvider({ children }: any) {
     },
     [dispatch]
   );
+
   const addChatSummary = useCallback(
     (payload: Partial<TChatSummary>) => {
       dispatch({ type: 'ADD_CHAT_SUMMARY', payload });
@@ -62,6 +72,10 @@ function ChatProvider({ children }: any) {
     [dispatch]
   );
 
+  /**
+   * @deprecated Use MessageProvider instead,
+   *  using chat context for messages is causes performance issues.
+   */
   const addMessage = useCallback(
     (payload: Partial<TChatInfo>) => {
       dispatch({ type: 'ADD_MESSAGE', payload });
@@ -69,6 +83,9 @@ function ChatProvider({ children }: any) {
     [dispatch]
   );
 
+  /**
+   * @deprecated Use MessageProvider instead
+   */
   const updateMessage = useCallback(
     (payload: Partial<TChatInfo>) => {
       dispatch({ type: 'UPDATE_MESSAGE', payload });
@@ -76,6 +93,9 @@ function ChatProvider({ children }: any) {
     [dispatch]
   );
 
+  /**
+   * @deprecated Use MessageProvider instead
+   */
   const deleteMessage = useCallback(
     (payload: Partial<TChatInfo>) => {
       dispatch({ type: 'DELETE_MESSAGE', payload });
@@ -83,6 +103,9 @@ function ChatProvider({ children }: any) {
     [dispatch]
   );
 
+  /**
+   * @deprecated Use MessageProvider instead
+   */
   const setMessages = useCallback(
     (payload: Partial<TChatInfo>) => {
       dispatch({ type: 'SET_MESSAGES', payload });

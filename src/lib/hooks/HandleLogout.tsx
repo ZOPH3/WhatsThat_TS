@@ -1,10 +1,13 @@
-import { useEffect } from 'react';
 import { useAuth } from '../context/auth';
 import { useChat } from '../context/chats';
 import { useContactContext } from '../context/contact/ContactContext';
 import log, { cacheLog } from '../util/LoggerUtil';
 import { clearCachedData } from '../services/CacheService';
 
+/**
+ * @description Handle logout, clear state and cache
+ * @returns {object} - Returns an object with two functions, handleState and handleCache
+ */
 const HandleLogout = () => {
   const a = useAuth();
   const c = useChat();

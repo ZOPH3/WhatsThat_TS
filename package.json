@@ -23,7 +23,7 @@
     "@react-navigation/native-stack": "^6.9.12",
     "@react-navigation/routers": "^6.1.8",
     "@types/react-dom": "~18.0.10",
-    "axios": "^1.4.0",
+    "axios": "^1.6.0",
     "deepmerge": "^4.3.1",
     "eslint-config-airbnb-typescript": "^17.0.0",
     "expo": "^48.0.0",
